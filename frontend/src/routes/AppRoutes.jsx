@@ -1,17 +1,14 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
-function HomePage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center text-3xl font-bold">
-      Welcome to SkillNova 🚀
-    </div>
-  );
-}
+import MainLayout from "@/layouts/MainLayout";
+import HomePage from "@/features/landing/pages/HomePage";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<HomePage />} />
+      </Route>
     </Routes>
   );
 }
