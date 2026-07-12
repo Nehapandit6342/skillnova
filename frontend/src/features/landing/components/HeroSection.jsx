@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SectionContainer from "@/components/common/SectionContainer";
 
-export default function HerosSectionn() {
+export default function HeroSection() {
   return (
     <SectionContainer className="pt-12 lg:pt-20">
       <div className="grid items-center gap-16 lg:grid-cols-2">
