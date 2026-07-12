@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SectionContainer from "@/components/common/SectionContainer";
 
-export default function HerosSection() {
+export default function HerosSectionn() {
   return (
     <SectionContainer className="pt-12 lg:pt-20">
       <div className="grid items-center gap-16 lg:grid-cols-2">
@@ -13,7 +13,7 @@ export default function HerosSection() {
         <div>
           <Badge className="mb-6 rounded-full px-4 py-1">
             <Sparkles className="mr-2 h-4 w-4" />
-            AI Powered Career Platform skill nova 
+            AI Powered Career Platform skill nova
           </Badge>
 
           <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 lg:text-7xl">
