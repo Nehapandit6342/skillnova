@@ -1,0 +1,19 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Prisma generated files
+node_modules/.prisma/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
