@@ -1,26 +1,45 @@
 import InternshipCard from "./InternshipCard";
 
+import googleLogo from "@/assets/companies/google-g-2015.svg";
+import microsoftLogo from "@/assets/companies/microsoft-5.svg";
+import amazonLogo from "@/assets/companies/logo-amazon.svg";
+import adobeLogo from "@/assets/companies/adobe-2.svg";
+import metaLogo from "@/assets/companies/meta-3.svg";
 const internships = [
   {
     company: "Google",
     position: "Frontend Developer Intern",
     location: "Remote",
     type: "Internship",
-    logo: "https://logo.clearbit.com/google.com",
+    logo: googleLogo,
   },
   {
     company: "Microsoft",
     position: "React Developer Intern",
     location: "Hybrid",
     type: "Internship",
-    logo: "https://logo.clearbit.com/microsoft.com",
+    logo: microsoftLogo,
   },
   {
-    company: "Fusemachines",
-    position: "AI Engineering Intern",
-    location: "Kathmandu",
+    company: "Amazon",
+    position: "Software Engineering Intern",
+    location: "Remote",
     type: "Internship",
-    logo: "https://logo.clearbit.com/fusemachines.com",
+    logo: amazonLogo,
+  },
+  {
+    company: "Adobe",
+    position: "UI/UX Design Intern",
+    location: "Hybrid",
+    type: "Internship",
+    logo: adobeLogo,
+  },
+  {
+    company: "Meta",
+    position: "Frontend Engineering Intern",
+    location: "Remote",
+    type: "Internship",
+    logo: metaLogo,
   },
 ];
 
@@ -39,7 +58,7 @@ export default function RecommendedInternships() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {internships.map((internship) => (
           <InternshipCard key={internship.company} {...internship} />
         ))}
