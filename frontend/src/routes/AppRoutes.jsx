@@ -15,6 +15,14 @@ import Students from "@/features/admin/pages/Students";
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudentProfile from "@/features/student/pages/StudentProfile";
 
+<<<<<<< HEAD
+=======
+import Dashboard from "@/features/admin/pages/Dashboard";
+import Students from "@/features/admin/pages/Students";
+import AddStudent from "@/features/admin/pages/AddStudent";
+import EditStudent from "@/features/admin/pages/EditStudent";
+import StudentDetails from "@/features/admin/pages/StudentDetails";
+>>>>>>> 74d64ae (Completed routing and current progress)
 
 export default function AppRoutes() {
   return (
@@ -70,6 +78,7 @@ export default function AppRoutes() {
 
       </Route>
 
+<<<<<<< HEAD
 
 
 
@@ -101,6 +110,15 @@ export default function AppRoutes() {
           element={<StudentProfile />}
         />
 
+=======
+      {/* Admin */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="students" element={<Students />} />
+        <Route path="add-student" element={<AddStudent />} />
+        <Route path="edit-student/:id" element={<EditStudent />} />
+        <Route path="student/:id" element={<StudentDetails />} />
+>>>>>>> 74d64ae (Completed routing and current progress)
       </Route>
 
 
