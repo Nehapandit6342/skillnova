@@ -7,93 +7,482 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import useRegister from "../hooks/useRegister";
+
+
 export default function RegisterForm() {
-  const [role, setRole] = useState("STUDENT");
 
-  return (
-    <form className="space-y-6">
-      {/* Common Fields */}
+  const registerMutation = useRegister();
 
-      <div className="space-y-2">
-        <Label>Full Name</Label>
-        <Input placeholder="John Doe" />
-      </div>
 
-      <div className="space-y-2">
-        <Label>Email</Label>
-        <Input type="email" placeholder="john@example.com" />
-      </div>
+  const [role,setRole] = useState("STUDENT");
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label>Password</Label>
-          <Input type="password" placeholder="••••••••" />
-        </div>
 
-        <div className="space-y-2">
-          <Label>Confirm Password</Label>
-          <Input type="password" placeholder="••••••••" />
-        </div>
-      </div>
+  const [formData,setFormData] = useState({
 
-      {/* Role Selector */}
+    name:"",
+    email:"",
+    password:"",
+    confirmPassword:"",
 
-      <RoleSelector value={role} onChange={setRole} />
+    college:"",
+    degree:"",
+    careerGoal:"",
 
-      {/* Student Fields */}
+    companyName:"",
+    industry:"",
+    website:"",
 
-      {role === "STUDENT" && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 p-5">
-          <h3 className="font-semibold text-slate-900">Student Information</h3>
+  });
 
-          <div className="space-y-2">
-            <Label>College</Label>
-            <Input placeholder="Pokhara University" />
-          </div>
 
-          <div className="space-y-2">
-            <Label>Degree</Label>
-            <Input placeholder="B.E. Computer Engineering" />
-          </div>
 
-          <div className="space-y-2">
-            <Label>Career Goal</Label>
-            <Input placeholder="Frontend Developer" />
-          </div>
-        </div>
-      )}
+  const handleChange=(e)=>{
 
-      {/* Employer Fields */}
+    setFormData({
 
-      {role === "EMPLOYER" && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 p-5">
-          <h3 className="font-semibold text-slate-900">Company Information</h3>
+      ...formData,
 
-          <div className="space-y-2">
-            <Label>Company Name</Label>
-            <Input placeholder="OpenAI" />
-          </div>
+      [e.target.name]:e.target.value
 
-          <div className="space-y-2">
-            <Label>Industry</Label>
-            <Input placeholder="Software Development" />
-          </div>
+    });
 
-          <div className="space-y-2">
-            <Label>Website</Label>
-            <Input placeholder="https://company.com" />
-          </div>
-        </div>
-      )}
+  };
 
-      <Button className="w-full">Create Account</Button>
 
-      <p className="text-center text-sm text-slate-600">
-        Already have an account?{" "}
-        <Link to="/login" className="font-medium text-blue-600 hover:underline">
-          Sign In
-        </Link>
-      </p>
-    </form>
-  );
+
+
+  const handleSubmit=(e)=>{
+
+    e.preventDefault();
+
+
+
+    if(formData.password !== formData.confirmPassword){
+
+      alert("Passwords do not match");
+
+      return;
+
+    }
+
+
+
+    const payload={
+
+      name:formData.name,
+
+      email:formData.email,
+
+      password:formData.password,
+
+      role,
+
+
+      ...(role==="STUDENT" && {
+
+        college:formData.college,
+
+        degree:formData.degree,
+
+        careerGoal:formData.careerGoal,
+
+      }),
+
+
+      ...(role==="EMPLOYER" && {
+
+        companyName:formData.companyName,
+
+        industry:formData.industry,
+
+        website:formData.website,
+
+      })
+
+    };
+
+
+
+    console.log("REGISTER PAYLOAD:",payload);
+
+
+
+    registerMutation.mutate(payload);
+
+
+  };
+
+
+
+
+
+return (
+
+<form
+onSubmit={handleSubmit}
+className="space-y-6"
+>
+
+
+<div className="space-y-2">
+
+<Label>
+Full Name
+</Label>
+
+<Input
+
+name="name"
+
+value={formData.name}
+
+onChange={handleChange}
+
+placeholder="John Doe"
+
+autoComplete="name"
+
+required
+
+/>
+
+</div>
+
+
+
+
+
+<div className="space-y-2">
+
+<Label>
+Email
+</Label>
+
+
+<Input
+
+name="email"
+
+type="email"
+
+value={formData.email}
+
+onChange={handleChange}
+
+placeholder="john@gmail.com"
+
+autoComplete="email"
+
+required
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="grid sm:grid-cols-2 gap-4">
+
+
+<div>
+
+<Label>
+Password
+</Label>
+
+
+<Input
+
+name="password"
+
+type="password"
+
+value={formData.password}
+
+onChange={handleChange}
+
+autoComplete="new-password"
+
+required
+
+/>
+
+</div>
+
+
+
+
+<div>
+
+<Label>
+Confirm Password
+</Label>
+
+
+<Input
+
+name="confirmPassword"
+
+type="password"
+
+value={formData.confirmPassword}
+
+onChange={handleChange}
+
+autoComplete="new-password"
+
+required
+
+/>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<RoleSelector
+
+value={role}
+
+onChange={setRole}
+
+/>
+
+
+
+
+
+
+
+{
+role==="STUDENT" &&
+
+<div className="space-y-4 border rounded-xl p-5">
+
+
+<h3 className="font-semibold">
+Student Information
+</h3>
+
+
+<Input
+
+name="college"
+
+placeholder="College"
+
+value={formData.college}
+
+onChange={handleChange}
+
+/>
+
+
+
+<Input
+
+name="degree"
+
+placeholder="Degree"
+
+value={formData.degree}
+
+onChange={handleChange}
+
+/>
+
+
+
+
+<Input
+
+name="careerGoal"
+
+placeholder="Career Goal"
+
+value={formData.careerGoal}
+
+onChange={handleChange}
+
+/>
+
+
+</div>
+
+}
+
+
+
+
+
+
+
+
+{
+role==="EMPLOYER" &&
+
+<div className="space-y-4 border rounded-xl p-5">
+
+
+<h3 className="font-semibold">
+Company Information
+</h3>
+
+
+
+<Input
+
+name="companyName"
+
+placeholder="Company Name"
+
+value={formData.companyName}
+
+onChange={handleChange}
+
+/>
+
+
+
+<Input
+
+name="industry"
+
+placeholder="Industry"
+
+value={formData.industry}
+
+onChange={handleChange}
+
+/>
+
+
+
+<Input
+
+name="website"
+
+placeholder="https://company.com"
+
+value={formData.website}
+
+onChange={handleChange}
+
+/>
+
+
+</div>
+
+}
+
+
+
+
+
+
+
+{
+registerMutation.isError &&
+
+<div className="text-red-500 text-sm">
+
+
+<p>
+
+{
+registerMutation.error?.response?.data?.message
+||
+"Registration failed"
+
+}
+
+</p>
+
+
+
+<pre>
+
+{
+JSON.stringify(
+registerMutation.error?.response?.data?.errors,
+null,
+2
+)
+
+}
+
+</pre>
+
+
+</div>
+
+}
+
+
+
+
+
+
+
+
+<Button
+
+type="submit"
+
+className="w-full"
+
+disabled={registerMutation.isPending}
+
+>
+
+
+{
+registerMutation.isPending
+?
+"Creating Account..."
+:
+"Create Account"
+
+}
+
+
+</Button>
+
+
+
+
+
+<p className="text-center text-sm">
+
+
+Already have account?
+
+
+<Link
+to="/login"
+className="text-blue-600 ml-1"
+>
+
+Login
+
+</Link>
+
+
+</p>
+
+
+
+</form>
+
+);
+
 }
