@@ -8,6 +8,7 @@ import RegisterPage from "@/features/auth/pages/RegisterPage";
 import StudentLayout from "@/layouts/StudentLayout";
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudentProfile from "@/features/student/pages/StudentProfile";
+import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
 
 export default function AppRoutes() {
   return (
@@ -26,6 +27,7 @@ export default function AppRoutes() {
         <Route index element={<StudentDashboard />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="profile" element={<StudentProfile />} />
+        <Route path="resume" element={<ResumeBuilder />} />
       </Route>
     </Routes>
   );
