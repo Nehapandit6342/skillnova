@@ -12,11 +12,16 @@ import RegisterPage from "@/features/auth/pages/RegisterPage";
 import VerifyEmailPage from "@/features/auth/pages/VerifyEmailPage";
 
 // Admin Pages
-import AdminDashboard from "@/features/admin/pages/Dashboard";
+import Dashboard from "@/features/admin/pages/Dashboard";
 import Students from "@/features/admin/pages/Students";
 import AddStudent from "@/features/admin/pages/AddStudent";
 import EditStudent from "@/features/admin/pages/EditStudent";
 import StudentDetails from "@/features/admin/pages/StudentDetails";
+
+import Employers from "@/features/admin/pages/Employers";
+import AddEmployer from "@/features/admin/pages/AddEmployer";
+import EditEmployer from "@/features/admin/pages/EditEmployer";
+import EmployerDetails from "@/features/admin/pages/EmployerDetails";
 
 // Student Pages
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
@@ -40,11 +45,20 @@ export default function AppRoutes() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
 
-        <Route path="dashboard" element={<AdminDashboard />} />
+        {/* Dashboard */}
+        <Route path="dashboard" element={<Dashboard />} />
+
+        {/* Students */}
         <Route path="students" element={<Students />} />
         <Route path="add-student" element={<AddStudent />} />
         <Route path="edit-student/:id" element={<EditStudent />} />
         <Route path="student/:id" element={<StudentDetails />} />
+
+        {/* Employers */}
+        <Route path="employers" element={<Employers />} />
+        <Route path="add-employer" element={<AddEmployer />} />
+        <Route path="edit-employer/:id" element={<EditEmployer />} />
+        <Route path="employer/:id" element={<EmployerDetails />} />
       </Route>
 
       {/* ================= STUDENT ROUTES ================= */}
