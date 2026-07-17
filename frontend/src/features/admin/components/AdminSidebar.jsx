@@ -1,65 +1,65 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function AdminSidebar() {
+  const linkStyle = ({ isActive }) => ({
+    display: "block",
+    padding: "12px 15px",
+    marginBottom: "10px",
+    color: "white",
+    textDecoration: "none",
+    borderRadius: "8px",
+    backgroundColor: isActive ? "#2563eb" : "transparent",
+    transition: "0.3s",
+  });
+
   return (
     <aside
       style={{
         width: "250px",
-        height: "100vh",
-        background: "#1e293b",
+        minHeight: "100vh",
+        backgroundColor: "#1e293b",
         color: "white",
-        padding: "20px",
+        padding: "25px",
+        boxSizing: "border-box",
       }}
     >
-      <h2>SkillNova Admin</h2>
+      <h2
+        style={{
+          marginBottom: "30px",
+          textAlign: "center",
+        }}
+      >
+        SkillNova Admin
+      </h2>
 
-      <nav style={{ marginTop: "30px" }}>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          <li style={{ marginBottom: "15px" }}>
-            <Link
-              to="/admin/dashboard"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Dashboard
-            </Link>
-          </li>
+      <nav>
+        <NavLink to="/admin/dashboard" style={linkStyle}>
+          📊 Dashboard
+        </NavLink>
 
-          <li style={{ marginBottom: "15px" }}>
-            <Link
-              to="/admin/students"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Students
-            </Link>
-          </li>
+        <NavLink to="/admin/students" style={linkStyle}>
+          👨‍🎓 Students
+        </NavLink>
 
-          <li style={{ marginBottom: "15px" }}>
-            <Link
-              to="/admin/add-student"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Add Student
-            </Link>
-          </li>
+        <NavLink to="/admin/add-student" style={linkStyle}>
+          ➕ Add Student
+        </NavLink>
 
-          <li style={{ marginBottom: "15px" }}>
-            <Link
-              to="#"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Employers
-            </Link>
-          </li>
+        <NavLink to="/admin/employers" style={linkStyle}>
+          🏢 Employers
+        </NavLink>
 
-          <li style={{ marginBottom: "15px" }}>
-            <Link
-              to="#"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Internships
-            </Link>
-          </li>
-        </ul>
+        <NavLink to="/admin/internships" style={linkStyle}>
+          💼 Internships
+        </NavLink>
+
+        <NavLink to="/admin/settings" style={linkStyle}>
+          ⚙️ Settings
+        </NavLink>
+
+        <NavLink to="/login" style={linkStyle}>
+          🚪 Logout
+        </NavLink>
       </nav>
     </aside>
   );
