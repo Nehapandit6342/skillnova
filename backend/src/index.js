@@ -4,6 +4,7 @@ import cors from "cors";
 import prisma from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
 import testRoutes from "./routes/test.routes.js";
+import employerRoutes from "./routes/employer.routes.js";
 
 dotenv.config();
 
@@ -18,6 +19,10 @@ app.use("/api/test",testRoutes);
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use(
+    "/api/employer",
+    employerRoutes
+);
 
 // Test route
 app.get("/", (req, res) => {
@@ -25,6 +30,7 @@ app.get("/", (req, res) => {
         message: "SkillNova API is running 🚀",
     });
 });
+
 
 
 async function startServer() {
