@@ -47,13 +47,29 @@ model StudentProfile {
 
   userId String @unique @db.Uuid
 
+  profileImage String?
+
+  phone String?
+
+  location String?
+
   bio String?
 
   college String?
 
   degree String?
 
+  semester Int?
+
+  cgpa Float?
+
   careerGoal String?
+
+  github String?
+
+  linkedin String?
+
+  portfolio String?
 
   skills String[] @default([])
 
@@ -71,13 +87,21 @@ model EmployerProfile {
 
   userId String @unique @db.Uuid
 
+  logo String?
+
   companyName String
 
   website String?
 
   industry String?
 
+  location String?
+
   description String?
+
+  companySize String?
+
+  foundedYear Int?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

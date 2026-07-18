@@ -1,7 +1,31 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useStudentProfile } from "../../hooks/useStudentProfile";
 
 export default function WelcomeBanner() {
+  const { data, isLoading, isError, error } = useStudentProfile();
+
+  console.log("Student Profile:", data);
+  console.log("React Query Error:", error);
+
+  if (isLoading) {
+    return (
+      <section className="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-10 text-white shadow-lg">
+        <h2 className="text-xl font-semibold">Loading...</h2>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className="rounded-3xl bg-red-50 p-6 text-red-600">
+        Failed to load profile.
+      </section>
+    );
+  }
+
+  const user = data.data;
+
   return (
     <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-6 text-white shadow-lg sm:p-8 lg:p-10">
       {/* Background decoration */}
@@ -18,7 +42,7 @@ export default function WelcomeBanner() {
 
           <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
             Welcome back,
-            <span className="block">Neha 👋</span>
+            <span className="block">{user.name} 👋</span>
           </h1>
 
           <p className="mt-4 max-w-xl text-blue-100">

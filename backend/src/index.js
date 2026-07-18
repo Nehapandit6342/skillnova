@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import prisma from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
+import studentRoutes from "./routes/student.routes.js";
 import testRoutes from "./routes/test.routes.js";
 
 dotenv.config();
@@ -14,36 +15,31 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use("/api/test",testRoutes);
+app.use("/api/test", testRoutes);
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/students", studentRoutes);
 
 // Test route
 app.get("/", (req, res) => {
-    res.json({
-        message: "SkillNova API is running 🚀",
-    });
+  res.json({
+    message: "SkillNova API is running 🚀",
+  });
 });
 
-
 async function startServer() {
-    try {
+  try {
+    await prisma.$connect();
 
-        await prisma.$connect();
+    console.log("Database connected successfully");
 
-        console.log("Database connected successfully");
-
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-
-    } catch(error) {
-
-        console.error("Database connection failed", error);
-
-    }
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Database connection failed", error);
+  }
 }
-
 
 startServer();

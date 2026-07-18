@@ -4,81 +4,34 @@ import { useNavigate } from "react-router-dom";
 
 import { loginUser } from "@/api/auth.api";
 
+export default function useLogin() {
+  const navigate = useNavigate();
 
-export default function useLogin(){
+  return useMutation({
+    mutationFn: loginUser,
 
+    onSuccess: (data) => {
+      localStorage.setItem(
+        "token",
 
-    const navigate = useNavigate();
+        data.data.token,
+      );
 
+      toast.success("Login successful");
 
+      const role = data.data.user.role;
 
-    return useMutation({
+      if (role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (role === "STUDENT") {
+        navigate("/student/dashboard");
+      } else if (role === "EMPLOYER") {
+        navigate("/employer/dashboard");
+      }
+    },
 
-
-        mutationFn:loginUser,
-
-
-
-        onSuccess:(data)=>{
-
-
-            localStorage.setItem(
-
-                "token",
-
-                data.data.token
-
-            );
-
-
-
-            toast.success(
-                "Login successful"
-            );
-
-
-
-            const role =
-            data.data.user.role;
-
-
-
-            if(role==="ADMIN"){
-
-                navigate("/admin/dashboard");
-
-            }
-            else if(role==="STUDENT"){
-
-                navigate("/student/dashboard");
-
-            }
-            else if(role==="EMPLOYER"){
-
-                navigate("/employer/dashboard");
-
-            }
-
-
-        },
-
-
-
-        onError:(error)=>{
-
-
-            toast.error(
-
-                error.response?.data?.message
-                ||
-                "Login failed"
-
-            );
-
-
-        }
-
-    });
-
-
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Login failed");
+    },
+  });
 }
