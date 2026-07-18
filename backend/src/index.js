@@ -5,6 +5,7 @@ import prisma from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
 import studentRoutes from "./routes/student.routes.js";
 import testRoutes from "./routes/test.routes.js";
+import employerRoutes from "./routes/employer.routes.js";
 
 dotenv.config();
 
