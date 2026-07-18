@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
 const employers = [
@@ -67,14 +68,23 @@ export default function EmployerTable() {
 
               <td className="px-6 py-4">
                 <div className="flex justify-center gap-3">
-                  <button className="text-blue-600 hover:text-blue-800">
+                  {/* View */}
+                  <Link
+                    to={`/admin/employer/${employer.id}`}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
                     <Eye size={18} />
-                  </button>
+                  </Link>
 
-                  <button className="text-green-600 hover:text-green-800">
+                  {/* Edit */}
+                  <Link
+                    to={`/admin/edit-employer/${employer.id}`}
+                    className="text-green-600 hover:text-green-800"
+                  >
                     <Pencil size={18} />
-                  </button>
+                  </Link>
 
+                  {/* Delete */}
                   <button className="text-red-600 hover:text-red-800">
                     <Trash2 size={18} />
                   </button>

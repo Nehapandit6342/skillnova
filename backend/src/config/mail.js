@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 
-
 const transporter = nodemailer.createTransport({
 
     host: process.env.SMTP_HOST,
@@ -16,6 +15,21 @@ const transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASS,
 
     },
+
+});
+
+
+transporter.verify((error, success) => {
+
+    if(error){
+
+        console.log("SMTP Error:", error);
+
+    } else {
+
+        console.log("SMTP Server Ready");
+
+    }
 
 });
 

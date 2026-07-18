@@ -15,10 +15,12 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use("/api/test",testRoutes);
+
+app.use("/api/test", testRoutes);
 
 // Routes
 app.use("/api/auth", authRoutes);
+
 app.use(
     "/api/employer",
     employerRoutes
@@ -30,7 +32,6 @@ app.get("/", (req, res) => {
         message: "SkillNova API is running 🚀",
     });
 });
-
 
 
 async function startServer() {
