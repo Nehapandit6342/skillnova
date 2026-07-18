@@ -26,6 +26,7 @@ import EmployerDetails from "@/features/admin/pages/EmployerDetails";
 // Student Pages
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudentProfile from "@/features/student/pages/StudentProfile";
+import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
 
 // Employer Pages
 import EmployerDashboard from "@/features/employer/pages/EmployerDashboard";
@@ -66,6 +67,7 @@ export default function AppRoutes() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="profile" element={<StudentProfile />} />
+        <Route path="resume-analysis" element={<ResumeBuilder />} />
       </Route>
 
       {/* ================= EMPLOYER ROUTES ================= */}
