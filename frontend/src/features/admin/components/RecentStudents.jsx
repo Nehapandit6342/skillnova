@@ -1,123 +1,91 @@
-function RecentStudents() {
-
-  const students = [
-    {
-      name: "Rahul Sharma",
-      email: "rahul@gmail.com",
-      status: "Active",
-    },
-    {
-      name: "Priya Singh",
-      email: "priya@gmail.com",
-      status: "Pending",
-    },
-    {
-      name: "Amit Kumar",
-      email: "amit@gmail.com",
-      status: "Active",
-    },
-    {
-      name: "Sneha Yadav",
-      email: "sneha@gmail.com",
-      status: "Pending",
-    },
-  ];
-
-
+function RecentStudents({ students }) {
   return (
-    <div
-      style={{
-        background: "#fff",
-        marginTop: "40px",
-        padding: "20px",
-        borderRadius: "15px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-      }}
-    >
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-8">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-xl font-semibold text-slate-800">
+          Recent Students
+        </h2>
 
-      <h2>
-        Recent Students
-      </h2>
+        <button className="text-blue-600 text-sm font-medium hover:underline">
+          View All
+        </button>
+      </div>
 
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
 
-      <table
-        style={{
-          width: "100%",
-          marginTop: "20px",
-          borderCollapse: "collapse",
-        }}
-      >
+          <thead>
+            <tr className="border-b border-slate-200">
 
-        <thead>
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Name
+              </th>
 
-          <tr>
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Email
+              </th>
 
-            <th
-              style={{
-                textAlign:"left",
-                padding:"12px"
-              }}
-            >
-              Name
-            </th>
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Status
+              </th>
 
-            <th
-              style={{
-                textAlign:"left",
-                padding:"12px"
-              }}
-            >
-              Email
-            </th>
+            </tr>
+          </thead>
 
-            <th
-              style={{
-                textAlign:"left",
-                padding:"12px"
-              }}
-            >
-              Status
-            </th>
+          <tbody>
 
-          </tr>
+            {students.length > 0 ? (
 
-        </thead>
+              students.map((student) => (
 
+                <tr
+                  key={student.id}
+                  className="border-b border-slate-100 hover:bg-slate-50 transition"
+                >
 
-        <tbody>
+                  <td className="py-4 font-medium text-slate-800">
+                    {student.name}
+                  </td>
 
-          {
-            students.map((student, index)=>(
-              
-              <tr key={index}>
+                  <td className="py-4 text-slate-600">
+                    {student.email}
+                  </td>
 
-                <td style={{padding:"12px"}}>
-                  {student.name}
-                </td>
+                  <td className="py-4">
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                      Active
+                    </span>
+                  </td>
 
-                <td style={{padding:"12px"}}>
-                  {student.email}
-                </td>
+                </tr>
 
-                <td style={{padding:"12px"}}>
-                  {student.status}
+              ))
+
+            ) : (
+
+              <tr>
+
+                <td
+                  colSpan="3"
+                  className="text-center py-10 text-slate-400"
+                >
+                  No students found
                 </td>
 
               </tr>
 
-            ))
-          }
+            )}
 
+          </tbody>
 
-        </tbody>
-
-
-      </table>
-
+        </table>
+      </div>
 
     </div>
   );
 }
-
 
 export default RecentStudents;
