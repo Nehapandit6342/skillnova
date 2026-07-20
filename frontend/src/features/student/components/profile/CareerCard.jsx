@@ -1,8 +1,9 @@
 import { Briefcase, Building2, Globe, MapPin, Target } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
-export default function CareerCard() {
+export default function CareerCard({ profile }) {
+  const student = profile?.studentProfile;
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       {/* Header */}
@@ -23,6 +24,7 @@ export default function CareerCard() {
       </div>
 
       <div className="space-y-5">
+        {/* Career Goal */}
         <div className="flex items-center gap-4">
           <div className="rounded-xl bg-blue-100 p-3 text-blue-600">
             <Target className="h-5 w-5" />
@@ -32,11 +34,12 @@ export default function CareerCard() {
             <p className="text-sm text-slate-500">Career Goal</p>
 
             <h3 className="font-semibold text-slate-900">
-              Full Stack Developer
+              {student?.careerGoal || "Not added"}
             </h3>
           </div>
         </div>
 
+        {/* Internship Type */}
         <div className="flex items-center gap-4">
           <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600">
             <Briefcase className="h-5 w-5" />
@@ -46,11 +49,12 @@ export default function CareerCard() {
             <p className="text-sm text-slate-500">Preferred Internship</p>
 
             <h3 className="font-semibold text-slate-900">
-              Software Engineering
+              {student?.preferredInternship || "Not added"}
             </h3>
           </div>
         </div>
 
+        {/* Work Mode */}
         <div className="flex items-center gap-4">
           <div className="rounded-xl bg-indigo-100 p-3 text-indigo-600">
             <Globe className="h-5 w-5" />
@@ -59,10 +63,13 @@ export default function CareerCard() {
           <div>
             <p className="text-sm text-slate-500">Work Mode</p>
 
-            <h3 className="font-semibold text-slate-900">Remote / Hybrid</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.workMode || "Not added"}
+            </h3>
           </div>
         </div>
 
+        {/* Preferred Location */}
         <div className="flex items-center gap-4">
           <div className="rounded-xl bg-orange-100 p-3 text-orange-600">
             <MapPin className="h-5 w-5" />
@@ -71,10 +78,13 @@ export default function CareerCard() {
           <div>
             <p className="text-sm text-slate-500">Preferred Location</p>
 
-            <h3 className="font-semibold text-slate-900">Kathmandu, Nepal</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.preferredLocation || "Not added"}
+            </h3>
           </div>
         </div>
 
+        {/* Company Size */}
         <div className="flex items-center gap-4">
           <div className="rounded-xl bg-purple-100 p-3 text-purple-600">
             <Building2 className="h-5 w-5" />
@@ -83,7 +93,9 @@ export default function CareerCard() {
           <div>
             <p className="text-sm text-slate-500">Preferred Company Size</p>
 
-            <h3 className="font-semibold text-slate-900">Startup / Mid-size</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.companySize || "Not added"}
+            </h3>
           </div>
         </div>
       </div>
@@ -93,8 +105,8 @@ export default function CareerCard() {
         <h3 className="font-semibold text-blue-700">🤖 AI Recommendation</h3>
 
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          Based on your profile, you are best suited for Frontend, Full Stack,
-          and Software Engineering internships.
+          Complete your career preferences to receive personalized internship
+          recommendations from SkillNova AI.
         </p>
       </div>
     </section>

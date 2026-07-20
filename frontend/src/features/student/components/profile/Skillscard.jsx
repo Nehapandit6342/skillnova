@@ -2,18 +2,8 @@ import { Brain, Code2, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-const skills = [
-  { name: "React", level: "Advanced" },
-  { name: "JavaScript", level: "Advanced" },
-  { name: "Tailwind CSS", level: "Intermediate" },
-  { name: "Node.js", level: "Intermediate" },
-  { name: "Express.js", level: "Intermediate" },
-  { name: "PostgreSQL", level: "Beginner" },
-  { name: "Git", level: "Intermediate" },
-  { name: "REST API", level: "Intermediate" },
-];
-
-export default function SkillsCard() {
+export default function SkillsCard({ profile }) {
+  const student = profile?.studentProfile;
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       {/* Header */}
@@ -40,27 +30,29 @@ export default function SkillsCard() {
           <h3 className="font-semibold text-slate-900">AI Skill Analysis</h3>
 
           <p className="text-sm text-slate-600">
-            Your strongest skills are Frontend Development and JavaScript.
+            {student?.skills?.length
+              ? `You have added ${student.skills.length} skills to your profile.`
+              : "Add your skills to improve internship recommendations."}
           </p>
         </div>
       </div>
 
       {/* Skills */}
       <div className="flex flex-wrap gap-3">
-        {skills.map((skill) => (
-          <div
-            key={skill.name}
-            className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 transition hover:border-blue-300 hover:bg-blue-50"
-          >
-            <Code2 className="h-4 w-4 text-blue-600" />
+        {student?.skills?.length ? (
+          student.skills.map((skill) => (
+            <div
+              key={skill}
+              className="flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2"
+            >
+              <Code2 className="h-4 w-4 text-blue-600" />
 
-            <span className="font-medium text-slate-800">{skill.name}</span>
-
-            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">
-              {skill.level}
-            </span>
-          </div>
-        ))}
+              <span className="font-medium text-slate-800">{skill}</span>
+            </div>
+          ))
+        ) : (
+          <p className="text-sm text-slate-500">No skills added yet.</p>
+        )}
       </div>
     </section>
   );

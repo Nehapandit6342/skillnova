@@ -2,7 +2,8 @@ import { Calendar, Mail, MapPin, Phone, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export default function PersonalInfoCard() {
+export default function PersonalInfoCard({ profile }) {
+  const student = profile?.studentProfile;
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       {/* Header */}
@@ -32,7 +33,7 @@ export default function PersonalInfoCard() {
           <div>
             <p className="text-sm text-slate-500">Full Name</p>
 
-            <h3 className="font-semibold text-slate-900">Neha Pandit</h3>
+            <h3 className="font-semibold text-slate-900">{profile?.name}</h3>
           </div>
         </div>
 
@@ -44,7 +45,7 @@ export default function PersonalInfoCard() {
           <div>
             <p className="text-sm text-slate-500">Email</p>
 
-            <h3 className="font-semibold text-slate-900">neha@example.com</h3>
+            <h3 className="font-semibold text-slate-900">{profile?.email}</h3>
           </div>
         </div>
 
@@ -56,7 +57,9 @@ export default function PersonalInfoCard() {
           <div>
             <p className="text-sm text-slate-500">Phone</p>
 
-            <h3 className="font-semibold text-slate-900">+977 9800000000</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.phone || "Add Phone Number"}
+            </h3>
           </div>
         </div>
 
@@ -68,7 +71,7 @@ export default function PersonalInfoCard() {
           <div>
             <p className="text-sm text-slate-500">Date of Birth</p>
 
-            <h3 className="font-semibold text-slate-900">16 July 2004</h3>
+            <h3 className="font-semibold text-slate-900">Not Added</h3>
           </div>
         </div>
 
@@ -80,7 +83,9 @@ export default function PersonalInfoCard() {
           <div>
             <p className="text-sm text-slate-500">Location</p>
 
-            <h3 className="font-semibold text-slate-900">Kathmandu, Nepal</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.location || "Add Location"}
+            </h3>
           </div>
         </div>
       </div>

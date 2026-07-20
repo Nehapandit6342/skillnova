@@ -7,7 +7,7 @@ export default function SectionHeading({
   center = true,
 }) {
   return (
-    <div className={`mb-16 ${center ? "text-center" : "text-left"}`}>
+    <div className={`mb-10 ${center ? "text-center" : "text-left"}`}>
       {badge && (
         <Badge
           variant="secondary"

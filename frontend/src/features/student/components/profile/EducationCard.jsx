@@ -2,7 +2,9 @@ import { BookOpen, Calendar, GraduationCap, School, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export default function EducationCard() {
+export default function EducationCard({ profile }) {
+  const student = profile?.studentProfile;
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       {/* Header */}
@@ -30,7 +32,9 @@ export default function EducationCard() {
           <div>
             <p className="text-sm text-slate-500">University</p>
 
-            <h3 className="font-semibold text-slate-900">Pokhara University</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.college || "Add College"}
+            </h3>
           </div>
         </div>
 
@@ -43,7 +47,7 @@ export default function EducationCard() {
             <p className="text-sm text-slate-500">Degree</p>
 
             <h3 className="font-semibold text-slate-900">
-              B.E. Computer Engineering
+              {student?.degree || "Add Degree"}
             </h3>
           </div>
         </div>
@@ -56,7 +60,11 @@ export default function EducationCard() {
           <div>
             <p className="text-sm text-slate-500">Current Semester</p>
 
-            <h3 className="font-semibold text-slate-900">8th Semester</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.semester
+                ? `${student.semester}th Semester`
+                : "Add Semester"}
+            </h3>
           </div>
         </div>
 
@@ -68,7 +76,9 @@ export default function EducationCard() {
           <div>
             <p className="text-sm text-slate-500">CGPA</p>
 
-            <h3 className="font-semibold text-slate-900">3.96 / 4.00</h3>
+            <h3 className="font-semibold text-slate-900">
+              {student?.cgpa ? `${student.cgpa} / 4.00` : "Add CGPA"}
+            </h3>
           </div>
         </div>
 
