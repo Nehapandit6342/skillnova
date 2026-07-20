@@ -38,8 +38,60 @@ export const register = async (req, res) => {
 
         message: "Validation failed",
 
+<<<<<<< HEAD
         errors: error.issues,
       });
+=======
+        await sendEmailVerificationOtp(
+            result.user.email,
+            result.otp
+        );
+
+
+
+        return res.status(201).json({
+
+            success:true,
+
+            message:
+            "Account created. Please verify your email.",
+
+            data:{
+                user:result.user
+            }
+
+        });
+
+
+
+    }catch(error){
+
+
+    if (error.name === "ZodError") {
+
+    console.log("========== ZOD ERROR ==========");
+    console.log(req.body);
+    console.log(error.issues);
+    console.log("===============================");
+
+    return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.issues
+    });
+}   
+
+
+
+        return res.status(error.statusCode || 500).json({
+
+            success:false,
+
+            message:error.message || "Server error"
+
+        });
+
+>>>>>>> 5521b9e (Connect admin dashboard and students module with backend)
     }
 
     return res.status(error.statusCode || 500).json({
