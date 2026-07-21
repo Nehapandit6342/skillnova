@@ -2,18 +2,19 @@ import { Router } from "express";
 
 import { authenticate } from "../middleware/auth.middleware.js";
 
-import { 
+import {
     getDashboard,
     getStudents,
-    getStudentById
+    getStudentById,
+    updateStudent,
+    deleteStudent,
+    createStudent
 } from "../controllers/admin.controller.js";
-
 
 const router = Router();
 
 
-
-// Dashboard
+// ================= DASHBOARD =================
 
 router.get(
     "/dashboard",
@@ -22,8 +23,7 @@ router.get(
 );
 
 
-
-// All Students
+// ================= GET ALL STUDENTS =================
 
 router.get(
     "/students",
@@ -32,8 +32,16 @@ router.get(
 );
 
 
+// ================= CREATE STUDENT =================
 
-// Single Student Details
+router.post(
+    "/students",
+    authenticate,
+    createStudent
+);
+
+
+// ================= GET STUDENT BY ID =================
 
 router.get(
     "/students/:id",
@@ -42,5 +50,21 @@ router.get(
 );
 
 
+// ================= UPDATE STUDENT =================
+
+router.put(
+    "/students/:id",
+    authenticate,
+    updateStudent
+);
+
+
+// ================= DELETE STUDENT =================
+
+router.delete(
+    "/students/:id",
+    authenticate,
+    deleteStudent
+);
 
 export default router;

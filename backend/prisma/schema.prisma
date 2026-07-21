@@ -99,13 +99,11 @@ model EmployerProfile {
 
   description String?
 
-<<<<<<< HEAD
   companySize String?
 
   foundedYear Int?
-=======
+
   internships Internship[]
->>>>>>> 5521b9e (Connect admin dashboard and students module with backend)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -115,7 +113,6 @@ model EmployerProfile {
 
   @@map("employer_profiles")
 }
-
 model Internship {
   id String @id @default(uuid()) @db.Uuid
 
