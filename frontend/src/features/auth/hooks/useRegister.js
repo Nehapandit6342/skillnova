@@ -19,14 +19,16 @@ export default function useRegister(){
 
 
             toast.success(
-                data.message ||
+
+                data.message 
+                ||
                 "Registration successful"
+
             );
 
 
-            navigate(
-                `/verify-email?email=${data.data.user.email}`
-            );
+
+            navigate("/login");
 
 
         },

@@ -23,17 +23,13 @@ model User {
 
   role Role @default(STUDENT)
 
-  isActive Boolean @default(false)
-
-  isEmailVerified Boolean @default(false)
+  isActive Boolean @default(true)
 
   studentProfile StudentProfile?
 
   employerProfile EmployerProfile?
 
   passwordResetTokens PasswordResetToken[]
-
-  emailVerificationTokens EmailVerificationToken[]
 
   createdAt DateTime @default(now())
 
@@ -128,24 +124,6 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@index([expiresAt])
   @@map("password_reset_tokens")
-}
-
-model EmailVerificationToken {
-  id String @id @default(uuid()) @db.Uuid
-
-  userId String @db.Uuid
-
-  otpHash String
-
-  expiresAt DateTime
-
-  used Boolean @default(false)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@map("email_verification_tokens")
 }

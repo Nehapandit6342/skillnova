@@ -3,35 +3,89 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 import { loginUser } from "@/api/auth.api";
+import { useAuth } from "@/context/AuthContext";
 
-export default function useLogin() {
-  const navigate = useNavigate();
 
-  return useMutation({
-    mutationFn: loginUser,
+export default function useLogin(){
 
-    onSuccess: (data) => {
-      localStorage.setItem(
-        "token",
+    const navigate = useNavigate();
 
-        data.data.token,
-      );
+    const { login } = useAuth();
 
-      toast.success("Login successful");
 
-      const role = data.data.user.role;
 
-      if (role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else if (role === "STUDENT") {
-        navigate("/student/dashboard");
-      } else if (role === "EMPLOYER") {
-        navigate("/employer/dashboard");
-      }
-    },
+    return useMutation({
 
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Login failed");
-    },
-  });
+        mutationFn: loginUser,
+
+
+        onSuccess:(response)=>{
+
+
+            console.log(
+                "LOGIN SUCCESS:",
+                response
+            );
+
+
+            const user = response.data.user;
+
+            const token = response.data.token;
+
+
+
+            login(
+                user,
+                token
+            );
+
+
+
+            toast.success(
+                "Login successful"
+            );
+
+
+
+            // Redirect based on role
+
+            if(user.role === "ADMIN"){
+
+                navigate("/admin/dashboard");
+
+            }
+            else if(user.role === "STUDENT"){
+
+                navigate("/student/dashboard");
+
+            }
+            else if(user.role === "EMPLOYER"){
+
+                navigate("/employer/dashboard");
+
+            }
+
+
+        },
+
+
+
+        onError:(error)=>{
+
+
+            toast.error(
+
+                error.response?.data?.message
+                ||
+                "Login failed"
+
+            );
+
+
+        }
+
+
+    });
+
+
 }
