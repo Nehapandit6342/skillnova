@@ -65,9 +65,12 @@ export default function AppRoutes() {
       {/* ================= STUDENT ROUTES ================= */}
       <Route path="/student" element={<StudentLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
+
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="profile" element={<StudentProfile />} />
-        <Route path="resume-analysis" element={<ResumeBuilder />} />
+
+        {/* Resume Builder */}
+        <Route path="resume" element={<ResumeBuilder />} />
       </Route>
 
       {/* ================= EMPLOYER ROUTES ================= */}
