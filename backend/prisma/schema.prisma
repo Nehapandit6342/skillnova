@@ -99,6 +99,8 @@ model EmployerProfile {
 
   foundedYear Int?
 
+  internships Internship[]
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -106,6 +108,33 @@ model EmployerProfile {
   updatedAt DateTime @updatedAt
 
   @@map("employer_profiles")
+}
+model Internship {
+  id String @id @default(uuid()) @db.Uuid
+
+  title String
+
+  description String
+
+  location String?
+
+  type String?
+
+  stipend String?
+
+  deadline DateTime?
+
+  isActive Boolean @default(true)
+
+  employerId String @db.Uuid
+
+  employer EmployerProfile @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("internships")
 }
 
 model PasswordResetToken {

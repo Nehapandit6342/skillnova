@@ -17,8 +17,7 @@ export const registerSchema = z
       .string()
       .min(8, "Password must be at least 8 characters"),
 
-    role: z.enum(["STUDENT", "EMPLOYER"]),
-
+role: z.enum(["ADMIN", "STUDENT", "EMPLOYER"]),
     // Student fields
     college: z.string().trim().optional(),
     degree: z.string().trim().optional(),

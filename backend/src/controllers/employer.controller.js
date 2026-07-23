@@ -1,110 +1,86 @@
 import {
     getEmployerProfile,
-    updateEmployerProfile
+    updateEmployerProfile,
+    getAllEmployers
 } from "../services/employer.service.js";
 
 
+// ================= GET PROFILE =================
 
+export const getProfile = async (req, res) => {
 
-// GET PROFILE
+    try {
 
-export const getProfile = async(req,res)=>{
-
-
-    try{
-
-
-        const profile =
-        await getEmployerProfile(
-            req.user.id
-        );
-
+        const profile = await getEmployerProfile(req.user.id);
 
         res.json({
-
-            success:true,
-
-            data:profile
-
+            success: true,
+            data: profile
         });
 
+    } catch (error) {
 
-
-    }catch(error){
-
-
-        res.status(
-            error.statusCode || 500
-        )
-        .json({
-
-            success:false,
-
-            message:
-            error.message
-
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: error.message
         });
-
 
     }
-
 
 };
 
 
 
+// ================= UPDATE PROFILE =================
 
+export const updateProfile = async (req, res) => {
 
-// UPDATE PROFILE
+    try {
 
-
-export const updateProfile = async(req,res)=>{
-
-
-    try{
-
-
-        const updatedProfile =
-        await updateEmployerProfile(
-
+        const updatedProfile = await updateEmployerProfile(
             req.user.id,
-
             req.body
-
         );
 
-
-
         res.json({
-
-            success:true,
-
-            message:
-            "Profile updated successfully",
-
-            data:updatedProfile
-
-
+            success: true,
+            message: "Profile updated successfully",
+            data: updatedProfile
         });
 
+    } catch (error) {
 
-
-    }catch(error){
-
-
-        res.status(
-            error.statusCode || 500
-        )
-        .json({
-
-            success:false,
-
-            message:error.message
-
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: error.message
         });
-
 
     }
 
+};
+
+
+
+// ================= GET ALL EMPLOYERS (ADMIN) =================
+
+export const getEmployers = async (req, res) => {
+
+    try {
+
+        const employers = await getAllEmployers();
+
+        res.json({
+            success: true,
+            data: employers
+        });
+
+    } catch (error) {
+
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
 
 };
