@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import {  Link } from "react-router-dom";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ import useLogin from "../hooks/useLogin";
 export default function LoginForm() {
 
 
-  const navigate = useNavigate();
 
 
   const loginMutation = useLogin();
@@ -45,63 +44,12 @@ export default function LoginForm() {
 
 
   const handleSubmit = (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
+  console.log("LOGIN DATA:", formData);
 
-
-    console.log("LOGIN DATA:", formData);
-
-
-
-    loginMutation.mutate(formData, {
-
-      onSuccess: (data)=>{
-
-
-        console.log("LOGIN SUCCESS:", data);
-
-
-
-        // save token
-
-        localStorage.setItem(
-          "token",
-          data.data.token
-        );
-
-
-
-        // redirect based on role
-
-        if(data.data.user.role === "ADMIN"){
-
-          navigate("/admin/dashboard");
-
-        }
-        else if(data.data.user.role === "STUDENT"){
-
-          navigate("/student/dashboard");
-
-        }
-        else if(data.data.user.role === "EMPLOYER"){
-
-          navigate("/employer/dashboard");
-
-        }
-
-
-      }
-
-    });
-
-
-  };
-
-
-
-
-
-
+  loginMutation.mutate(formData);
+};
 
   return (
 

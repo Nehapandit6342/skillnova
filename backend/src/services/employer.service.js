@@ -1,42 +1,41 @@
 import prisma from "../config/prisma.js";
 
-
 // ================= GET EMPLOYER PROFILE =================
 
 export const getEmployerProfile = async (userId) => {
 
-    const profile = await prisma.employerProfile.findUnique({
+  const profile = await prisma.employerProfile.findUnique({
 
-        where: {
-            userId
-        },
+    where: {
+      userId,
+    },
 
+    select: {
+      id: true,
+      companyName: true,
+      website: true,
+      industry: true,
+      description: true,
+
+      user: {
         select: {
-            id: true,
-            companyName: true,
-            website: true,
-            industry: true,
-            description: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
 
-            user: {
-                select: {
-                    name: true,
-                    email: true
-                }
-            }
-        }
+  });
 
-    });
+  if (!profile) {
 
-    if (!profile) {
+    const error = new Error("Employer profile not found");
+    error.statusCode = 404;
+    throw error;
 
-        const error = new Error("Employer profile not found");
-        error.statusCode = 404;
-        throw error;
+  }
 
-    }
-
-    return profile;
+  return profile;
 
 };
 
@@ -45,36 +44,36 @@ export const getEmployerProfile = async (userId) => {
 
 export const updateEmployerProfile = async (userId, data) => {
 
-    const {
-        companyName,
-        website,
-        industry,
-        description
-    } = data;
+  const {
+    companyName,
+    website,
+    industry,
+    description,
+  } = data;
 
-    const profile = await prisma.employerProfile.update({
+  const profile = await prisma.employerProfile.update({
 
-        where: {
-            userId
-        },
+    where: {
+      userId,
+    },
 
-        data: {
-            companyName,
-            website,
-            industry,
-            description
-        },
+    data: {
+      companyName,
+      website,
+      industry,
+      description,
+    },
 
-        select: {
-            companyName: true,
-            website: true,
-            industry: true,
-            description: true
-        }
+    select: {
+      companyName: true,
+      website: true,
+      industry: true,
+      description: true,
+    },
 
-    });
+  });
 
-    return profile;
+  return profile;
 
 };
 
@@ -83,38 +82,81 @@ export const updateEmployerProfile = async (userId, data) => {
 
 export const getAllEmployers = async () => {
 
-    const employers = await prisma.employerProfile.findMany({
+  const employers = await prisma.employerProfile.findMany({
 
+    select: {
+
+      id: true,
+
+      companyName: true,
+
+      website: true,
+
+      industry: true,
+
+      description: true,
+
+      createdAt: true,
+
+      user: {
         select: {
-
-            id: true,
-
-            companyName: true,
-
-            industry: true,
-
-            website: true,
-
-            description: true,
-
-            createdAt: true,
-
-            user: {
-                select: {
-                    name: true,
-                    email: true,
-                    isActive: true
-                }
-            }
-
+          id: true,
+          name: true,
+          email: true,
+          isActive: true,
         },
+      },
 
-        orderBy: {
-            createdAt: "desc"
-        }
+    },
 
-    });
+    orderBy: {
+      createdAt: "desc",
+    },
 
-    return employers;
+  });
+
+  return employers;
+
+};
+
+
+// ================= GET EMPLOYER BY ID =================
+
+export const getEmployerById = async (id) => {
+
+  const employer = await prisma.employerProfile.findUnique({
+
+    where: {
+      id,
+    },
+
+    select: {
+
+      id: true,
+
+      companyName: true,
+
+      website: true,
+
+      industry: true,
+
+      description: true,
+
+      createdAt: true,
+
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          isActive: true,
+        },
+      },
+
+    },
+
+  });
+
+  return employer;
 
 };

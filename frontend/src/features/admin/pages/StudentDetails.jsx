@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-
+import api from "@/lib/api";
 
 function StudentDetails() {
 
@@ -15,50 +15,27 @@ function StudentDetails() {
 
     const fetchStudent = async () => {
 
+  try {
 
-      try {
+    const response = await api.get(`/admin/students/${id}`);
 
+    const result = response.data;
 
-        const token = localStorage.getItem("token");
+    console.log(result);
 
+    if (result.success) {
 
-        const response = await fetch(
+      setStudent(result.data);
 
-          `http://localhost:5001/api/admin/students/${id}`,
+    }
 
-          {
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }
+  } catch (error) {
 
-        );
+    console.log("Student Details Error:", error);
 
+  }
 
-        const result = await response.json();
-
-
-        console.log(result);
-
-
-
-        if(result.success){
-
-          setStudent(result.data);
-
-        }
-
-
-
-      } catch(error){
-
-        console.log("Student Details Error:", error);
-
-      }
-
-
-    };
-
+};
 
 
     fetchStudent();

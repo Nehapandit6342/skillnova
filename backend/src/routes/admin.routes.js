@@ -8,8 +8,13 @@ import {
     getStudentById,
     updateStudent,
     deleteStudent,
-    createStudent
+    createStudent,
+    getEmployerById,
+    getAllEmployers,
+    updateEmployer
+
 } from "../controllers/admin.controller.js";
+
 
 const router = Router();
 
@@ -23,7 +28,12 @@ router.get(
 );
 
 
-// ================= GET ALL STUDENTS =================
+
+
+// ================= STUDENTS =================
+
+
+// GET ALL STUDENTS
 
 router.get(
     "/students",
@@ -32,7 +42,7 @@ router.get(
 );
 
 
-// ================= CREATE STUDENT =================
+// CREATE STUDENT
 
 router.post(
     "/students",
@@ -41,7 +51,7 @@ router.post(
 );
 
 
-// ================= GET STUDENT BY ID =================
+// GET STUDENT BY ID
 
 router.get(
     "/students/:id",
@@ -50,7 +60,7 @@ router.get(
 );
 
 
-// ================= UPDATE STUDENT =================
+// UPDATE STUDENT
 
 router.put(
     "/students/:id",
@@ -59,12 +69,52 @@ router.put(
 );
 
 
-// ================= DELETE STUDENT =================
+// DELETE STUDENT
 
 router.delete(
     "/students/:id",
     authenticate,
     deleteStudent
 );
+
+
+
+
+
+
+// ================= EMPLOYERS =================
+
+
+// GET ALL EMPLOYERS
+
+router.get(
+    "/employers",
+    authenticate,
+    getAllEmployers
+);
+
+
+
+// GET EMPLOYER BY ID
+
+router.get(
+    "/employers/:id",
+    authenticate,
+    getEmployerById
+);
+
+
+
+// UPDATE EMPLOYER
+
+router.put(
+    "/employers/:id",
+    authenticate,
+    updateEmployer
+);
+
+
+
+
 
 export default router;

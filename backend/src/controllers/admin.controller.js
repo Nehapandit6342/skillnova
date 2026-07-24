@@ -4,8 +4,15 @@ import {
     getStudentByIdService,
     updateStudentService,
     deleteStudentService,
-    createStudentService
+    createStudentService,
+    getEmployerByIdService,
+    getAllEmployersService,
+    updateEmployerService
+
 } from "../services/admin.service.js";
+
+
+
 // ================= DASHBOARD =================
 
 export const getDashboard = async (req, res) => {
@@ -15,11 +22,8 @@ export const getDashboard = async (req, res) => {
         const data = await dashboardService();
 
         res.status(200).json({
-
             success: true,
-
             data
-
         });
 
     } catch (error) {
@@ -27,11 +31,8 @@ export const getDashboard = async (req, res) => {
         console.log("DASHBOARD ERROR:", error);
 
         res.status(500).json({
-
-            success: false,
-
-            message: error.message
-
+            success:false,
+            message:error.message
         });
 
     }
@@ -43,30 +44,25 @@ export const getDashboard = async (req, res) => {
 
 // ================= GET ALL STUDENTS =================
 
-export const getStudents = async (req, res) => {
+export const getStudents = async (req,res)=>{
 
-    try {
+    try{
 
         const students = await getAllStudentsService();
 
         res.status(200).json({
-
-            success: true,
-
-            data: students
-
+            success:true,
+            data:students
         });
 
-    } catch (error) {
 
-        console.log("STUDENTS ERROR:", error);
+    }catch(error){
+
+        console.log("STUDENTS ERROR:",error);
 
         res.status(500).json({
-
-            success: false,
-
-            message: error.message
-
+            success:false,
+            message:error.message
         });
 
     }
@@ -78,43 +74,77 @@ export const getStudents = async (req, res) => {
 
 // ================= GET STUDENT BY ID =================
 
-export const getStudentById = async (req, res) => {
+export const getStudentById = async(req,res)=>{
 
-    try {
+    try{
 
         const student = await getStudentByIdService(
             req.params.id
         );
 
-        if (!student) {
+
+        if(!student){
 
             return res.status(404).json({
-
-                success: false,
-
-                message: "Student not found"
-
+                success:false,
+                message:"Student not found"
             });
 
         }
 
+
         res.status(200).json({
+            success:true,
+            data:student
+        });
 
-            success: true,
 
-            data: student
+    }catch(error){
+
+        console.log("STUDENT DETAILS ERROR:",error);
+
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+
+    }
+
+};
+
+
+
+
+// ================= CREATE STUDENT =================
+
+export const createStudent = async(req,res)=>{
+
+    try{
+
+        const student = await createStudentService(req.body);
+
+
+        res.status(201).json({
+
+            success:true,
+
+            message:"Student added successfully",
+
+            data:student
 
         });
 
-    } catch (error) {
 
-        console.log("STUDENT DETAILS ERROR:", error);
+    }catch(error){
+
+        console.log("CREATE STUDENT ERROR:",error);
+
 
         res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
@@ -127,101 +157,209 @@ export const getStudentById = async (req, res) => {
 
 // ================= UPDATE STUDENT =================
 
-export const updateStudent = async (req, res) => {
+export const updateStudent = async(req,res)=>{
 
-    try {
+    try{
 
         const student = await updateStudentService(
-
             req.params.id,
-
             req.body
-
         );
+
 
         res.status(200).json({
 
-            success: true,
+            success:true,
 
-            message: "Student updated successfully",
+            message:"Student updated successfully",
 
-            data: student
+            data:student
 
         });
 
-    } catch (error) {
 
-        console.log("UPDATE STUDENT ERROR:", error);
+    }catch(error){
+
+        console.log("UPDATE STUDENT ERROR:",error);
+
 
         res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
     }
 
 };
+
+
+
+
 // ================= DELETE STUDENT =================
 
-export const deleteStudent = async (req, res) => {
+export const deleteStudent = async(req,res)=>{
 
-    try {
+    try{
 
         await deleteStudentService(req.params.id);
 
+
         res.status(200).json({
 
-            success: true,
+            success:true,
 
-            message: "Student deleted successfully"
+            message:"Student deleted successfully"
 
         });
 
-    } catch (error) {
 
-        console.log("DELETE STUDENT ERROR:", error);
+    }catch(error){
+
+        console.log("DELETE STUDENT ERROR:",error);
+
 
         res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
     }
 
 };
-// ================= CREATE STUDENT =================
 
-export const createStudent = async (req, res) => {
 
-    try {
 
-        const student = await createStudentService(req.body);
 
-        res.status(201).json({
+// ================= GET ALL EMPLOYERS =================
 
-            success: true,
+export const getAllEmployers = async(req,res)=>{
 
-            message: "Student added successfully",
+    try{
 
-            data: student
+        const employers = await getAllEmployersService();
+
+
+        res.status(200).json({
+
+            success:true,
+
+            data:employers
 
         });
 
-    } catch (error) {
 
-        console.log("CREATE STUDENT ERROR:", error);
+    }catch(error){
+
+        console.log("EMPLOYERS ERROR:",error);
+
 
         res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
+
+        });
+
+    }
+
+};
+
+
+
+
+// ================= GET EMPLOYER BY ID =================
+
+export const getEmployerById = async(req,res)=>{
+
+    try{
+
+        const employer = await getEmployerByIdService(
+            req.params.id
+        );
+
+
+        if(!employer){
+
+            return res.status(404).json({
+
+                success:false,
+
+                message:"Employer not found"
+
+            });
+
+        }
+
+
+        res.status(200).json({
+
+            success:true,
+
+            data:employer
+
+        });
+
+
+    }catch(error){
+
+        console.log("EMPLOYER DETAILS ERROR:",error);
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+    }
+
+};
+
+
+
+
+// ================= UPDATE EMPLOYER =================
+
+export const updateEmployer = async(req,res)=>{
+
+    try{
+
+        const employer = await updateEmployerService(
+            req.params.id,
+            req.body
+        );
+
+
+        res.status(200).json({
+
+            success:true,
+
+            message:"Employer updated successfully",
+
+            data:employer
+
+        });
+
+
+    }catch(error){
+
+        console.log("UPDATE EMPLOYER ERROR:",error);
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
 
         });
 

@@ -6,7 +6,6 @@ import {
   FaBriefcase,
   FaCog,
   FaSignOutAlt,
-  FaUserPlus,
 } from "react-icons/fa";
 
 function AdminSidebar() {
@@ -21,11 +20,8 @@ function AdminSidebar() {
       icon: <FaUserGraduate />,
       path: "/admin/students",
     },
-    {
-      name: "Add Student",
-      icon: <FaUserPlus />,
-      path: "/admin/add-student",
-    },
+    
+    
     {
       name: "Employers",
       icon: <FaBuilding />,
