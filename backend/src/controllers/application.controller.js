@@ -1,12 +1,10 @@
 import {
 
     createApplicationService,
-
     getStudentApplicationsService,
-
     getEmployerApplicationsService,
-
-    updateApplicationStatusService
+    updateApplicationStatusService,
+    getAllApplicationsService
 
 } from "../services/application.service.js";
 
@@ -14,42 +12,43 @@ import {
 
 
 // =================================
-// STUDENT APPLY INTERNSHIP
+// STUDENT APPLY
 // =================================
 
-export const createApplication = async(req,res)=>{
+export const createApplication = async (req, res) => {
 
-try{
+    try {
 
-    console.log("USER:",req.user);
-
-    console.log("BODY:",req.body);
-
-
-    const application =
-    await createApplicationService(
-        req.user.id,
-        req.body
-    );
+        const application =
+            await createApplicationService(
+                req.user.id,
+                req.body
+            );
 
 
-    res.status(201).json({
-        success:true,
-        message:"Application submitted successfully",
-        data:application
-    });
+        res.status(201).json({
+
+            success: true,
+
+            message: "Application submitted successfully",
+
+            data: application
+
+        });
 
 
-}catch(error){
+    } catch (error) {
 
-    console.log(error);
 
-    res.status(400).json({
-        success:false,
-        message:error.message
-    });
+        res.status(400).json({
 
-}
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
 
 };
 
@@ -57,29 +56,63 @@ try{
 
 
 
+// =================================
+// STUDENT APPLICATIONS
+// =================================
+
+export const getStudentApplications = async (req, res) => {
+
+    try {
+
+
+        const applications =
+            await getStudentApplicationsService(
+                req.user.id
+            );
+
+
+        res.status(200).json({
+
+            success: true,
+
+            data: applications
+
+        });
+
+
+    } catch (error) {
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+    }
+
+};
+
 
 
 
 
 // =================================
-// STUDENT APPLICATION LIST
+// EMPLOYER APPLICATIONS
 // =================================
 
-
-export const getStudentApplications =
-async(req,res)=>{
+export const getEmployerApplications = async (req,res)=>{
 
 
     try{
 
 
         const applications =
-        await getStudentApplicationsService(
-
-            req.user.id
-
-        );
-
+            await getEmployerApplicationsService(
+                req.user.id
+            );
 
 
         res.status(200).json({
@@ -89,7 +122,6 @@ async(req,res)=>{
             data:applications
 
         });
-
 
 
     }catch(error){
@@ -103,9 +135,7 @@ async(req,res)=>{
 
         });
 
-
     }
-
 
 };
 
@@ -113,112 +143,69 @@ async(req,res)=>{
 
 
 
-
-
-
-
 // =================================
-// EMPLOYER APPLICATION LIST
+// UPDATE STATUS
 // =================================
 
-
-export const getEmployerApplications =
-async(req,res)=>{
+export const updateApplicationStatus = async(req,res)=>{
 
 
     try{
 
 
-        const applications =
-        await getEmployerApplicationsService(
-
-            req.user.id
-
-        );
-
-
-
-        res.status(200).json({
-
-            success:true,
-
-            data:applications
-
-        });
-
-
-
-    }catch(error){
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-
-    }
-
-
-};
-
-
-
-
-
-
-
-
-
-// =================================
-// UPDATE APPLICATION STATUS
-// ACCEPT / REJECT
-// =================================
-
-
-export const updateApplicationStatus =
-async(req,res)=>{
-
-
-    try{
-
-
-        const {
-            status
-        } = req.body;
-
-
-
-        if(
-            !["ACCEPTED","REJECTED"].includes(status)
-        ){
-
-            return res.status(400).json({
-
-                success:false,
-
-                message:
-                "Invalid application status"
-
-            });
-
-        }
-
-
-
+        const {status}=req.body;
 
 
         const application =
-        await updateApplicationStatusService(
+            await updateApplicationStatusService(
+                req.params.id,
+                status
+            );
 
-            req.params.id,
 
-            status
+        res.status(200).json({
 
-        );
+            success:true,
+
+            message:"Status updated",
+
+            data:application
+
+        });
+
+
+
+    }catch(error){
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+    }
+
+};
+
+
+
+
+
+// =================================
+// ADMIN ALL APPLICATIONS
+// =================================
+
+export const getAllApplications = async(req,res)=>{
+
+
+    try{
+
+
+        const applications =
+            await getAllApplicationsService();
 
 
 
@@ -226,10 +213,7 @@ async(req,res)=>{
 
             success:true,
 
-            message:
-            "Application status updated successfully",
-
-            data:application
+            data:applications
 
         });
 

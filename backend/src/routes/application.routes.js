@@ -1,16 +1,11 @@
 import express from "express";
 
-
 import {
-
     createApplication,
-
     getStudentApplications,
-
     getEmployerApplications,
-
-    updateApplicationStatus
-
+    updateApplicationStatus,
+    getAllApplications
 } from "../controllers/application.controller.js";
 
 
@@ -24,16 +19,16 @@ import {
 } from "../middleware/role.middleware.js";
 
 
-
 const router = express.Router();
 
 
 
+// =====================================
+// STUDENT
+// =====================================
 
-// ================= STUDENT =================
 
-
-// Apply internship
+// Apply Internship
 
 router.post(
     "/",
@@ -44,8 +39,7 @@ router.post(
 
 
 
-
-// Student application history
+// Student Application History
 
 router.get(
     "/my",
@@ -58,11 +52,12 @@ router.get(
 
 
 
+// =====================================
+// EMPLOYER
+// =====================================
 
-// ================= EMPLOYER =================
 
-
-// View received applications
+// Received Applications
 
 router.get(
     "/employer",
@@ -73,8 +68,7 @@ router.get(
 
 
 
-
-// Accept / Reject
+// Accept / Reject Application
 
 router.patch(
     "/:id/status",
@@ -82,6 +76,27 @@ router.patch(
     authorize("EMPLOYER"),
     updateApplicationStatus
 );
+
+
+
+
+
+
+// =====================================
+// ADMIN
+// =====================================
+
+
+// Get All Applications
+
+router.get(
+    "/admin",
+    authenticate,
+    authorize("ADMIN"),
+    getAllApplications
+);
+
+
 
 
 
