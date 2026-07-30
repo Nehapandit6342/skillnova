@@ -1,29 +1,36 @@
 import {
-    dashboardService,
 
-    getAllStudentsService,
-    getStudentByIdService,
-    createStudentService,
-    updateStudentService,
-    deleteStudentService,
+  // Dashboard
+  dashboardService,
 
-    getAllEmployersService,
-    getEmployerByIdService,
-    updateEmployerService,
-    deleteEmployerService,
+  // Students
+  getAllStudentsService,
+  getStudentByIdService,
+  createStudentService,
+  updateStudentService,
+  deleteStudentService,
 
-    getAllInternshipsService,
-    getInternshipByIdService,
-    createInternshipService,
-    updateInternshipService,
-    deleteInternshipService,
+  // Employers
+  getAllEmployersService,
+  getEmployerByIdService,
+  updateEmployerService,
+  deleteEmployerService,
 
-    getAllApplicationsService,
-    updateApplicationService,
-    deleteApplicationService,
-    getAdminSettingsService,
-    updateAdminSettingsService
+  // Internships
+  getAllInternshipsService,
+  getInternshipByIdService,
+  createInternshipService,
+  updateInternshipService,
+  deleteInternshipService,
 
+  // Applications
+  getAllApplicationsService,
+  updateApplicationService,
+  deleteApplicationService,
+
+  // Settings
+  getAdminSettingsService,
+  updateAdminSettingsService,
 
 } from "../services/admin.service.js";
 
@@ -31,111 +38,57 @@ import {
 
 // ================= DASHBOARD =================
 
-export const getDashboard = async (req,res)=>{
+export const getDashboard = async (req, res) => {
 
-    try{
+  try {
 
-        const data = await dashboardService();
+    const data = await dashboardService();
 
-        res.status(200).json({
-            success:true,
-            data
-        });
+    res.status(200).json({
+      success: true,
+      data,
+    });
 
+  } catch (error) {
 
-    }catch(error){
+    console.log("DASHBOARD ERROR:", error);
 
-        console.log("DASHBOARD ERROR:",error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
-
-    }
-
-};
-// ================= DASHBOARD CHARTS =================
-
-export const getDashboardCharts = async (req,res)=>{
-
-    try{
-
-        const data = await dashboardService();
-
-
-        res.status(200).json({
-
-            success:true,
-
-            analytics:{
-                students:data.totalStudents,
-                employers:data.totalEmployers,
-                internships:data.totalInternships
-            },
-
-
-            applications:{
-                applied:data.totalApplications || 0,
-                shortlisted:data.shortlistedApplications || 0,
-                accepted:data.acceptedApplications || 0,
-                rejected:data.rejectedApplications || 0
-            }
-
-        });
-
-
-    }catch(error){
-
-        console.log(
-            "DASHBOARD CHART ERROR:",
-            error
-        );
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // ================= STUDENTS =================
 
-
 // GET ALL STUDENTS
 
-export const getStudents = async(req,res)=>{
+export const getStudents = async (req, res) => {
 
-    try{
+  try {
 
-        const students = await getAllStudentsService();
+    const students = await getAllStudentsService();
 
+    res.status(200).json({
+      success: true,
+      data: students,
+    });
 
-        res.status(200).json({
-            success:true,
-            data:students
-        });
+  } catch (error) {
 
+    console.log("GET STUDENTS ERROR:", error);
 
-    }catch(error){
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-        console.log("GET STUDENTS ERROR:",error);
-
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
-
-    }
+  }
 
 };
 
@@ -143,42 +96,36 @@ export const getStudents = async(req,res)=>{
 
 // GET STUDENT BY ID
 
-export const getStudentById = async(req,res)=>{
+export const getStudentById = async (req, res) => {
 
-    try{
+  try {
 
-        const student =
-        await getStudentByIdService(req.params.id);
+    const student = await getStudentByIdService(req.params.id);
 
+    if (!student) {
 
-
-        if(!student){
-
-            return res.status(404).json({
-                success:false,
-                message:"Student not found"
-            });
-
-        }
-
-
-        res.status(200).json({
-            success:true,
-            data:student
-        });
-
-
-
-    }catch(error){
-
-        console.log("STUDENT DETAILS ERROR:",error);
-
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
 
     }
+
+    res.status(200).json({
+      success: true,
+      data: student,
+    });
+
+  } catch (error) {
+
+    console.log("STUDENT DETAILS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
 
 };
 
@@ -186,750 +133,520 @@ export const getStudentById = async(req,res)=>{
 
 // CREATE STUDENT
 
-export const createStudent = async(req,res)=>{
+export const createStudent = async (req, res) => {
 
-    try{
+  try {
 
-        const student =
-        await createStudentService(req.body);
+    const student = await createStudentService(req.body);
 
+    res.status(201).json({
+      success: true,
+      message: "Student created successfully",
+      data: student,
+    });
 
-        res.status(201).json({
+  } catch (error) {
 
-            success:true,
+    console.log("CREATE STUDENT ERROR:", error);
 
-            message:"Student created successfully",
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            data:student
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("CREATE STUDENT ERROR:",error);
-
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // UPDATE STUDENT
 
-export const updateStudent = async(req,res)=>{
+export const updateStudent = async (req, res) => {
 
-    try{
+  try {
 
-        const student =
-        await updateStudentService(
-            req.params.id,
-            req.body
-        );
+    const student = await updateStudentService(
+      req.params.id,
+      req.body
+    );
 
+    res.status(200).json({
+      success: true,
+      message: "Student updated successfully",
+      data: student,
+    });
 
-        res.status(200).json({
+  } catch (error) {
 
-            success:true,
+    console.log("UPDATE STUDENT ERROR:", error);
 
-            message:"Student updated successfully",
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            data:student
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("UPDATE STUDENT ERROR:",error);
-
-
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // DELETE STUDENT
 
-export const deleteStudent = async(req,res)=>{
+export const deleteStudent = async (req, res) => {
 
-    try{
+  try {
 
-        await deleteStudentService(req.params.id);
+    await deleteStudentService(req.params.id);
 
+    res.status(200).json({
+      success: true,
+      message: "Student deleted successfully",
+    });
 
+  } catch (error) {
 
-        res.status(200).json({
+    console.log("DELETE STUDENT ERROR:", error);
 
-            success:true,
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            message:"Student deleted successfully"
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("DELETE STUDENT ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
-
-
-
-
 // ================= EMPLOYERS =================
-
 
 // GET ALL EMPLOYERS
 
-export const getAllEmployers = async(req,res)=>{
+export const getAllEmployers = async (req, res) => {
 
-    try{
+  try {
 
+    const employers = await getAllEmployersService();
 
-        const employers =
-        await getAllEmployersService();
+    res.status(200).json({
+      success: true,
+      data: employers,
+    });
 
+  } catch (error) {
 
+    console.log("GET EMPLOYERS ERROR:", error);
 
-        res.status(200).json({
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            success:true,
-
-            data:employers
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("EMPLOYERS ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-
-    }
+  }
 
 };
-
 
 
 
 // GET EMPLOYER BY ID
 
-export const getEmployerById = async(req,res)=>{
+export const getEmployerById = async (req, res) => {
 
+  try {
 
-    try{
+    const employer = await getEmployerByIdService(req.params.id);
 
+    if (!employer) {
 
-        const employer =
-        await getEmployerByIdService(
-            req.params.id
-        );
-
-
-
-        if(!employer){
-
-            return res.status(404).json({
-
-                success:false,
-
-                message:"Employer not found"
-
-            });
-
-        }
-
-
-
-        res.status(200).json({
-
-            success:true,
-
-            data:employer
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("EMPLOYER DETAILS ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
+      return res.status(404).json({
+        success: false,
+        message: "Employer not found",
+      });
 
     }
 
+    res.status(200).json({
+      success: true,
+      data: employer,
+    });
+
+  } catch (error) {
+
+    console.log("EMPLOYER DETAILS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
 
 };
-
-
 
 
 
 // UPDATE EMPLOYER
 
-export const updateEmployer = async(req,res)=>{
+export const updateEmployer = async (req, res) => {
 
-    try{
+  try {
 
+    const employer = await updateEmployerService(
+      req.params.id,
+      req.body
+    );
 
-        const employer =
-        await updateEmployerService(
-            req.params.id,
-            req.body
-        );
+    res.status(200).json({
+      success: true,
+      message: "Employer updated successfully",
+      data: employer,
+    });
 
+  } catch (error) {
 
-        res.status(200).json({
+    console.log("UPDATE EMPLOYER ERROR:", error);
 
-            success:true,
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            message:"Employer updated successfully",
-
-            data:employer
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("UPDATE EMPLOYER ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // DELETE EMPLOYER
 
-export const deleteEmployer = async(req,res)=>{
+export const deleteEmployer = async (req, res) => {
 
-    try{
+  try {
 
+    await deleteEmployerService(req.params.id);
 
-        await deleteEmployerService(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "Employer deleted successfully",
+    });
 
+  } catch (error) {
 
+    console.log("DELETE EMPLOYER ERROR:", error);
 
-        res.status(200).json({
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            success:true,
-
-            message:"Employer deleted successfully"
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("DELETE EMPLOYER ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-
-    }
+  }
 
 };
-
-
-
-
-
 // ================= INTERNSHIPS =================
-
 
 // GET ALL INTERNSHIPS
 
-export const getAllInternships = async(req,res)=>{
+export const getAllInternships = async (req, res) => {
 
-    try{
+  try {
 
+    const internships = await getAllInternshipsService();
 
-        const internships =
-        await getAllInternshipsService();
+    res.status(200).json({
+      success: true,
+      data: internships,
+    });
 
+  } catch (error) {
 
+    console.log("GET INTERNSHIPS ERROR:", error);
 
-        res.status(200).json({
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            success:true,
-
-            data:internships
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("INTERNSHIPS ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
-
 
 
 
 // GET INTERNSHIP BY ID
 
-export const getInternshipById = async(req,res)=>{
+export const getInternshipById = async (req, res) => {
 
+  try {
 
-    try{
+    const internship = await getInternshipByIdService(req.params.id);
 
+    if (!internship) {
 
-        const internship =
-        await getInternshipByIdService(
-            req.params.id
-        );
-
-
-        if(!internship){
-
-            return res.status(404).json({
-
-                success:false,
-
-                message:"Internship not found"
-
-            });
-
-        }
-
-
-
-        res.status(200).json({
-
-            success:true,
-
-            data:internship
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("INTERNSHIP DETAILS ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Internship not found",
+      });
 
     }
+
+    res.status(200).json({
+      success: true,
+      data: internship,
+    });
+
+  } catch (error) {
+
+    console.log("INTERNSHIP DETAILS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
 
 };
 
 
 
+export const createInternship = async (req, res) => {
 
-// CREATE INTERNSHIP
+  try {
 
-export const createInternship = async(req,res)=>{
+    console.log("========== CREATE INTERNSHIP ==========");
+    console.log(req.body);
 
-    try{
+    const internship = await createInternshipService(req.body);
 
+    return res.status(201).json({
+      success: true,
+      message: "Internship created successfully",
+      data: internship,
+    });
 
-        const internship =
-        await createInternshipService(req.body);
+  } catch (error) {
 
+    console.log("========== CREATE INTERNSHIP ERROR ==========");
+    console.log(error);
 
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-        res.status(201).json({
-
-            success:true,
-
-            message:"Internship created successfully",
-
-            data:internship
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("CREATE INTERNSHIP ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
+
+
 
 
 
 
 // UPDATE INTERNSHIP
 
-export const updateInternship = async(req,res)=>{
+export const updateInternship = async (req, res) => {
 
-    try{
+  try {
 
+    const internship = await updateInternshipService(
+      req.params.id,
+      req.body
+    );
 
-        const internship =
-        await updateInternshipService(
-            req.params.id,
-            req.body
-        );
+    res.status(200).json({
+      success: true,
+      message: "Internship updated successfully",
+      data: internship,
+    });
 
+  } catch (error) {
 
-        res.status(200).json({
+    console.log("UPDATE INTERNSHIP ERROR:", error);
 
-            success:true,
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            message:"Internship updated successfully",
-
-            data:internship
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("UPDATE INTERNSHIP ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // DELETE INTERNSHIP
 
-export const deleteInternship = async(req,res)=>{
+export const deleteInternship = async (req, res) => {
 
-    try{
+  try {
 
+    await deleteInternshipService(req.params.id);
 
-        await deleteInternshipService(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "Internship deleted successfully",
+    });
 
+  } catch (error) {
 
-        res.status(200).json({
+    console.log("DELETE INTERNSHIP ERROR:", error);
 
-            success:true,
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            message:"Internship deleted successfully"
-
-        });
-
-
-    }catch(error){
-
-
-        console.log("DELETE INTERNSHIP ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
-
-
-
-
 // ================= APPLICATIONS =================
-
 
 // GET ALL APPLICATIONS
 
-export const getAllApplications = async(req,res)=>{
+export const getAllApplications = async (req, res) => {
 
-    try{
+  try {
 
+    const applications = await getAllApplicationsService();
 
-        const applications =
-        await getAllApplicationsService();
+    res.status(200).json({
+      success: true,
+      data: applications,
+    });
 
+  } catch (error) {
 
+    console.log("GET APPLICATIONS ERROR:", error);
 
-        res.status(200).json({
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            success:true,
-
-            data:applications
-
-        });
-
-
-
-    }catch(error){
-
-        console.log("APPLICATION ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // UPDATE APPLICATION
 
-export const updateApplication = async(req,res)=>{
+export const updateApplication = async (req, res) => {
 
-    try{
+  try {
 
+    const application = await updateApplicationService(
+      req.params.id,
+      req.body
+    );
 
-        const application =
-        await updateApplicationService(
-            req.params.id,
-            req.body
-        );
+    res.status(200).json({
+      success: true,
+      message: "Application updated successfully",
+      data: application,
+    });
 
+  } catch (error) {
 
+    console.log("UPDATE APPLICATION ERROR:", error);
 
-        res.status(200).json({
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            success:true,
-
-            message:"Application updated successfully",
-
-            data:application
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("UPDATE APPLICATION ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
-
 
 
 
 // DELETE APPLICATION
 
-export const deleteApplication = async(req,res)=>{
+export const deleteApplication = async (req, res) => {
 
-    try{
+  try {
 
+    await deleteApplicationService(req.params.id);
 
-        await deleteApplicationService(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "Application deleted successfully",
+    });
 
+  } catch (error) {
 
+    console.log("DELETE APPLICATION ERROR:", error);
 
-        res.status(200).json({
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            success:true,
-
-            message:"Application deleted successfully"
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.log("DELETE APPLICATION ERROR:",error);
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-    }
+  }
 
 };
+
+
+
 // ================= ADMIN SETTINGS =================
 
 // GET ADMIN SETTINGS
 
 export const getAdminSettings = async (req, res) => {
 
-    try {
+  try {
+    console.log("REQ USER:", req.user);
 
-        const admin = await getAdminSettingsService(
-            req.user.id
-        );
+    const admin = await getAdminSettingsService(req.user.id);
+    console.log("ADMIN:", admin);
 
-        res.status(200).json({
-            success: true,
-            data: admin
-        });
+    res.status(200).json({
+      success: true,
+      data: admin,
+    });
 
-    } catch (error) {
+  } catch (error) {
 
-        console.log("GET SETTINGS ERROR:", error);
+    console.log("GET SETTINGS ERROR:", error);
 
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-    }
+  }
 
 };
+
 
 
 // UPDATE ADMIN SETTINGS
 
 export const updateAdminSettings = async (req, res) => {
 
-    try {
+  try {
 
-        const admin = await updateAdminSettingsService(
-            req.user.id,
-            req.body
-        );
+    const admin = await updateAdminSettingsService(
+      req.user.id,
+      req.body
+    );
 
-        res.status(200).json({
-            success: true,
-            message: "Settings updated successfully",
-            data: admin
-        });
+    res.status(200).json({
+      success: true,
+      message: "Settings updated successfully",
+      data: admin,
+    });
 
-    } catch (error) {
+  } catch (error) {
 
-        console.log("UPDATE SETTINGS ERROR:", error);
+    console.log("UPDATE SETTINGS ERROR:", error);
 
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-    }
+  }
 
 };

@@ -1,10 +1,9 @@
 import prisma from "../config/prisma.js";
-
+import bcrypt from "bcryptjs";
 
 // ================= DASHBOARD =================
 
 export const dashboardService = async () => {
-
 
   const [
     totalStudents,
@@ -12,57 +11,41 @@ export const dashboardService = async () => {
     totalInternships,
     totalApplications,
     pendingApplications,
-    shortlistedApplications,
     acceptedApplications,
     rejectedApplications
-
   ] = await Promise.all([
 
-
     prisma.user.count({
-      where:{
-        role:"STUDENT"
+      where: {
+        role: "STUDENT"
       }
     }),
 
-
     prisma.user.count({
-      where:{
-        role:"EMPLOYER"
+      where: {
+        role: "EMPLOYER"
       }
     }),
-
 
     prisma.internship.count(),
 
-
     prisma.application.count(),
 
-
     prisma.application.count({
-      where:{
-        status:"Pending"
+      where: {
+        status: "PENDING"
       }
     }),
 
-
     prisma.application.count({
-      where:{
-        status:"Shortlisted"
+      where: {
+        status: "APPROVED"
       }
     }),
 
-
     prisma.application.count({
-      where:{
-        status:"Accepted"
-      }
-    }),
-
-
-    prisma.application.count({
-      where:{
-        status:"Rejected"
+      where: {
+        status: "REJECTED"
       }
     })
 
@@ -72,22 +55,22 @@ export const dashboardService = async () => {
 
   const recentStudents = await prisma.user.findMany({
 
-    where:{
-      role:"STUDENT"
+    where: {
+      role: "STUDENT"
     },
 
-    select:{
-      id:true,
-      name:true,
-      email:true,
-      createdAt:true
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true
     },
 
-    orderBy:{
-      createdAt:"desc"
+    orderBy: {
+      createdAt: "desc"
     },
 
-    take:5
+    take: 5
 
   });
 
@@ -95,26 +78,33 @@ export const dashboardService = async () => {
 
   const recentInternships = await prisma.internship.findMany({
 
-    take:5,
+    take: 5,
 
-    orderBy:{
-      createdAt:"desc"
+    orderBy: {
+      createdAt: "desc"
     },
 
+    include: {
 
-    include:{
+      employer: {
 
-      employer:{
-        select:{
-          companyName:true
+        select: {
+
+          id: true,
+          companyName: true
+
         }
+
       },
 
+      _count: {
 
-      _count:{
-        select:{
-          applications:true
+        select: {
+
+          applications: true
+
         }
+
       }
 
     }
@@ -125,38 +115,50 @@ export const dashboardService = async () => {
 
   const recentApplications = await prisma.application.findMany({
 
-    take:5,
+    take: 5,
 
-    orderBy:{
-      appliedAt:"desc"
+    orderBy: {
+      appliedAt: "desc"
     },
 
+    include: {
 
-    include:{
+      student: {
 
+        include: {
 
-      student:{
-        include:{
-          user:{
-            select:{
-              name:true,
-              email:true
+          user: {
+
+            select: {
+
+              name: true,
+              email: true
+
             }
+
           }
+
         }
+
       },
 
+      internship: {
 
-      internship:{
-        include:{
-          employer:{
-            select:{
-              companyName:true
+        include: {
+
+          employer: {
+
+            select: {
+
+              companyName: true
+
             }
-          }
-        }
-      }
 
+          }
+
+        }
+
+      }
 
     }
 
@@ -166,593 +168,509 @@ export const dashboardService = async () => {
 
   return {
 
-  totalStudents,
-  totalEmployers,
-  totalInternships,
+    totalStudents,
+    totalEmployers,
+    totalInternships,
 
-  totalApplications,
+    totalApplications,
 
-  pendingApplications,
-  shortlistedApplications,
-  acceptedApplications,
-  rejectedApplications,
+    pendingApplications,
+    acceptedApplications,
+    rejectedApplications,
 
+    recentStudents,
+    recentInternships,
+    recentApplications
 
-  analytics: {
-    students: totalStudents,
-    employers: totalEmployers,
-    internships: totalInternships,
-  },
-
-
-  applications: {
-    applied: totalApplications,
-    shortlisted: shortlistedApplications,
-    accepted: acceptedApplications,
-    rejected: rejectedApplications,
-  },
-
-
-  recentStudents,
-  recentInternships,
-  recentApplications
+  };
 
 };
-
-
-};
-
-
-
-
 // ================= STUDENTS =================
 
+// GET ALL STUDENTS
 
-export const getAllStudentsService = async()=>{
+export const getAllStudentsService = async () => {
 
+  return await prisma.user.findMany({
 
-return await prisma.user.findMany({
+    where: {
+      role: "STUDENT"
+    },
 
-where:{
-role:"STUDENT"
-},
+    select: {
 
+      id: true,
+      name: true,
+      email: true,
+      isActive: true,
+      createdAt: true,
 
-select:{
+      studentProfile: {
 
-id:true,
-name:true,
-email:true,
-isActive:true,
-createdAt:true,
+        select: {
 
+          profileImage: true,
+          college: true,
+          degree: true,
+          semester: true,
+          cgpa: true,
+          skills: true,
+          careerGoal: true
 
-studentProfile:{
+        }
 
-select:{
+      }
 
-profileImage:true,
-college:true,
-degree:true,
-semester:true,
-cgpa:true,
-skills:true,
-careerGoal:true
+    },
 
-}
+    orderBy: {
+      createdAt: "desc"
+    }
 
-}
-
-},
-
-
-orderBy:{
-createdAt:"desc"
-}
-
-
-});
-
+  });
 
 };
 
 
 
-export const getStudentByIdService = async(id)=>{
+// GET STUDENT BY ID
 
+export const getStudentByIdService = async (id) => {
 
-return await prisma.user.findUnique({
+  return await prisma.user.findUnique({
 
-where:{
-id
-},
+    where: {
+      id
+    },
 
+    include: {
 
-include:{
+      studentProfile: true
 
-studentProfile:true
+    }
 
-}
-
-
-});
-
+  });
 
 };
 
 
 
+// CREATE STUDENT
 
-export const createStudentService = async(data)=>{
+export const createStudentService = async (data) => {
 
+  return await prisma.user.create({
 
-return await prisma.user.create({
+    data: {
 
-data:{
+      name: data.name,
 
+      email: data.email,
 
-name:data.name,
+      password: data.password,
 
-email:data.email,
+      role: "STUDENT",
 
-password:data.password,
+      studentProfile: {
 
-role:"STUDENT",
+        create: {
 
+          profileImage: data.profileImage || null,
 
-studentProfile:{
+          college: data.college,
 
+          degree: data.degree,
 
-create:{
+          semester: data.semester,
 
-college:data.college,
+          cgpa: data.cgpa,
 
-degree:data.degree,
+          bio: data.bio,
 
-semester:data.semester,
+          careerGoal: data.careerGoal,
 
-cgpa:data.cgpa,
+          skills: data.skills || []
 
-skills:data.skills || []
+        }
 
-}
+      }
 
-}
+    },
 
+    include: {
 
-}
+      studentProfile: true
 
+    }
 
-});
-
-
-};
-
-
-
-
-export const updateStudentService = async(id,data)=>{
-
-
-return await prisma.user.update({
-
-where:{
-id
-},
-
-
-data:{
-
-name:data.name,
-
-email:data.email,
-
-isActive:data.isActive
-
-
-}
-
-
-});
-
+  });
 
 };
 
 
 
+// UPDATE STUDENT
 
-export const deleteStudentService = async(id)=>{
+export const updateStudentService = async (id, data) => {
+
+  return await prisma.user.update({
+
+    where: {
+      id
+    },
+
+    data: {
+
+      name: data.name,
+
+      email: data.email,
+
+      isActive: data.isActive,
+
+      studentProfile: {
+
+        update: {
+
+          profileImage: data.profileImage,
+
+          college: data.college,
+
+          degree: data.degree,
+
+          semester: data.semester,
+
+          cgpa: data.cgpa,
+
+          bio: data.bio,
+
+          careerGoal: data.careerGoal,
+
+          skills: data.skills || []
+
+        }
+
+      }
+
+    },
+
+    include: {
+
+      studentProfile: true
+
+    }
+
+  });
+
+};
 
 
-await prisma.user.delete({
 
-where:{
-id
-}
+// DELETE STUDENT
 
-});
+export const deleteStudentService = async (id) => {
 
+  await prisma.user.delete({
 
-return true;
+    where: {
+      id
+    }
 
+  });
+
+  return true;
 
 };
 // ================= EMPLOYERS =================
 
-
 // GET ALL EMPLOYERS
 
-export const getAllEmployersService = async()=>{
+export const getAllEmployersService = async () => {
 
+  return await prisma.employerProfile.findMany({
 
-return await prisma.employerProfile.findMany({
+    include: {
 
-include:{
+      user: {
 
+        select: {
 
-user:{
+          id: true,
+          name: true,
+          email: true,
+          isActive: true,
+          createdAt: true
 
-select:{
+        }
 
-id:true,
-name:true,
-email:true,
-isActive:true,
-createdAt:true
+      },
 
-}
+      _count: {
 
-},
+        select: {
 
+          internships: true
 
-_count:{
+        }
 
-select:{
+      }
 
-internships:true
+    },
 
-}
+    orderBy: {
 
-}
+      createdAt: "desc"
 
+    }
 
-},
-
-
-orderBy:{
-
-createdAt:"desc"
-
-}
-
-
-});
-
+  });
 
 };
-
 
 
 
 // GET EMPLOYER BY ID
 
-export const getEmployerByIdService = async(id)=>{
+export const getEmployerByIdService = async (id) => {
 
+  return await prisma.employerProfile.findUnique({
 
-return await prisma.employerProfile.findUnique({
+    where: {
 
-where:{
+      id
 
-id
+    },
 
-},
+    include: {
 
+      user: {
 
-include:{
+        select: {
 
+          id: true,
+          name: true,
+          email: true,
+          isActive: true,
+          createdAt: true
 
-user:{
+        }
 
-select:{
+      },
 
-id:true,
-name:true,
-email:true,
-isActive:true,
-createdAt:true
+      internships: {
 
-}
+        include: {
 
-},
+          _count: {
 
+            select: {
 
-internships:true
+              applications: true
 
+            }
 
-}
+          }
 
+        },
 
-});
+        orderBy: {
 
+          createdAt: "desc"
+
+        }
+
+      }
+
+    }
+
+  });
 
 };
-
-
 
 
 
 // UPDATE EMPLOYER
 
+export const updateEmployerService = async (id, data) => {
 
-export const updateEmployerService = async(id,data)=>{
+  return await prisma.employerProfile.update({
 
+    where: {
 
-return await prisma.employerProfile.update({
+      id
 
-where:{
+    },
 
-id
+    data: {
 
-},
+      logo: data.logo,
 
+      companyName: data.companyName,
 
-data:{
+      website: data.website,
 
+      industry: data.industry,
 
-logo:data.logo,
+      location: data.location,
 
-companyName:data.companyName,
+      description: data.description,
 
-website:data.website,
+      companySize: data.companySize,
 
-industry:data.industry,
+      foundedYear: data.foundedYear
 
-location:data.location,
+    },
 
-description:data.description,
+    include: {
 
-companySize:data.companySize,
+      user: true
 
-foundedYear:data.foundedYear
+    }
 
-
-},
-
-
-include:{
-
-
-user:true
-
-
-}
-
-
-});
-
+  });
 
 };
-
-
 
 
 
 // DELETE EMPLOYER
 
+export const deleteEmployerService = async (id) => {
 
-export const deleteEmployerService = async(id)=>{
+  await prisma.employerProfile.delete({
 
+    where: {
 
-await prisma.employerProfile.delete({
+      id
 
-where:{
+    }
 
-id
+  });
 
-}
-
-});
-
-
-return true;
-
+  return true;
 
 };
-
 // ================= INTERNSHIPS =================
-
-
 
 // GET ALL INTERNSHIPS
 
-export const getAllInternshipsService = async()=>{
+export const getAllInternshipsService = async () => {
 
+  return await prisma.internship.findMany({
 
-return await prisma.internship.findMany({
+    include: {
 
-include:{
+      employer: {
 
+        select: {
 
-employer:{
+          id: true,
+          companyName: true,
+          industry: true,
+          location: true
 
-select:{
+        }
 
-id:true,
+      },
 
-companyName:true,
+      _count: {
 
-industry:true,
+        select: {
 
-location:true
+          applications: true
 
-}
+        }
 
-},
+      }
 
+    },
 
+    orderBy: {
 
-_count:{
+      createdAt: "desc"
 
-select:{
+    }
 
-applications:true
-
-}
-
-}
-
-
-},
-
-
-
-orderBy:{
-
-createdAt:"desc"
-
-}
-
-
-});
-
+  });
 
 };
 
 
 
+// COUNT INTERNSHIPS
 
+export const countInternshipsService = async () => {
 
+  return await prisma.internship.count();
 
+};
 // GET INTERNSHIP BY ID
 
+export const getInternshipByIdService = async (id) => {
 
-export const getInternshipByIdService = async(id)=>{
+  return await prisma.internship.findUnique({
 
+    where: {
 
-return await prisma.internship.findUnique({
+      id
 
-where:{
+    },
 
-id
+    include: {
 
-},
+      employer: {
 
+        select: {
 
-include:{
+          id: true,
+          companyName: true,
+          industry: true,
+          location: true,
+          website: true,
+          description: true
 
+        }
 
-employer:{
+      },
 
-select:{
+      applications: {
 
-id:true,
+        include: {
 
-companyName:true,
+          student: {
 
-industry:true,
+            include: {
 
-location:true
+              user: {
 
-}
+                select: {
 
-},
+                  id: true,
+                  name: true,
+                  email: true
 
+                }
 
+              }
 
-applications:{
+            }
 
-include:{
+          }
 
+        },
 
-student:{
+        orderBy: {
 
-include:{
+          appliedAt: "desc"
 
+        }
 
-user:{
+      }
 
-select:{
+    }
 
-id:true,
-
-name:true,
-
-email:true
-
-}
-
-}
-
-
-}
-
-
-}
-
-
-}
-
-
-}
-
-
-
-}
-
-
-});
-
+  });
 
 };
-
-
-
-
-
-
-
-// CREATE INTERNSHIP
-
-
-export const createInternshipService = async(data)=>{
-
-
-return await prisma.internship.create({
-
-data:{
-
-
-title:data.title,
-
-description:data.description,
-
-location:data.location,
-
-type:data.type,
-
-stipend:data.stipend,
-
-
-deadline:data.deadline
-? new Date(data.deadline)
-:null,
-
-
-employerId:data.employerId,
-
-
-isActive:data.isActive ?? true
-
-
-}
-
-
-});
-
-
-};
-
-
 
 
 
@@ -760,369 +678,333 @@ isActive:data.isActive ?? true
 
 // UPDATE INTERNSHIP
 
+export const updateInternshipService = async (id, data) => {
 
-export const updateInternshipService = async(id,data)=>{
+  return await prisma.internship.update({
 
+    where: {
 
-return await prisma.internship.update({
+      id
 
-where:{
+    },
 
-id
+    data: {
 
-},
+      title: data.title,
 
+      description: data.description,
 
-data:{
+      location: data.location,
 
+      type: data.type,
 
-title:data.title,
+      stipend: data.stipend,
 
-description:data.description,
+      deadline: data.deadline
+        ? new Date(data.deadline)
+        : null,
 
-location:data.location,
+      employerId: data.employerId,
 
-type:data.type,
+      isActive: data.isActive
 
-stipend:data.stipend,
+    },
 
+    include: {
 
-deadline:data.deadline
-? new Date(data.deadline)
-:null,
+      employer: true
 
+    }
 
-isActive:data.isActive
-
-
-}
-
-
-});
-
+  });
 
 };
+// ================= CREATE INTERNSHIP =================
 
+export const createInternshipService = async (data) => {
 
+  return await prisma.internship.create({
 
+    data: {
 
+      title: data.title,
 
+      description: data.description,
+
+      location: data.location,
+
+      type: data.type,
+
+      stipend: data.stipend,
+
+      deadline: data.deadline
+        ? new Date(data.deadline)
+        : null,
+
+      employerId: data.employerId,
+
+      isActive: true
+
+    },
+
+    include: {
+
+      employer: true
+
+    }
+
+  });
+
+};
 
 
 
 // DELETE INTERNSHIP
 
+export const deleteInternshipService = async (id) => {
 
-export const deleteInternshipService = async(id)=>{
+  await prisma.internship.delete({
 
+    where: {
 
-await prisma.internship.delete({
+      id
 
-where:{
+    }
 
-id
+  });
 
-}
-
-});
-
-
-return true;
-
+  return true;
 
 };
-
 // ================= APPLICATIONS =================
 
 
 // GET ALL APPLICATIONS
 
-export const getAllApplicationsService = async()=>{
+export const getAllApplicationsService = async () => {
 
+  return await prisma.application.findMany({
 
-return await prisma.application.findMany({
+    include: {
 
-include:{
+      student: {
 
+        include: {
 
-student:{
+          user: {
 
+            select: {
 
-include:{
+              id: true,
+              name: true,
+              email: true
 
+            }
 
-user:{
+          }
 
-select:{
+        }
 
-id:true,
+      },
 
-name:true,
+      internship: {
 
-email:true
+        include: {
 
-}
+          employer: {
 
-}
+            select: {
 
+              id: true,
+              companyName: true,
+              industry: true,
+              location: true
 
-}
+            }
 
+          }
 
-},
+        }
 
+      }
 
+    },
 
-internship:{
+    orderBy: {
 
+      appliedAt: "desc"
 
-include:{
+    }
 
-
-employer:{
-
-select:{
-
-id:true,
-
-companyName:true
-
-}
-
-}
-
-
-}
-
-
-}
-
-
-
-},
-
-
-
-orderBy:{
-
-appliedAt:"desc"
-
-}
-
-
-});
-
+  });
 
 };
 
 
 
 
+// GET APPLICATION BY ID
 
+export const getApplicationByIdService = async (id) => {
 
+  return await prisma.application.findUnique({
 
-// UPDATE APPLICATION
+    where: {
 
+      id
 
-export const updateApplicationService = async(id,data)=>{
+    },
 
+    include: {
 
-return await prisma.application.update({
+      student: {
 
-where:{
+        include: {
 
-id
+          user: true
 
-},
+        }
 
+      },
 
-data:{
+      internship: {
 
+        include: {
 
-status:data.status
+          employer: true
 
+        }
 
-},
+      }
 
+    }
 
-
-include:{
-
-
-student:{
-
-
-include:{
-
-
-user:true
-
-
-}
-
-
-},
-
-
-
-internship:{
-
-
-include:{
-
-
-employer:true
-
-
-}
-
-
-}
-
-
-}
-
-
-
-});
-
+  });
 
 };
 
 
 
+
+// UPDATE APPLICATION STATUS
+
+export const updateApplicationService = async (id, data) => {
+
+  return await prisma.application.update({
+
+    where: {
+
+      id
+
+    },
+
+    data: {
+
+      status: data.status
+
+    },
+
+    include: {
+
+      student: {
+
+        include: {
+
+          user: true
+
+        }
+
+      },
+
+      internship: {
+
+        include: {
+
+          employer: true
+
+        }
+
+      }
+
+    }
+
+  });
+
+};
 
 
 
 
 // DELETE APPLICATION
 
+export const deleteApplicationService = async (id) => {
 
-export const deleteApplicationService = async(id)=>{
+  await prisma.application.delete({
 
+    where: {
 
-await prisma.application.delete({
+      id
 
-where:{
+    }
 
-id
+  });
 
-}
-
-});
-
-
-return true;
-
+  return true;
 
 };
-
-
-
-
-
-
 // ================= ADMIN SETTINGS =================
-
-
 
 // GET ADMIN SETTINGS
 
+export const getAdminSettingsService = async (id) => {
 
-export const getAdminSettingsService = async(id)=>{
+  return await prisma.user.findUnique({
 
+    where: {
+      id
+    },
 
-return await prisma.user.findUnique({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true
+    }
 
-where:{
-
-id
-
-},
-
-
-select:{
-
-
-id:true,
-
-name:true,
-
-email:true,
-
-role:true,
-
-isActive:true,
-
-createdAt:true,
-
-updatedAt:true
-
-
-}
-
-
-});
-
+  });
 
 };
 
 
 
 
+export const updateAdminSettingsService = async (id, data) => {
 
+  const updateData = {
+    name: data.name,
+    email: data.email,
+  };
 
+  if (data.password && data.password.trim() !== "") {
+    updateData.password = await bcrypt.hash(data.password, 10);
+  }
 
-// UPDATE ADMIN SETTINGS
-
-
-export const updateAdminSettingsService = async(id,data)=>{
-
-
-return await prisma.user.update({
-
-where:{
-
-id
-
-},
-
-
-data:{
-
-
-name:data.name,
-
-email:data.email
-
-
-},
-
-
-
-select:{
-
-
-id:true,
-
-name:true,
-
-email:true,
-
-role:true,
-
-isActive:true,
-
-createdAt:true,
-
-updatedAt:true
-
-
-}
-
-
-
-});
-
-
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data: updateData,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };

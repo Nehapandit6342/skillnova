@@ -4,9 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
- 
 }
-
 
 enum Role {
   STUDENT
@@ -47,21 +45,24 @@ model User {
 
 
 
+
 model StudentProfile {
 
   id String @id @default(uuid()) @db.Uuid
-
 
   userId String @unique @db.Uuid
 
 
   profileImage String?
-   resume String?
+
+  resume String?
 
   phone String?
 
   location String?
+
   dateOfBirth DateTime?
+
 
   bio String?
 
@@ -73,7 +74,9 @@ model StudentProfile {
 
   cgpa Float?
 
+
   careerGoal String?
+
 
   github String?
 
@@ -88,7 +91,11 @@ model StudentProfile {
   applications Application[]
 
 
- user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
 
 
   createdAt DateTime @default(now())
@@ -104,6 +111,7 @@ model StudentProfile {
 
 
 model EmployerProfile {
+
 
   id String @id @default(uuid()) @db.Uuid
 
@@ -135,10 +143,17 @@ model EmployerProfile {
   foundedYear Int?
 
 
+
   internships Internship[]
 
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
 
   createdAt DateTime @default(now())
@@ -147,14 +162,15 @@ model EmployerProfile {
 
 
   @@map("employer_profiles")
+
 }
 
 
 
 
 
-
 model Internship {
+
 
   id String @id @default(uuid()) @db.Uuid
 
@@ -180,12 +196,21 @@ model Internship {
   isActive Boolean @default(true)
 
 
+
   employerId String @db.Uuid
 
 
- employer EmployerProfile @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  employer EmployerProfile @relation(
+    fields: [employerId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
 
   applications Application[]
+
 
 
   createdAt DateTime @default(now())
@@ -193,10 +218,10 @@ model Internship {
   updatedAt DateTime @updatedAt
 
 
+
   @@map("internships")
+
 }
-
-
 
 
 
@@ -204,7 +229,9 @@ model Internship {
 
 model Application {
 
+
   id String @id @default(uuid()) @db.Uuid
+
 
 
   studentId String @db.Uuid
@@ -213,29 +240,40 @@ model Application {
   internshipId String @db.Uuid
 
 
-  status String @default("Pending")
+
+  status String @default("PENDING")
+
 
 
   appliedAt DateTime @default(now())
 
 
 
- 
-student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student StudentProfile @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
 
 
-  internship Internship  @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  internship Internship @relation(
+    fields: [internshipId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
 
   @@map("applications")
+
 }
 
 
 
 
 
-
-
 model PasswordResetToken {
+
 
   id String @id @default(uuid()) @db.Uuid
 
@@ -253,10 +291,15 @@ model PasswordResetToken {
 
 
 
- 
-user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
+
 
 
   @@index([userId])
@@ -265,4 +308,5 @@ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 
   @@map("password_reset_tokens")
+
 }
