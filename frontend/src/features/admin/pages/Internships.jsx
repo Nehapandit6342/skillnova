@@ -1,54 +1,86 @@
 import { useEffect, useState } from "react";
+
 import api from "@/lib/api";
+
 import InternshipTable from "../components/InternshipTable";
 
-export default function Internships() {
+
+function Internships() {
+
 
   const [internships, setInternships] = useState([]);
 
-  const fetchInternships = async () => {
 
-    try {
 
-      const res = await api.get("/admin/internships");
+  useEffect(() => {
 
-      console.log("Internships:", res.data);
 
-      if(res.data.success){
-        setInternships(res.data.data);
+    const fetchInternships = async () => {
+
+
+      try {
+
+
+        const { data } = await api.get("/admin/internships");
+
+
+        console.log("Internships:", data);
+
+
+
+        if(data.success){
+
+          setInternships(
+            data.data || []
+          );
+
+        }
+
+
+
+      } catch(error){
+
+
+        console.log(
+          "Internship Error:",
+          error.response?.data || error.message
+        );
+
+
       }
 
-    } catch(error){
 
-      console.log("Internship Error:", error);
+    };
 
-    }
-
-  };
-
-
-  useEffect(()=>{
 
     fetchInternships();
+
 
   },[]);
 
 
+
+
   return (
 
-    <div className="p-8">
+    <div className="min-h-screen bg-slate-50 p-8">
+
 
       <h1 className="text-3xl font-bold mb-6">
         Internships
       </h1>
 
 
-      <InternshipTable 
+      <InternshipTable
         internships={internships}
       />
+
 
     </div>
 
   );
 
 }
+
+
+export default Internships;

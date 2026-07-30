@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
-export default function EmployerTable({ employers }) {
+export default function EmployerTable({
+  employers,
+  onDelete,
+}) {
   return (
     <div className="overflow-x-auto rounded-xl bg-white shadow-md">
       <table className="min-w-full">
@@ -23,7 +26,7 @@ export default function EmployerTable({ employers }) {
                 key={employer.id}
                 className="border-t hover:bg-gray-50"
               >
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 font-medium">
                   {employer.companyName}
                 </td>
 
@@ -47,29 +50,42 @@ export default function EmployerTable({ employers }) {
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {employer.user?.isActive ? "Active" : "Inactive"}
+                    {employer.user?.isActive
+                      ? "Active"
+                      : "Inactive"}
                   </span>
                 </td>
 
                 <td className="px-6 py-4">
                   <div className="flex justify-center gap-3">
+
+                    {/* View */}
                     <Link
                       to={`/admin/employer/${employer.id}`}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="rounded-md bg-blue-100 p-2 text-blue-600 transition hover:bg-blue-200"
+                      title="View Employer"
                     >
                       <Eye size={18} />
                     </Link>
 
+                    {/* Edit */}
                     <Link
                       to={`/admin/edit-employer/${employer.id}`}
-                      className="text-green-600 hover:text-green-800"
+                      className="rounded-md bg-green-100 p-2 text-green-600 transition hover:bg-green-200"
+                      title="Edit Employer"
                     >
                       <Pencil size={18} />
                     </Link>
 
-                    <button className="text-red-600 hover:text-red-800">
+                    {/* Delete */}
+                    <button
+                      onClick={() => onDelete?.(employer)}
+                      className="rounded-md bg-red-100 p-2 text-red-600 transition hover:bg-red-200"
+                      title="Delete Employer"
+                    >
                       <Trash2 size={18} />
                     </button>
+
                   </div>
                 </td>
               </tr>
@@ -78,7 +94,7 @@ export default function EmployerTable({ employers }) {
             <tr>
               <td
                 colSpan="6"
-                className="py-6 text-center text-gray-500"
+                className="py-8 text-center text-gray-500"
               >
                 No Employers Found
               </td>

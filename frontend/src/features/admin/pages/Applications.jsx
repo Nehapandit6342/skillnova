@@ -2,64 +2,53 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import ApplicationTable from "../components/ApplicationTable";
 
-
-export default function Applications() {
-
+function Applications() {
 
   const [applications, setApplications] = useState([]);
 
 
-  const fetchApplications = async()=>{
+  useEffect(() => {
 
+    const fetchApplications = async () => {
 
-    try{
+      try {
 
-      const res = await api.get("/admin/applications");
+        const { data } = await api.get("/admin/applications");
 
+        console.log("Applications:", data);
 
-      console.log("Applications:", res.data);
+        if (data.success) {
+          setApplications(data.data || []);
+        }
 
+      } catch (error) {
 
-      if(res.data.success){
-
-        setApplications(res.data.data);
+        console.log(
+          "Application API Error:",
+          error.response?.data || error.message
+        );
 
       }
 
+    };
 
-    }catch(error){
-
-      console.log(
-        "Application Error:",
-        error
-      );
-
-    }
-
-
-  };
-
-
-
-  useEffect(()=>{
 
     fetchApplications();
 
-  },[]);
+  }, []);
 
 
 
   return (
 
-    <div className="p-8">
+    <div className="min-h-screen bg-slate-50 p-8">
 
-
-      <h1 className="text-3xl font-bold mb-6">
+      <h1 className="text-3xl font-bold text-slate-800 mb-6">
         Applications
       </h1>
 
 
-      <ApplicationTable 
+      <ApplicationTable
         applications={applications}
       />
 
@@ -68,5 +57,7 @@ export default function Applications() {
 
   );
 
-
 }
+
+
+export default Applications;

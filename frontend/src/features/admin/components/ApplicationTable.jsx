@@ -1,268 +1,107 @@
-import { Eye, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
-
-
-export default function ApplicationTable({
-  applications = [],
-  onDelete,
-}) {
-
+function ApplicationTable({ applications = [] }) {
 
   return (
+    <div className="bg-white rounded-xl shadow-md p-6">
 
-    <div className="overflow-x-auto rounded-xl bg-white shadow-md">
+      <div className="flex justify-between items-center mb-5">
 
+        <h2 className="text-xl font-semibold">
+          Recent Applications
+        </h2>
 
-      <table className="w-full">
+        <button className="text-blue-600 text-sm">
+          View All
+        </button>
 
+      </div>
 
-        <thead className="bg-gray-100">
 
-          <tr>
+      {
+        applications.length === 0 ? (
 
+          <p className="text-gray-500">
+            No applications found
+          </p>
 
-            <th className="px-6 py-4 text-left">
-              Student
-            </th>
+        ) : (
 
+          <div className="overflow-x-auto">
 
-            <th className="px-6 py-4 text-left">
-              Internship
-            </th>
+            <table className="w-full">
 
+              <thead>
 
-            <th className="px-6 py-4 text-left">
-              Company
-            </th>
+                <tr className="border-b">
 
+                  <th className="text-left p-3">
+                    Student
+                  </th>
 
-            <th className="px-6 py-4 text-left">
-              Status
-            </th>
+                  <th className="text-left p-3">
+                    Internship
+                  </th>
 
+                  <th className="text-left p-3">
+                    Status
+                  </th>
 
-            <th className="px-6 py-4 text-center">
-              Actions
-            </th>
+                </tr>
 
+              </thead>
 
-          </tr>
 
+              <tbody>
 
-        </thead>
-
-
-
-
-        <tbody>
-
-
-          {
-            applications.length > 0 ?
-
-
-            applications.map((application)=>(
-
-
-              <tr
-                key={application.id}
-                className="border-t hover:bg-gray-50"
-              >
-
-
-
-                <td className="px-6 py-4">
-
-
-                  {
-                    application.student?.user?.name
-                    ||
-                    "N/A"
-                  }
-
-
-                </td>
-
-
-
-
-
-                <td className="px-6 py-4">
-
-
-                  {
-                    application.internship?.title
-                    ||
-                    "N/A"
-                  }
-
-
-                </td>
-
-
-
-
-
-                <td className="px-6 py-4">
-
-
-                  {
-                    application.internship?.employer?.companyName
-                    ||
-                    "N/A"
-                  }
-
-
-                </td>
-
-
-
-
-
-
-                <td className="px-6 py-4">
-
-
-                  <span
-
-                    className={`
+                {
+                  applications.map((app)=>(
                     
-                    px-3 py-1 rounded-full text-sm font-medium
-
-                    ${
-                      application.status === "APPROVED"
-
-                      ? "bg-green-100 text-green-700"
-
-                      :
-
-                      application.status === "REJECTED"
-
-                      ? "bg-red-100 text-red-700"
-
-                      :
-
-                      "bg-yellow-100 text-yellow-700"
-
-                    }
-
-                    `}
-
-                  >
-
-                    {application.status}
-
-
-                  </span>
-
-
-                </td>
-
-
-
-
-
-
-
-                <td className="px-6 py-4">
-
-
-                  <div className="flex justify-center items-center gap-4">
-
-
-
-                    <Link
-                      to={`/admin/application/${application.id}`}
+                    <tr 
+                      key={app.id}
+                      className="border-b"
                     >
 
-                      <Eye
-
-                        size={20}
-
-                        className="text-blue-600 hover:text-blue-800"
-
-                      />
+                      <td className="p-3">
+                        {app.student?.user?.name}
+                      </td>
 
 
-                    </Link>
+                      <td className="p-3">
+                        {app.internship?.title}
+                      </td>
 
 
+                      <td className="p-3">
 
+                        <span className="
+                          px-3 
+                          py-1 
+                          rounded-full 
+                          text-xs
+                          bg-yellow-100
+                        ">
+                          {app.status}
+                        </span>
 
+                      </td>
 
+                    </tr>
 
-                    <button
+                  ))
+                }
 
-                      onClick={() =>
-                        onDelete && onDelete(application.id)
-                      }
+              </tbody>
 
-                    >
+            </table>
 
-                      <Trash2
+          </div>
 
-                        size={20}
-
-                        className="text-red-600 hover:text-red-800"
-
-                      />
-
-
-                    </button>
-
-
-
-                  </div>
-
-
-                </td>
-
-
-
-
-              </tr>
-
-
-            ))
-
-
-
-            :
-
-
-
-            <tr>
-
-
-              <td
-
-                colSpan="5"
-
-                className="py-6 text-center text-gray-500"
-
-              >
-
-                No applications found
-
-
-              </td>
-
-
-            </tr>
-
-
-          }
-
-
-
-        </tbody>
-
-
-      </table>
+        )
+      }
 
 
     </div>
-
   );
-
 }
+
+
+export default ApplicationTable;

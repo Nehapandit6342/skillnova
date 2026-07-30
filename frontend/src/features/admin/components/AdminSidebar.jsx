@@ -9,101 +9,88 @@ import {
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
+import {
+  FaTachometerAlt,
+  FaUserGraduate,
+  FaBuilding,
+  FaBriefcase,
+  FaCog,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
+function AdminSidebar() {
+  const menu = [
+    {
+      name: "Dashboard",
+      icon: <FaTachometerAlt />,
+      path: "/admin/dashboard",
+    },
+    {
+      name: "Students",
+      icon: <FaUserGraduate />,
+      path: "/admin/students",
+    },
+    
+    
+    {
+      name: "Employers",
+      icon: <FaBuilding />,
+      path: "/admin/employers",
+    },
+    {
+      name: "Internships",
+      icon: <FaBriefcase />,
+      path: "/admin/internships",
+    },
+    {
+      name: "Settings",
+      icon: <FaCog />,
+      path: "/admin/settings",
+    },
+    {
+      name: "Logout",
+      icon: <FaSignOutAlt />,
+      path: "/login",
+    },
+  ];
 
-export default function AdminSidebar(){
+  return (
+    <aside className="w-64 min-h-screen bg-slate-900 text-white flex flex-col shadow-xl">
 
+      {/* Logo */}
+      <div className="h-20 flex items-center justify-center border-b border-slate-700">
+        <h1 className="text-2xl font-bold text-blue-400">
+          SkillNova
+        </h1>
+      </div>
 
-const menuItems = [
+      {/* Menu */}
+      <nav className="flex-1 p-4">
 
-  {
-    name:"Dashboard",
-    path:"/admin/dashboard",
-    icon:<LayoutDashboard />
-  },
+        {menu.map((item) => (
+          <NavLink
+            key={item.name}
+            to={item.path}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl mb-3 transition-all ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+              }`
+            }
+          >
+            <span className="text-lg">{item.icon}</span>
 
+            <span className="font-medium">
+              {item.name}
+            </span>
+          </NavLink>
+        ))}
 
-  {
-    name:"Students",
-    path:"/admin/students",
-    icon:<Users />
-  },
+      </nav>
 
-
-  {
-    name:"Employers",
-    path:"/admin/employers",
-    icon:<Building2 />
-  },
-
-
-  {
-    name:"Internships",
-    path:"/admin/internships",
-    icon:<Briefcase />
-  },
-
-
-  {
-    name:"Applications",
-    path:"/admin/applications",
-    icon:<FileText />
-  },
-
-
-  {
-    name:"Settings",
-    path:"/admin/settings",
-    icon:<Settings />
-  }
-
-];
-
-
-
-return (
-
-<div>
-
-{
-menuItems.map((item)=>(
-  
-<NavLink
-
-key={item.name}
-
-to={item.path}
-
-className="flex items-center gap-3 p-3"
-
->
-
-{item.icon}
-
-<span>
-{item.name}
-</span>
-
-
-</NavLink>
-
-))
-
+    </aside>
+  );
 }
 
-
-<button className="flex items-center gap-3 p-3">
-
-<LogOut />
-
-Logout
-
-</button>
-
-
-</div>
-
-);
-
-
-}
+export default AdminSidebar;

@@ -1,96 +1,114 @@
-export default function InternshipTable({internships}){
+function InternshipTable({ internships = [] }) {
+
+  return (
+    <div className="bg-white rounded-xl shadow-md p-6">
+
+      <div className="flex justify-between items-center mb-5">
+
+        <h2 className="text-xl font-semibold">
+          Recent Internships
+        </h2>
+
+      </div>
 
 
-return (
+      {
+        internships.length === 0 ? (
 
-<div className="bg-white rounded-lg shadow p-5">
+          <p className="text-gray-500">
+            No internships found
+          </p>
 
+        ) : (
 
-<table className="w-full">
+          <div className="overflow-x-auto">
 
+            <table className="w-full">
 
-<thead>
+              <thead>
 
-<tr className="border-b">
+                <tr className="border-b">
 
-<th className="p-3 text-left">
-Title
-</th>
+                  <th className="text-left p-3">
+                    Title
+                  </th>
 
-<th className="p-3 text-left">
-Company
-</th>
+                  <th className="text-left p-3">
+                    Company
+                  </th>
 
-<th className="p-3 text-left">
-Location
-</th>
+                  <th className="text-left p-3">
+                    Applicants
+                  </th>
 
-<th className="p-3 text-left">
-Stipend
-</th>
+                  <th className="text-left p-3">
+                    Status
+                  </th>
 
-</tr>
+                </tr>
 
-</thead>
-
-
-<tbody>
-
-
-{
-internships.map((item)=>(
-
-<tr key={item.id} className="border-b">
+              </thead>
 
 
-<td className="p-3">
-{item.title}
-</td>
+              <tbody>
+
+                {
+                  internships.map((internship) => (
+
+                    <tr 
+                      key={internship.id}
+                      className="border-b"
+                    >
+
+                      <td className="p-3">
+                        {internship.title}
+                      </td>
 
 
-<td className="p-3">
-{item.employer?.companyName}
-</td>
+                      <td className="p-3">
+                        {internship.employer?.companyName || "N/A"}
+                      </td>
 
 
-<td className="p-3">
-{item.location}
-</td>
+                      <td className="p-3">
+                        {internship._count?.applications || 0}
+                      </td>
 
 
-<td className="p-3">
-{item.stipend}
-</td>
+                      <td className="p-3">
+
+                        <span className="
+                          px-3
+                          py-1
+                          rounded-full
+                          text-xs
+                          bg-green-100
+                          text-green-700
+                        ">
+                          {internship.isActive ? "Open" : "Closed"}
+                        </span>
+
+                      </td>
 
 
-</tr>
+                    </tr>
+
+                  ))
+                }
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        )
+      }
 
 
-))
-
+    </div>
+  );
 }
 
 
-</tbody>
-
-
-</table>
-
-
-{
-internships.length === 0 && (
-
-<p className="text-center mt-5">
-No internships found
-</p>
-
-)
-
-}
-
-
-</div>
-
-);
-
-}
+export default InternshipTable;

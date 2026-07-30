@@ -5,87 +5,65 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "@/api/auth.api";
 import { useAuth } from "@/context/AuthContext";
 
+export default function useLogin() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-export default function useLogin(){
+  return useMutation({
+    mutationFn: loginUser,
 
-    const navigate = useNavigate();
+    onSuccess: (response) => {
+      console.log("LOGIN SUCCESS:", response);
 
-    const { login } = useAuth();
+      // Backend returns:
+      // {
+      //   success: true,
+      //   data: {
+      //      user: {...},
+      //      token: "..."
+      //   }
+      // }
 
+      const user = response?.data?.user;
+      const token = response?.data?.token;
 
+      if (!user || !token) {
+        toast.error("Invalid login response");
+        return;
+      }
 
-    return useMutation({
+      // Save user and token
+      login(user, token);
 
-        mutationFn: loginUser,
+      toast.success("Login successful");
 
+      console.log("Logged In User:", user);
 
-        onSuccess:(response)=>{
+      // Redirect according to role
+      switch (user.role) {
+        case "ADMIN":
+          navigate("/admin/dashboard", { replace: true });
+          break;
 
+        case "STUDENT":
+          navigate("/student/dashboard", { replace: true });
+          break;
 
-            console.log(
-                "LOGIN SUCCESS:",
-                response
-            );
+        case "EMPLOYER":
+          navigate("/employer/dashboard", { replace: true });
+          break;
 
+        default:
+          navigate("/", { replace: true });
+      }
+    },
 
-            const user = response.data.user;
+    onError: (error) => {
+      console.log(error);
 
-            const token = response.data.token;
-
-
-
-            login(
-                user,
-                token
-            );
-
-
-
-            toast.success(
-                "Login successful"
-            );
-
-
-
-            // Redirect based on role
-
-            if(user.role === "ADMIN"){
-
-                navigate("/admin/dashboard");
-
-            }
-            else if(user.role === "STUDENT"){
-
-                navigate("/student/dashboard");
-
-            }
-            else if(user.role === "EMPLOYER"){
-
-                navigate("/employer/dashboard");
-
-            }
-
-
-        },
-
-
-
-        onError:(error)=>{
-
-
-            toast.error(
-
-                error.response?.data?.message
-                ||
-                "Login failed"
-
-            );
-
-
-        }
-
-
-    });
-
-
+      toast.error(
+        error?.response?.data?.message || "Login failed"
+      );
+    },
+  });
 }
