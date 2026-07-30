@@ -11,8 +11,24 @@ export const getStudentProfile = async () => {
 /**
  * Update logged-in student profile
  */
-export const updateStudentProfile = async (profileData) => {
-  const response = await api.put("/students/profile", profileData);
+export const updateStudentProfile = async ({ formData, profileImage }) => {
+  const data = new FormData();
+  console.log(formData);
+  Object.entries(formData).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+
+    if (Array.isArray(value)) {
+      data.append(key, JSON.stringify(value));
+    } else {
+      data.append(key, value);
+    }
+  });
+
+  if (profileImage) {
+    data.append("profileImage", profileImage);
+  }
+
+  const response = await api.put("/students/profile", data);
 
   return response.data;
 };

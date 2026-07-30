@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Download, Eye, FileText, Sparkles, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,39 @@ import { Button } from "@/components/ui/button";
 export default function ResumeCard({ profile }) {
   const student = profile?.studentProfile;
 
+  const fileInputRef = useRef(null);
+  const handleResumeSelect = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Please upload a PDF or DOCX file.");
+      return;
+    }
+    // Validate file size (5 MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Resume must be smaller than 5 MB.");
+      return;
+    }
+    console.log(file);
+    e.target.value = "";
+
+    // Upload API will be added later
+  };
+  const handleDownload = () => {
+    if (!student?.resume) return;
+
+    const link = document.createElement("a");
+    link.href = student.resume;
+    link.download = "";
+    link.click();
+  };
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
@@ -16,9 +50,13 @@ export default function ResumeCard({ profile }) {
           </p>
         </div>
 
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => fileInputRef.current?.click()}
+        >
           <Upload className="mr-2 h-4 w-4" />
-          Replace
+          {student?.resume ? "Replace" : "Upload Resume"}
         </Button>
       </div>
 
@@ -36,15 +74,16 @@ export default function ResumeCard({ profile }) {
             </p>
 
             <div className="mt-6 flex gap-3">
-              <Button onClick={() => window.open(student.resume, "_blank")}>
+              <Button
+                onClick={() =>
+                  window.open(student.resume, "_blank", "noopener,noreferrer")
+                }
+              >
                 <Eye className="mr-2 h-4 w-4" />
                 View
               </Button>
 
-              <Button
-                variant="outline"
-                onClick={() => window.open(student.resume)}
-              >
+              <Button variant="outline" onClick={handleDownload}>
                 <Download className="mr-2 h-4 w-4" />
                 Download
               </Button>
@@ -57,7 +96,8 @@ export default function ResumeCard({ profile }) {
             <h3 className="mt-4 text-lg font-semibold">No Resume Uploaded</h3>
 
             <p className="text-sm text-slate-500">
-              Upload your resume to get AI analysis.
+              Upload your resume (PDF or DOCX) to receive AI-powered feedback
+              and improve your internship opportunities.
             </p>
           </div>
         )}
@@ -72,13 +112,23 @@ export default function ResumeCard({ profile }) {
 
         <p className="mt-3 text-sm text-blue-100">
           Resume score:
-          <strong> {student?.resumeScore || 0}%</strong>
+          <strong> {student?.resumeScore ?? 0}%</strong>
         </p>
 
-        <Button className="mt-5 bg-white text-blue-700 hover:bg-slate-100">
-          Analyze Resume
+        <Button
+          disabled
+          className="mt-5 bg-white text-blue-700 hover:bg-slate-100"
+        >
+          Analyze Resume (Coming Soon)
         </Button>
       </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.doc,.docx"
+        hidden
+        onChange={handleResumeSelect}
+      />
     </section>
   );
 }

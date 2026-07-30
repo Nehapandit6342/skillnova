@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/bookings/my
+url: ""
+method: GET
+order: 4417982554402952

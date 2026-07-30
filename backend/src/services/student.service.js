@@ -32,9 +32,11 @@ export const getProfile = async (userId) => {
 
 export const updateProfile = async (userId, data) => {
   const {
+    name,
     profileImage,
     phone,
     location,
+    dateOfBirth,
     bio,
     college,
     degree,
@@ -47,40 +49,52 @@ export const updateProfile = async (userId, data) => {
     skills,
   } = data;
 
+  // Update user table
+  if (name !== undefined) {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name,
+      },
+    });
+  }
+
+  // Only include provided fields
+  const studentData = {};
+
+  Object.entries({
+    profileImage,
+    phone,
+    location,
+    dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+    bio,
+    college,
+    degree,
+    semester:
+      semester !== undefined && semester !== "" ? Number(semester) : undefined,
+    cgpa: cgpa !== undefined && cgpa !== "" ? Number(cgpa) : undefined,
+    careerGoal,
+    github,
+    linkedin,
+    portfolio,
+    skills,
+  }).forEach(([key, value]) => {
+    if (value !== undefined) {
+      studentData[key] = value;
+    }
+  });
+  console.log(studentData.skills);
+  console.log(typeof studentData.skills);
   await prisma.studentProfile.upsert({
     where: {
       userId,
     },
-    update: {
-      profileImage,
-      phone,
-      location,
-      bio,
-      college,
-      degree,
-      semester,
-      cgpa,
-      careerGoal,
-      github,
-      linkedin,
-      portfolio,
-      skills,
-    },
+    update: studentData,
     create: {
       userId,
-      profileImage,
-      phone,
-      location,
-      bio,
-      college,
-      degree,
-      semester,
-      cgpa,
-      careerGoal,
-      github,
-      linkedin,
-      portfolio,
-      skills,
+      ...studentData,
     },
   });
 

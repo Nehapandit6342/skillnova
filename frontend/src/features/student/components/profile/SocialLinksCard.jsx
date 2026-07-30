@@ -1,10 +1,61 @@
+import { useState, useEffect } from "react";
 import { Globe, ExternalLink } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+import EditProfileDialog from "./EditProfileDialog";
+import { useUpdateStudentProfile } from "@/features/student/hooks/useUpdateStudentProfile";
 
 export default function SocialLinksCard({ profile }) {
   const student = profile?.studentProfile;
+  const [open, setOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    github: "",
+    linkedin: "",
+    portfolio: "",
+  });
+
+  const { mutate: updateProfile, isPending } = useUpdateStudentProfile();
+  useEffect(() => {
+    if (student) {
+      setFormData({
+        github: student.github || "",
+        linkedin: student.linkedin || "",
+        portfolio: student.portfolio || "",
+      });
+    }
+  }, [student]);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSave = () => {
+    updateProfile(
+      {
+        formData,
+      },
+      {
+        onSuccess: () => {
+          setOpen(false);
+        },
+      },
+    );
+  };
+  const openLink = (url) => {
+    if (!url) return;
+
+    window.open(
+      url.startsWith("http") ? url : `https://${url}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -17,7 +68,13 @@ export default function SocialLinksCard({ profile }) {
           </p>
         </div>
 
-        <Button variant="outline">Edit</Button>
+        <Button
+          variant="outline"
+          onClick={() => setOpen(true)}
+          disabled={isPending}
+        >
+          Edit
+        </Button>
       </div>
 
       <div className="space-y-4">
@@ -41,7 +98,7 @@ export default function SocialLinksCard({ profile }) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.open(student.github, "_blank")}
+              onClick={() => openLink(student.github)}
             >
               <ExternalLink className="h-5 w-5" />
             </Button>
@@ -68,7 +125,7 @@ export default function SocialLinksCard({ profile }) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.open(student.linkedin, "_blank")}
+              onClick={() => openLink(student.linkedin)}
             >
               <ExternalLink className="h-5 w-5" />
             </Button>
@@ -95,7 +152,7 @@ export default function SocialLinksCard({ profile }) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.open(student.portfolio, "_blank")}
+              onClick={() => openLink(student.portfolio)}
             >
               <ExternalLink className="h-5 w-5" />
             </Button>
@@ -111,6 +168,55 @@ export default function SocialLinksCard({ profile }) {
           improve your internship opportunities.
         </p>
       </div>
+      <EditProfileDialog
+        open={open}
+        onOpenChange={(value) => {
+          if (!isPending) setOpen(value);
+        }}
+        title="Edit Social Links"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label>GitHub</Label>
+            <Input
+              name="github"
+              value={formData.github}
+              onChange={handleChange}
+              placeholder="https://github.com/username"
+            />
+          </div>
+
+          <div>
+            <Label>LinkedIn</Label>
+            <Input
+              name="linkedin"
+              value={formData.linkedin}
+              onChange={handleChange}
+              placeholder="https://linkedin.com/in/username"
+            />
+          </div>
+
+          <div>
+            <Label>Portfolio</Label>
+            <Input
+              name="portfolio"
+              value={formData.portfolio}
+              onChange={handleChange}
+              placeholder="https://yourportfolio.com"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              onClick={handleSave}
+              disabled={isPending}
+              className="min-w-28"
+            >
+              {isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
+        </div>
+      </EditProfileDialog>
     </section>
   );
 }

@@ -17,16 +17,32 @@ export const getProfile = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
   try {
-    let imageUrl = null;
+    let imageUrl;
 
     if (req.file) {
       imageUrl = await uploadImage(req.file, "student-profiles");
     }
 
-    const profile = await studentService.updateProfile(req.user.id, {
+    const updateData = {
       ...req.body,
-      profileImage: imageUrl,
-    });
+    };
+
+    // Convert skills from JSON string back to array
+    if (updateData.skills && typeof updateData.skills === "string") {
+      try {
+        updateData.skills = JSON.parse(updateData.skills);
+      } catch {
+        // If it's just one skill instead of JSON
+        updateData.skills = [updateData.skills];
+      }
+    }
+
+    // Only update profile image if a new image was uploaded
+    if (imageUrl) {
+      updateData.profileImage = imageUrl;
+    }
+
+    const profile = await studentService.updateProfile(req.user.id, updateData);
 
     res.status(200).json({
       success: true,

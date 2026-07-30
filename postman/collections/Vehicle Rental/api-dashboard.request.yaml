@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/dashboard
+url: ""
+method: GET
+order: 4356674713929272

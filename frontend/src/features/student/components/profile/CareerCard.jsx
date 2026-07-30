@@ -1,9 +1,54 @@
+import { useState, useEffect } from "react";
+import EditProfileDialog from "./EditProfileDialog";
 import { Briefcase, Building2, Globe, MapPin, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useUpdateStudentProfile } from "@/features/student/hooks/useUpdateStudentProfile";
 
 export default function CareerCard({ profile }) {
   const student = profile?.studentProfile;
-
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    careerGoal: "",
+    preferredInternship: "",
+    workMode: "",
+    preferredLocation: "",
+    companySize: "",
+  });
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const { mutate: updateProfile, isPending } = useUpdateStudentProfile();
+  const handleSave = () => {
+    updateProfile(
+      {
+        formData,
+      },
+      {
+        onSuccess: () => {
+          setOpen(false);
+        },
+        onError: (error) => {
+          toast.error(error);
+        },
+      },
+    );
+  };
+  useEffect(() => {
+    if (student) {
+      setFormData({
+        careerGoal: student.careerGoal || "",
+        preferredInternship: student.preferredInternship || "",
+        workMode: student.workMode || "",
+        preferredLocation: student.preferredLocation || "",
+        companySize: student.companySize || "",
+      });
+    }
+  }, [student]);
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       {/* Header */}
@@ -18,7 +63,7 @@ export default function CareerCard({ profile }) {
           </p>
         </div>
 
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
           Edit
         </Button>
       </div>
@@ -109,6 +154,66 @@ export default function CareerCard({ profile }) {
           recommendations from SkillNova AI.
         </p>
       </div>
+      <EditProfileDialog
+        open={open}
+        onOpenChange={(value) => {
+          if (!isPending) setOpen(value);
+        }}
+        title="Edit Career Preferences"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label>Career Goal</Label>
+            <Input
+              name="careerGoal"
+              value={formData.careerGoal}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <Label>Preferred Internship</Label>
+            <Input
+              name="preferredInternship"
+              value={formData.preferredInternship}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <Label>Work Mode</Label>
+            <Input
+              name="workMode"
+              value={formData.workMode}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <Label>Preferred Location</Label>
+            <Input
+              name="preferredLocation"
+              value={formData.preferredLocation}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <Label>Company Size</Label>
+            <Input
+              name="companySize"
+              value={formData.companySize}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <Button onClick={handleSave} disabled={isPending}>
+              {isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
+        </div>
+      </EditProfileDialog>
     </section>
   );
 }

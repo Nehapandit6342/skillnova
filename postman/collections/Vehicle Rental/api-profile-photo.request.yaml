@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/profile/photo
+url: ""
+method: GET
+order: 4466443317228040

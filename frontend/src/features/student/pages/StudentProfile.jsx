@@ -24,6 +24,9 @@ export default function StudentProfile() {
   }
 
   const profile = data?.data;
+  console.log("API Response:", data);
+  console.log("Profile:", profile);
+  console.log("Student Profile:", profile?.studentProfile);
 
   return (
     <div className="space-y-6">

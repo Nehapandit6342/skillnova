@@ -48,10 +48,12 @@ model StudentProfile {
   userId String @unique @db.Uuid
 
   profileImage String?
+   resume String?
 
   phone String?
 
   location String?
+  dateOfBirth DateTime?
 
   bio String?
 
