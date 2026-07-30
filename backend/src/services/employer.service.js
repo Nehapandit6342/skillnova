@@ -37,10 +37,17 @@ export const getEmployerProfile = async (userId) => {
 
   return profile;
 
+
 };
 
 
-// ================= UPDATE EMPLOYER PROFILE =================
+
+
+
+
+// =================================================
+// UPDATE EMPLOYER PROFILE
+// =================================================
 
 export const updateEmployerProfile = async (userId, data) => {
 

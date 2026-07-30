@@ -301,18 +301,46 @@ export const updateStudentService = async (id, data) => {
 
 
 
+// ======================================
+// STUDENT APPLY INTERNSHIP
+// ======================================
+
+export const createApplicationService = async (
+    userId,
+    data
+)=>{
 
 
-// ================= DELETE STUDENT =================
+    const student =
+    await prisma.studentProfile.findUnique({
 
-export const deleteStudentService = async (id) => {
+        where:{
+            userId
+        }
+
+    });
 
 
-    await prisma.studentProfile.deleteMany({
 
-        where: {
+    if(!student){
 
-            userId:id
+        throw new Error(
+            "Student profile not found"
+        );
+
+    }
+
+
+
+
+    const existingApplication =
+    await prisma.application.findFirst({
+
+        where:{
+
+            studentId: student.id,
+
+            internshipId: data.internshipId
 
         }
 
@@ -320,18 +348,48 @@ export const deleteStudentService = async (id) => {
 
 
 
-    await prisma.user.delete({
+    if(existingApplication){
 
-        where: {
+        throw new Error(
+            "Already applied for this internship"
+        );
 
-            id
+    }
+
+
+
+
+
+    return await prisma.application.create({
+
+        data:{
+
+
+            studentId: student.id,
+
+
+            internshipId:data.internshipId,
+
+
+            resumeUrl:data.resumeUrl || null,
+
+
+            coverLetter:data.coverLetter || null
+
+
+        },
+
+        include:{
+
+
+            internship:true
+
 
         }
 
+
     });
 
-
-    return true;
 
 };
 
@@ -341,44 +399,88 @@ export const deleteStudentService = async (id) => {
 
 
 
-// ================= GET ALL EMPLOYERS =================
 
-export const getAllEmployersService = async () => {
+// ======================================
+// STUDENT GET APPLICATIONS
+// ======================================
 
 
-    const employers = await prisma.employerProfile.findMany({
+export const getStudentApplicationsService = async(
+    userId
+)=>{
 
-        include: {
 
-            user: {
+    const student =
+    await prisma.studentProfile.findUnique({
 
-                select: {
+        where:{
+            userId
+        }
 
-                    id:true,
+    });
 
-                    name:true,
 
-                    email:true,
 
-                    isActive:true
+    if(!student){
 
-                }
+        throw new Error(
+            "Student profile not found"
+        );
 
-            }
+    }
+
+
+
+
+    return await prisma.application.findMany({
+
+        where:{
+
+            studentId:student.id
 
         },
 
 
-        orderBy: {
+        include:{
+
+
+            internship:{
+
+
+                include:{
+
+
+                    employer:{
+
+
+                        select:{
+
+
+                            companyName:true
+
+                        }
+
+                    }
+
+                }
+
+
+            }
+
+
+        },
+
+
+        orderBy:{
 
             createdAt:"desc"
 
         }
 
+
     });
 
 
-    return employers;
 
 };
 
@@ -388,123 +490,143 @@ export const getAllEmployersService = async () => {
 
 
 
-// ================= GET EMPLOYER BY ID =================
-
-export const getEmployerByIdService = async (id) => {
 
 
-    const employer = await prisma.employerProfile.findUnique({
-
-        where: {
-
-            id
-
-        },
+// ======================================
+// EMPLOYER GET APPLICATIONS
+// ======================================
 
 
-        include: {
-
-            user: {
-
-                select: {
-
-                    id:true,
-
-                    name:true,
-
-                    email:true,
-
-                    isActive:true
-
-                }
-
-            }
-
-        }
-
-    });
+export const getEmployerApplicationsService = async(
+    userId
+)=>{
 
 
-    return employer;
+    const employer =
+    await prisma.employerProfile.findUnique({
 
-};
-
-// ================= UPDATE EMPLOYER =================
-
-export const updateEmployerService = async (id, data) => {
-
-
-    const employer = await prisma.employerProfile.update({
-
-        where: {
-            id
-        },
-
-
-        data: {
-
-            companyName: data.companyName,
-
-            website: data.website,
-
-            industry: data.industry,
-
-            location: data.location,
-
-            description: data.description,
-
-            companySize: data.companySize,
-
-            foundedYear: data.foundedYear
-
-        },
-
-
-        include: {
-
-            user: {
-
-                select: {
-
-                    id: true,
-                    name: true,
-                    email: true,
-                    isActive: true
-
-                }
-
-            }
-
+        where:{
+            userId
         }
 
     });
 
 
 
-    // update user details also
+    if(!employer){
 
-    if(data.name || data.email){
-
-        await prisma.user.update({
-
-            where:{
-                id: employer.userId
-            },
-
-
-            data:{
-
-                name: data.name,
-
-                email: data.email
-
-            }
-
-        });
+        throw new Error(
+            "Employer profile not found"
+        );
 
     }
 
 
-    return employer;
+
+
+    return await prisma.application.findMany({
+
+        where:{
+
+
+            internship:{
+
+
+                employerId: employer.id
+
+
+            }
+
+
+        },
+
+
+        include:{
+
+
+            student:{
+
+
+                include:{
+
+
+                    user:{
+
+
+                        select:{
+
+
+                            name:true,
+
+                            email:true
+
+
+                        }
+
+                    }
+
+
+                }
+
+
+            },
+
+
+            internship:true
+
+
+        },
+
+
+        orderBy:{
+
+            createdAt:"desc"
+
+        }
+
+
+    });
+
+
+};
+
+
+
+
+
+
+
+
+
+// ======================================
+// UPDATE APPLICATION STATUS
+// ======================================
+
+
+export const updateApplicationStatusService = async(
+    id,
+    status
+)=>{
+
+
+    return await prisma.application.update({
+
+        where:{
+
+            id
+
+        },
+
+
+        data:{
+
+
+            status
+
+        }
+
+
+    });
+
 
 };

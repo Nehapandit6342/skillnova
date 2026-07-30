@@ -13,6 +13,7 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 import HomePage from "@/features/landing/pages/HomePage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
+import Unauthorized from "@/features/auth/pages/Unauthorized";
 
 
 // ================= ADMIN PAGES =================
@@ -41,15 +42,16 @@ import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
 
 import EmployerDashboard from "@/features/employer/pages/EmployerDashboard";
 import CompanyProfile from "@/features/employer/pages/CompanyProfile";
+import PostInternship from "@/features/employer/pages/PostInternship";
+import MyInternships from "@/features/employer/pages/MyInternships";
+import EditInternship from "@/features/employer/pages/EditInternship";
+import Applications from "@/features/employer/pages/Applications";
+import Candidates from "@/features/employer/pages/Candidates";
+import EmployerSettings from "@/features/employer/pages/EmployerSettings";
 
 
-// ================= AUTH PAGE =================
 
-import Unauthorized from "@/features/auth/pages/Unauthorized";
-
-
-
-export default function AppRoutes() {
+function AppRoutes() {
 
 
     return (
@@ -57,10 +59,12 @@ export default function AppRoutes() {
         <Routes>
 
 
+
             {/* ================= PUBLIC ROUTES ================= */}
 
 
             <Route element={<MainLayout />}>
+
 
                 <Route
                     path="/"
@@ -92,6 +96,7 @@ export default function AppRoutes() {
 
 
 
+
             {/* ================= ADMIN ROUTES ================= */}
 
 
@@ -109,7 +114,7 @@ export default function AppRoutes() {
                     <Route
                         index
                         element={
-                            <Navigate
+                            <Navigate 
                                 to="dashboard"
                                 replace
                             />
@@ -188,7 +193,6 @@ export default function AppRoutes() {
             {/* ================= STUDENT ROUTES ================= */}
 
 
-
             <Route
                 path="/student"
                 element={
@@ -245,7 +249,6 @@ export default function AppRoutes() {
             {/* ================= EMPLOYER ROUTES ================= */}
 
 
-
             <Route
                 path="/employer"
                 element={
@@ -268,10 +271,12 @@ export default function AppRoutes() {
                     />
 
 
+
                     <Route
                         path="dashboard"
                         element={<EmployerDashboard />}
                     />
+
 
 
                     <Route
@@ -280,10 +285,56 @@ export default function AppRoutes() {
                     />
 
 
+
+                    <Route
+                        path="post-internship"
+                        element={<PostInternship />}
+                    />
+
+
+
+                    <Route
+                        path="internships"
+                        element={<MyInternships />}
+                    />
+
+
+
+                    <Route
+                        path="edit-internship/:id"
+                        element={<EditInternship />}
+                    />
+
+
+
+                    <Route
+                        path="applications"
+                        element={<Applications />}
+                    />
+
+
+
+                    <Route
+                        path="candidates"
+                        element={<Candidates />}
+                    />
+
+
+
+                    <Route
+                        path="settings"
+                        element={<EmployerSettings />}
+                    />
+
+
                 </Route>
 
 
             </Route>
+
+
+
+
 
 
 
@@ -303,8 +354,13 @@ export default function AppRoutes() {
             />
 
 
+
         </Routes>
 
     );
 
 }
+
+
+
+export default AppRoutes;

@@ -5,6 +5,9 @@ import {
     updateProfile,
     getEmployers
 } from "../controllers/employer.controller.js";
+import {
+    getDashboardStats
+} from "../controllers/dashboard.controller.js";
 
 import {
     authenticate
@@ -14,12 +17,18 @@ import {
     authorize
 } from "../middleware/role.middleware.js";
 
+
 const router = Router();
 
 
-// ================= ADMIN =================
+
+// =================================================
+// ADMIN ROUTES
+// =================================================
+
 
 // Get all employers
+
 router.get(
     "/",
     authenticate,
@@ -28,9 +37,15 @@ router.get(
 );
 
 
-// ================= EMPLOYER =================
 
-// Get own profile
+
+// =================================================
+// EMPLOYER ROUTES
+// =================================================
+
+
+// Get logged-in employer profile
+
 router.get(
     "/profile",
     authenticate,
@@ -39,12 +54,27 @@ router.get(
 );
 
 
-// Update own profile
+
+
+// Update logged-in employer profile
+
 router.put(
     "/profile",
     authenticate,
     authorize("EMPLOYER"),
     updateProfile
 );
+router.get(
+
+"/dashboard",
+
+authenticate,
+
+authorize("EMPLOYER"),
+
+getDashboardStats
+
+);
+
 
 export default router;

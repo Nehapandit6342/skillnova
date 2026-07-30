@@ -4,9 +4,20 @@ import {
     getEmployerProfile
 } from "@/api/employer.api";
 
+import {
+    useAuth
+} from "@/context/AuthContext";
+
 
 
 export default function useEmployerProfile(){
+
+
+    const {
+        token
+    } = useAuth();
+
+
 
     return useQuery({
 
@@ -14,8 +25,19 @@ export default function useEmployerProfile(){
             "employer-profile"
         ],
 
-        queryFn:getEmployerProfile
+
+        queryFn:getEmployerProfile,
+
+
+        enabled:!!token,
+
+
+        retry:1,
+
+
+        staleTime:1000 * 60 * 5
 
     });
+
 
 }

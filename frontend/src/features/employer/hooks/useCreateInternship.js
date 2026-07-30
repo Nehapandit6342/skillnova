@@ -5,53 +5,44 @@ import {
 
 
 import {
-    updateEmployerProfile
-} from "@/api/employer.api";
+    createInternship
+} from "@/api/internship.api";
 
 
 import toast from "react-hot-toast";
 
 
 
-export default function useUpdateEmployerProfile(){
+export default function useCreateInternship(){
 
 
-    const queryClient =
-        useQueryClient();
-
+    const queryClient = useQueryClient();
 
 
 
     return useMutation({
 
-
-        mutationFn:updateEmployerProfile,
-
+        mutationFn:createInternship,
 
 
-        onSuccess:(data)=>{
+        onSuccess:()=>{
 
 
             toast.success(
-
-                data.message ||
-                "Profile updated successfully"
-
+                "Internship posted successfully"
             );
-
 
 
             queryClient.invalidateQueries({
 
                 queryKey:[
-                    "employer-profile"
+                    "my-internships"
                 ]
 
             });
 
 
         },
-
 
 
         onError:(error)=>{
@@ -61,13 +52,12 @@ export default function useUpdateEmployerProfile(){
 
                 error.response?.data?.message
                 ||
-                "Failed to update profile"
+                "Failed to create internship"
 
             );
 
 
         }
-
 
     });
 

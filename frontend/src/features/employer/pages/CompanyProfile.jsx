@@ -1,30 +1,39 @@
-import { useState } from "react";
+import {
+    useState,
+    useEffect
+} from "react";
+
 
 import useEmployerProfile from "../hooks/useEmployerProfile";
 import useUpdateEmployerProfile from "../hooks/useUpdateEmployerProfile";
 
 
+
 export default function CompanyProfile(){
+
 
 
     const {
         data,
-        isLoading
+        isLoading,
+        isError
     } = useEmployerProfile();
 
 
 
     const updateProfile =
-    useUpdateEmployerProfile();
+        useUpdateEmployerProfile();
+
 
 
 
     const profile =
-    data?.data;
+        data?.data;
 
 
 
-    const [form,setForm]=useState({
+
+    const [form,setForm] = useState({
 
         companyName:"",
         website:"",
@@ -35,33 +44,90 @@ export default function CompanyProfile(){
 
 
 
+
+
+
+    useEffect(()=>{
+
+
+        if(profile){
+
+
+            setForm({
+
+
+                companyName:
+                profile.companyName || "",
+
+
+                website:
+                profile.website || "",
+
+
+                industry:
+                profile.industry || "",
+
+
+                description:
+                profile.description || ""
+
+
+            });
+
+
+        }
+
+
+    },[profile]);
+
+
+
+
+
+
+
     if(isLoading){
 
-        return <p>Loading...</p>;
+        return (
+
+            <div className="p-6">
+
+                Loading company profile...
+
+            </div>
+
+        );
 
     }
 
 
 
-    if(profile && !form.companyName){
 
-        setForm({
 
-            companyName:profile.companyName || "",
 
-            website:profile.website || "",
 
-            industry:profile.industry || "",
+    if(isError){
 
-            description:profile.description || ""
+        return (
 
-        });
+            <div className="text-red-500">
+
+                Failed to load company profile
+
+            </div>
+
+        );
 
     }
+
+
+
+
 
 
 
     const handleChange=(e)=>{
+
 
         setForm({
 
@@ -72,12 +138,17 @@ export default function CompanyProfile(){
 
         });
 
+
     };
 
 
 
 
+
+
+
     const handleSubmit=(e)=>{
+
 
         e.preventDefault();
 
@@ -89,73 +160,188 @@ export default function CompanyProfile(){
 
 
 
+
+
+
+
+
     return (
 
         <div className="max-w-3xl space-y-6">
 
-            <h1 className="text-2xl font-bold">
+
+            <h1 className="text-2xl font-bold text-slate-900">
+
                 Company Profile
+
             </h1>
 
 
+
+
+
             <form
+
             onSubmit={handleSubmit}
-            className="space-y-5 bg-white p-6 rounded-xl border"
+
+            className="
+            space-y-5
+            bg-white
+            p-6
+            rounded-xl
+            border
+            shadow-sm
+            "
+
             >
 
 
+
+
                 <input
+
                 name="companyName"
+
                 value={form.companyName}
+
                 onChange={handleChange}
+
                 placeholder="Company Name"
-                className="w-full border p-3 rounded"
+
+                required
+
+                className="
+                w-full
+                border
+                p-3
+                rounded-lg
+                "
+
                 />
 
 
 
+
+
+
                 <input
+
                 name="website"
+
                 value={form.website}
+
                 onChange={handleChange}
+
                 placeholder="Website"
-                className="w-full border p-3 rounded"
+
+                className="
+                w-full
+                border
+                p-3
+                rounded-lg
+                "
+
                 />
+
+
+
+
 
 
 
                 <input
+
                 name="industry"
+
                 value={form.industry}
+
                 onChange={handleChange}
+
                 placeholder="Industry"
-                className="w-full border p-3 rounded"
+
+                className="
+                w-full
+                border
+                p-3
+                rounded-lg
+                "
+
                 />
+
+
+
+
 
 
 
                 <textarea
+
                 name="description"
+
                 value={form.description}
+
                 onChange={handleChange}
+
                 placeholder="Company Description"
-                className="w-full border p-3 rounded"
+
+                rows="5"
+
+                className="
+                w-full
+                border
+                p-3
+                rounded-lg
+                "
+
                 />
 
 
 
+
+
+
+
                 <button
-                className="bg-blue-600 text-white px-5 py-3 rounded"
+
+                type="submit"
+
+                disabled={updateProfile.isPending}
+
+                className="
+                bg-blue-600
+                hover:bg-blue-700
+                text-white
+                px-6
+                py-3
+                rounded-lg
+                disabled:opacity-50
+                "
+
                 >
-                    Save Changes
+
+
+                    {
+                        updateProfile.isPending
+                        ?
+                        "Saving..."
+                        :
+                        "Save Changes"
+                    }
+
+
                 </button>
+
+
+
 
 
             </form>
 
 
+
         </div>
 
     );
+
 
 }

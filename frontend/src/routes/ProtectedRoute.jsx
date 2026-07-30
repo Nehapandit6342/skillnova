@@ -15,11 +15,9 @@ export default function ProtectedRoute({
 
 
 
-    // ===============================
-    // Check Authentication
-    // ===============================
+    // Not logged in
 
-    if (!isAuthenticated || !user) {
+    if(!isAuthenticated || !user){
 
         return (
             <Navigate
@@ -32,15 +30,12 @@ export default function ProtectedRoute({
 
 
 
+    // Role checking
 
-    // ===============================
-    // Check User Role
-    // ===============================
-
-    if (
+    if(
         roles.length > 0 &&
         !roles.includes(user.role)
-    ) {
+    ){
 
         return (
             <Navigate
@@ -52,11 +47,6 @@ export default function ProtectedRoute({
     }
 
 
-
-
-    // ===============================
-    // Allow Nested Routes
-    // ===============================
 
     return <Outlet />;
 

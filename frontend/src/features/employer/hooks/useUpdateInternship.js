@@ -5,38 +5,34 @@ import {
 
 
 import {
-    updateEmployerProfile
-} from "@/api/employer.api";
+    updateInternship
+} from "@/api/internship.api";
 
 
 import toast from "react-hot-toast";
 
 
 
-export default function useUpdateEmployerProfile(){
+export default function useUpdateInternship(){
 
 
     const queryClient =
-        useQueryClient();
-
+    useQueryClient();
 
 
 
     return useMutation({
 
 
-        mutationFn:updateEmployerProfile,
+        mutationFn:updateInternship,
 
 
 
-        onSuccess:(data)=>{
+        onSuccess:()=>{
 
 
             toast.success(
-
-                data.message ||
-                "Profile updated successfully"
-
+                "Internship updated successfully"
             );
 
 
@@ -44,7 +40,7 @@ export default function useUpdateEmployerProfile(){
             queryClient.invalidateQueries({
 
                 queryKey:[
-                    "employer-profile"
+                    "my-internships"
                 ]
 
             });
@@ -61,7 +57,7 @@ export default function useUpdateEmployerProfile(){
 
                 error.response?.data?.message
                 ||
-                "Failed to update profile"
+                "Update failed"
 
             );
 
