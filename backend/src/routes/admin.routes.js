@@ -1,120 +1,79 @@
 import { Router } from "express";
-
 import { authenticate } from "../middleware/auth.middleware.js";
 
 import {
+    // Dashboard
     getDashboard,
+
+    // Students
     getStudents,
     getStudentById,
+    createStudent,
     updateStudent,
     deleteStudent,
-    createStudent,
-    getEmployerById,
+
+    // Employers
     getAllEmployers,
-    updateEmployer
+    getEmployerById,
+    updateEmployer,
+    deleteEmployer,
+
+    // Internships
+    getAllInternships,
+    getInternshipById,
+    createInternship,
+    updateInternship,
+    deleteInternship,
+
+    // Applications
+    getAllApplications,
+    updateApplication,
+    deleteApplication,
+
+    // Settings
+    getAdminSettings,
+    updateAdminSettings
 
 } from "../controllers/admin.controller.js";
 
-
 const router = Router();
-
 
 // ================= DASHBOARD =================
 
-router.get(
-    "/dashboard",
-    authenticate,
-    getDashboard
-);
-
-
-
+router.get("/dashboard", authenticate, getDashboard);
 
 // ================= STUDENTS =================
 
-
-// GET ALL STUDENTS
-
-router.get(
-    "/students",
-    authenticate,
-    getStudents
-);
-
-
-// CREATE STUDENT
-
-router.post(
-    "/students",
-    authenticate,
-    createStudent
-);
-
-
-// GET STUDENT BY ID
-
-router.get(
-    "/students/:id",
-    authenticate,
-    getStudentById
-);
-
-
-// UPDATE STUDENT
-
-router.put(
-    "/students/:id",
-    authenticate,
-    updateStudent
-);
-
-
-// DELETE STUDENT
-
-router.delete(
-    "/students/:id",
-    authenticate,
-    deleteStudent
-);
-
-
-
-
-
+router.get("/students", authenticate, getStudents);
+router.post("/students", authenticate, createStudent);
+router.get("/students/:id", authenticate, getStudentById);
+router.put("/students/:id", authenticate, updateStudent);
+router.delete("/students/:id", authenticate, deleteStudent);
 
 // ================= EMPLOYERS =================
 
+router.get("/employers", authenticate, getAllEmployers);
+router.get("/employers/:id", authenticate, getEmployerById);
+router.put("/employers/:id", authenticate, updateEmployer);
+router.delete("/employers/:id", authenticate, deleteEmployer);
 
-// GET ALL EMPLOYERS
+// ================= INTERNSHIPS =================
 
-router.get(
-    "/employers",
-    authenticate,
-    getAllEmployers
-);
+router.get("/internships", authenticate, getAllInternships);
+router.post("/internships", authenticate, createInternship);
+router.get("/internships/:id", authenticate, getInternshipById);
+router.put("/internships/:id", authenticate, updateInternship);
+router.delete("/internships/:id", authenticate, deleteInternship);
 
+// ================= APPLICATIONS =================
 
+router.get("/applications", authenticate, getAllApplications);
+router.put("/applications/:id", authenticate, updateApplication);
+router.delete("/applications/:id", authenticate, deleteApplication);
 
-// GET EMPLOYER BY ID
+// ================= SETTINGS =================
 
-router.get(
-    "/employers/:id",
-    authenticate,
-    getEmployerById
-);
-
-
-
-// UPDATE EMPLOYER
-
-router.put(
-    "/employers/:id",
-    authenticate,
-    updateEmployer
-);
-
-
-
-
+router.get("/settings", authenticate, getAdminSettings);
+router.put("/settings", authenticate, updateAdminSettings);
 
 export default router;

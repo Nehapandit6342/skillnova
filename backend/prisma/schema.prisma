@@ -6,13 +6,16 @@ datasource db {
   provider = "postgresql"
 }
 
+
 enum Role {
   STUDENT
   EMPLOYER
   ADMIN
 }
 
+
 model User {
+
   id String @id @default(uuid()) @db.Uuid
 
   name String
@@ -25,23 +28,31 @@ model User {
 
   isActive Boolean @default(true)
 
+
   studentProfile StudentProfile?
 
   employerProfile EmployerProfile?
 
   passwordResetTokens PasswordResetToken[]
 
+
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
 
+
   @@map("users")
 }
 
+
+
 model StudentProfile {
+
   id String @id @default(uuid()) @db.Uuid
 
+
   userId String @unique @db.Uuid
+
 
   profileImage String?
 
@@ -61,127 +72,221 @@ model StudentProfile {
 
   careerGoal String?
 
+
   github String?
 
   linkedin String?
 
   portfolio String?
 
+
   skills String[] @default([])
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   applications Application[]
+
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
+
 
   @@map("student_profiles")
 }
 
+
+
+
+
 model EmployerProfile {
+
   id String @id @default(uuid()) @db.Uuid
+
 
   userId String @unique @db.Uuid
 
+
   logo String?
+
 
   companyName String
 
+
   website String?
+
 
   industry String?
 
+
   location String?
+
 
   description String?
 
+
   companySize String?
+
 
   foundedYear Int?
 
+
   internships Internship[]
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
+
 
   @@map("employer_profiles")
 }
 
+
+
+
+
+
 model Internship {
+
   id String @id @default(uuid()) @db.Uuid
+
 
   title String
 
+
   description String
+
 
   location String?
 
+
   type String?
+
 
   stipend String?
 
+
   deadline DateTime?
+
 
   isActive Boolean @default(true)
 
+
   employerId String @db.Uuid
 
-  employer EmployerProfile @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  employer EmployerProfile @relation(
+    fields: [employerId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   applications Application[]
+
 
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
+
 
   @@map("internships")
 }
 
+
+
+
+
+
+
 model Application {
+
   id String @id @default(uuid()) @db.Uuid
+
 
   studentId String @db.Uuid
 
+
   internshipId String @db.Uuid
 
-  resumeUrl String?
 
-  coverLetter String?
+  status String @default("Pending")
 
-  status String @default("PENDING")
 
-  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  appliedAt DateTime @default(now())
 
-  internship Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
 
-  updatedAt DateTime @updatedAt
+  student StudentProfile @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
+
+  internship Internship @relation(
+    fields: [internshipId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   @@map("applications")
 }
 
+
+
+
+
+
+
 model PasswordResetToken {
+
   id String @id @default(uuid()) @db.Uuid
+
 
   userId String @db.Uuid
 
+
   otpHash String
+
 
   expiresAt DateTime
 
+
   used Boolean @default(false)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
+
   @@index([userId])
+
   @@index([expiresAt])
+
+
   @@map("password_reset_tokens")
 }

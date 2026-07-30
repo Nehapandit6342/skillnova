@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.js";
 
+
 // ================= GET EMPLOYER PROFILE =================
 
 export const getEmployerProfile = async (userId) => {
@@ -11,21 +12,33 @@ export const getEmployerProfile = async (userId) => {
     },
 
     select: {
+
       id: true,
+
       companyName: true,
+
       website: true,
+
       industry: true,
+
       description: true,
 
       user: {
+
         select: {
+
           name: true,
+
           email: true,
+
         },
+
       },
+
     },
 
   });
+
 
   if (!profile) {
 
@@ -35,8 +48,8 @@ export const getEmployerProfile = async (userId) => {
 
   }
 
-  return profile;
 
+  return profile;
 
 };
 
@@ -44,10 +57,7 @@ export const getEmployerProfile = async (userId) => {
 
 
 
-
-// =================================================
-// UPDATE EMPLOYER PROFILE
-// =================================================
+// ================= UPDATE EMPLOYER PROFILE =================
 
 export const updateEmployerProfile = async (userId, data) => {
 
@@ -58,38 +68,56 @@ export const updateEmployerProfile = async (userId, data) => {
     description,
   } = data;
 
+
   const profile = await prisma.employerProfile.update({
 
     where: {
       userId,
     },
 
+
     data: {
+
       companyName,
+
       website,
+
       industry,
+
       description,
+
     },
 
+
     select: {
+
       companyName: true,
+
       website: true,
+
       industry: true,
+
       description: true,
+
     },
 
   });
+
 
   return profile;
 
 };
 
 
+
+
+
 // ================= GET ALL EMPLOYERS (ADMIN) =================
 
 export const getAllEmployers = async () => {
 
-  const employers = await prisma.employerProfile.findMany({
+
+  return await prisma.employerProfile.findMany({
 
     select: {
 
@@ -105,37 +133,55 @@ export const getAllEmployers = async () => {
 
       createdAt: true,
 
+
       user: {
+
         select: {
+
           id: true,
+
           name: true,
+
           email: true,
+
           isActive: true,
+
         },
+
       },
 
     },
 
+
     orderBy: {
+
       createdAt: "desc",
+
     },
 
   });
 
-  return employers;
 
 };
+
+
+
+
 
 
 // ================= GET EMPLOYER BY ID =================
 
 export const getEmployerById = async (id) => {
 
-  const employer = await prisma.employerProfile.findUnique({
+
+  return await prisma.employerProfile.findUnique({
 
     where: {
+
       id,
+
     },
+
 
     select: {
 
@@ -151,19 +197,97 @@ export const getEmployerById = async (id) => {
 
       createdAt: true,
 
+
       user: {
+
         select: {
+
           id: true,
+
           name: true,
+
           email: true,
+
           isActive: true,
+
         },
+
       },
 
     },
 
   });
 
-  return employer;
+
+};
+
+
+
+
+
+
+// ================= EMPLOYER DASHBOARD STATS =================
+
+export const getEmployerDashboardStats = async (userId) => {
+
+
+  const employer = await prisma.employerProfile.findUnique({
+
+    where: {
+
+      userId,
+
+    },
+
+  });
+
+
+
+  if (!employer) {
+
+    const error = new Error("Employer profile not found");
+    error.statusCode = 404;
+    throw error;
+
+  }
+
+
+
+  const totalInternships = await prisma.internship.count({
+
+    where: {
+
+      employerId: employer.id,
+
+    },
+
+  });
+
+
+
+  const totalApplications = await prisma.application.count({
+
+    where: {
+
+      internship: {
+
+        employerId: employer.id,
+
+      },
+
+    },
+
+  });
+
+
+
+  return {
+
+    totalInternships,
+
+    totalApplications,
+
+  };
+
 
 };

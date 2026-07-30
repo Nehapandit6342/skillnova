@@ -16,19 +16,22 @@ import RegisterPage from "@/features/auth/pages/RegisterPage";
 import Unauthorized from "@/features/auth/pages/Unauthorized";
 
 
+
 // ================= ADMIN PAGES =================
 
 import Dashboard from "@/features/admin/pages/Dashboard";
 
 import Students from "@/features/admin/pages/Students";
-import AddStudent from "@/features/admin/pages/AddStudent";
 import EditStudent from "@/features/admin/pages/EditStudent";
 import StudentDetails from "@/features/admin/pages/StudentDetails";
 
 import Employers from "@/features/admin/pages/Employers";
-import AddEmployer from "@/features/admin/pages/AddEmployer";
 import EditEmployer from "@/features/admin/pages/EditEmployer";
 import EmployerDetails from "@/features/admin/pages/EmployerDetails";
+
+import Internships from "@/features/admin/pages/Internships";
+import Applications from "@/features/admin/pages/Applications";
+
 
 
 // ================= STUDENT PAGES =================
@@ -38,6 +41,7 @@ import StudentProfile from "@/features/student/pages/StudentProfile";
 import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
 
 
+
 // ================= EMPLOYER PAGES =================
 
 import EmployerDashboard from "@/features/employer/pages/EmployerDashboard";
@@ -45,322 +49,349 @@ import CompanyProfile from "@/features/employer/pages/CompanyProfile";
 import PostInternship from "@/features/employer/pages/PostInternship";
 import MyInternships from "@/features/employer/pages/MyInternships";
 import EditInternship from "@/features/employer/pages/EditInternship";
-import Applications from "@/features/employer/pages/Applications";
+import EmployerApplications from "@/features/employer/pages/Applications";
 import Candidates from "@/features/employer/pages/Candidates";
 import EmployerSettings from "@/features/employer/pages/EmployerSettings";
+
+
 
 
 
 function AppRoutes() {
 
 
-    return (
+return (
 
-        <Routes>
+<Routes>
 
 
 
-            {/* ================= PUBLIC ROUTES ================= */}
+{/* ================= PUBLIC ROUTES ================= */}
 
 
-            <Route element={<MainLayout />}>
+<Route element={<MainLayout />}>
 
 
-                <Route
-                    path="/"
-                    element={<HomePage />}
-                />
+<Route 
+path="/"
+element={<HomePage />}
+/>
 
 
-                <Route
-                    path="/login"
-                    element={<LoginPage />}
-                />
+<Route
+path="/login"
+element={<LoginPage />}
+/>
 
 
-                <Route
-                    path="/register"
-                    element={<RegisterPage />}
-                />
+<Route
+path="/register"
+element={<RegisterPage />}
+/>
 
 
-                <Route
-                    path="/unauthorized"
-                    element={<Unauthorized />}
-                />
+<Route
+path="/unauthorized"
+element={<Unauthorized />}
+/>
 
 
-            </Route>
+</Route>
 
 
 
 
 
 
-            {/* ================= ADMIN ROUTES ================= */}
+{/* ================= ADMIN ROUTES ================= */}
 
 
-            <Route
-                path="/admin"
-                element={
-                    <ProtectedRoute roles={["ADMIN"]}/>
-                }
-            >
 
+<Route
+path="/admin"
+element={
+<ProtectedRoute roles={["ADMIN"]}/>
+}
+>
 
-                <Route element={<AdminLayout />}>
 
+<Route element={<AdminLayout />}>
 
-                    <Route
-                        index
-                        element={
-                            <Navigate 
-                                to="dashboard"
-                                replace
-                            />
-                        }
-                    />
 
+<Route
+index
+element={
+<Navigate
+to="dashboard"
+replace
+/>
+}
+/>
 
-                    <Route
-                        path="dashboard"
-                        element={<Dashboard />}
-                    />
 
 
-                    <Route
-                        path="students"
-                        element={<Students />}
-                    />
+<Route
+path="dashboard"
+element={<Dashboard />}
+/>
 
 
-                    <Route
-                        path="add-student"
-                        element={<AddStudent />}
-                    />
 
+<Route
+path="students"
+element={<Students />}
+/>
 
-                    <Route
-                        path="edit-student/:id"
-                        element={<EditStudent />}
-                    />
 
 
-                    <Route
-                        path="student/:id"
-                        element={<StudentDetails />}
-                    />
+<Route
+path="edit-student/:id"
+element={<EditStudent />}
+/>
 
 
 
-                    <Route
-                        path="employers"
-                        element={<Employers />}
-                    />
+<Route
+path="student/:id"
+element={<StudentDetails />}
+/>
 
 
-                    <Route
-                        path="add-employer"
-                        element={<AddEmployer />}
-                    />
 
 
-                    <Route
-                        path="edit-employer/:id"
-                        element={<EditEmployer />}
-                    />
 
+<Route
+path="employers"
+element={<Employers />}
+/>
 
-                    <Route
-                        path="employer/:id"
-                        element={<EmployerDetails />}
-                    />
 
 
-                </Route>
+<Route
+path="edit-employer/:id"
+element={<EditEmployer />}
+/>
 
 
-            </Route>
 
+<Route
+path="employer/:id"
+element={<EmployerDetails />}
+/>
 
 
 
 
 
+{/* NEW ADMIN MODULES */}
 
 
+<Route
+path="internships"
+element={<Internships />}
+/>
 
-            {/* ================= STUDENT ROUTES ================= */}
 
 
-            <Route
-                path="/student"
-                element={
-                    <ProtectedRoute roles={["STUDENT"]}/>
-                }
-            >
+<Route
+path="applications"
+element={<Applications />}
+/>
 
 
-                <Route element={<StudentLayout />}>
 
+</Route>
 
-                    <Route
-                        index
-                        element={
-                            <Navigate
-                                to="dashboard"
-                                replace
-                            />
-                        }
-                    />
 
+</Route>
 
-                    <Route
-                        path="dashboard"
-                        element={<StudentDashboard />}
-                    />
 
 
-                    <Route
-                        path="profile"
-                        element={<StudentProfile />}
-                    />
 
 
-                    <Route
-                        path="resume"
-                        element={<ResumeBuilder />}
-                    />
 
 
-                </Route>
 
 
-            </Route>
+{/* ================= STUDENT ROUTES ================= */}
 
 
 
+<Route
+path="/student"
+element={
+<ProtectedRoute roles={["STUDENT"]}/>
+}
+>
 
 
+<Route element={<StudentLayout />}>
 
 
+<Route
+index
+element={
+<Navigate
+to="dashboard"
+replace
+/>
+}
+/>
 
 
-            {/* ================= EMPLOYER ROUTES ================= */}
 
+<Route
+path="dashboard"
+element={<StudentDashboard />}
+/>
 
-            <Route
-                path="/employer"
-                element={
-                    <ProtectedRoute roles={["EMPLOYER"]}/>
-                }
-            >
 
 
-                <Route element={<EmployerLayout />}>
+<Route
+path="profile"
+element={<StudentProfile />}
+/>
 
 
-                    <Route
-                        index
-                        element={
-                            <Navigate
-                                to="dashboard"
-                                replace
-                            />
-                        }
-                    />
 
+<Route
+path="resume"
+element={<ResumeBuilder />}
+/>
 
 
-                    <Route
-                        path="dashboard"
-                        element={<EmployerDashboard />}
-                    />
 
+</Route>
 
 
-                    <Route
-                        path="profile"
-                        element={<CompanyProfile />}
-                    />
+</Route>
 
 
 
-                    <Route
-                        path="post-internship"
-                        element={<PostInternship />}
-                    />
 
 
 
-                    <Route
-                        path="internships"
-                        element={<MyInternships />}
-                    />
 
 
 
-                    <Route
-                        path="edit-internship/:id"
-                        element={<EditInternship />}
-                    />
+{/* ================= EMPLOYER ROUTES ================= */}
 
 
 
-                    <Route
-                        path="applications"
-                        element={<Applications />}
-                    />
+<Route
+path="/employer"
+element={
+<ProtectedRoute roles={["EMPLOYER"]}/>
+}
+>
 
 
+<Route element={<EmployerLayout />}>
 
-                    <Route
-                        path="candidates"
-                        element={<Candidates />}
-                    />
 
+<Route
+index
+element={
+<Navigate
+to="dashboard"
+replace
+/>
+}
+/>
 
 
-                    <Route
-                        path="settings"
-                        element={<EmployerSettings />}
-                    />
 
+<Route
+path="dashboard"
+element={<EmployerDashboard />}
+/>
 
-                </Route>
 
 
-            </Route>
+<Route
+path="profile"
+element={<CompanyProfile />}
+/>
 
 
 
+<Route
+path="post-internship"
+element={<PostInternship />}
+/>
 
 
 
+<Route
+path="internships"
+element={<MyInternships />}
+/>
 
 
 
-            {/* ================= FALLBACK ================= */}
+<Route
+path="edit-internship/:id"
+element={<EditInternship />}
+/>
 
 
-            <Route
-                path="*"
-                element={
-                    <Navigate
-                        to="/"
-                        replace
-                    />
-                }
-            />
 
+<Route
+path="applications"
+element={<EmployerApplications />}
+/>
 
 
-        </Routes>
 
-    );
+<Route
+path="candidates"
+element={<Candidates />}
+/>
+
+
+
+<Route
+path="settings"
+element={<EmployerSettings />}
+/>
+
+
+
+</Route>
+
+
+</Route>
+
+
+
+
+
+
+
+
+
+{/* ================= FALLBACK ================= */}
+
+
+
+<Route
+path="*"
+element={
+<Navigate
+to="/"
+replace
+/>
+}
+/>
+
+
+
+</Routes>
+
+);
+
 
 }
-
 
 
 export default AppRoutes;
