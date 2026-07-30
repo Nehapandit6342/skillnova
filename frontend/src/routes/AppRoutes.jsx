@@ -1,7 +1,16 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
+
+// ================= LAYOUT =================
+
+import AdminLayout from "@/layouts/AdminLayout";
+
+
+
+// ================= ADMIN PAGES =================
 
 import Dashboard from "@/features/admin/pages/Dashboard";
+import Students from "@/features/admin/pages/Students";
 import Applications from "@/features/admin/pages/Applications";
 import Internships from "@/features/admin/pages/Internships";
 import Employers from "@/features/admin/pages/Employers";
@@ -12,66 +21,194 @@ import EditInternship from "@/features/admin/pages/EditInternship";
 import InternshipDetails from "@/features/admin/pages/InternshipDetails";
 
 
+
+// ================= AUTH =================
+
+import LoginPage from "@/features/auth/pages/LoginPage";
+
+
+
+// ================= STUDENT =================
+
+import StudentDashboard from "@/features/student/pages/StudentDashboard";
+import StudentProfile from "@/features/student/pages/StudentProfile";
+import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
+
+
+
+
 function AppRoutes() {
+
 
   return (
 
     <Routes>
 
 
-      {/* Admin Routes */}
+
+      {/* ================= LOGIN ================= */}
 
       <Route
-        path="/admin/dashboard"
-        element={<Dashboard />}
+        path="/login"
+        element={<LoginPage />}
       />
 
 
+
+
+      {/* ================= DEFAULT ================= */}
+
       <Route
-        path="/admin/applications"
-        element={<Applications />}
+        path="/"
+        element={
+          <Navigate
+            to="/login"
+            replace
+          />
+        }
       />
 
 
-      <Route
-        path="/admin/internships"
-        element={<Internships />}
-      />
+
+
+
+      {/* ================= ADMIN ================= */}
 
 
       <Route
-        path="/admin/internships/add"
-        element={<AddInternship />}
-      />
+        path="/admin"
+        element={<AdminLayout />}
+      >
+
+
+        <Route
+          index
+          element={
+            <Navigate
+              to="dashboard"
+              replace
+            />
+          }
+        />
+
+
+
+        <Route
+          path="dashboard"
+          element={<Dashboard />}
+        />
+
+
+
+        <Route
+          path="students"
+          element={<Students />}
+        />
+
+
+
+        <Route
+          path="applications"
+          element={<Applications />}
+        />
+
+
+
+        <Route
+          path="internships"
+          element={<Internships />}
+        />
+
+
+
+        <Route
+          path="internships/add"
+          element={<AddInternship />}
+        />
+
+
+
+        <Route
+          path="internships/:id"
+          element={<InternshipDetails />}
+        />
+
+
+
+        <Route
+          path="internships/edit/:id"
+          element={<EditInternship />}
+        />
+
+
+
+        <Route
+          path="employers"
+          element={<Employers />}
+        />
+
+
+
+        <Route
+          path="settings"
+          element={<Settings />}
+        />
+
+
+      </Route>
+
+
+
+
+
+
+      {/* ================= STUDENT ================= */}
 
 
       <Route
-        path="/admin/internships/:id"
-        element={<InternshipDetails />}
+        path="/student/dashboard"
+        element={<StudentDashboard />}
       />
+
 
 
       <Route
-        path="/admin/internships/edit/:id"
-        element={<EditInternship />}
+        path="/student/profile"
+        element={<StudentProfile />}
       />
+
 
 
       <Route
-        path="/admin/employers"
-        element={<Employers />}
+        path="/student/resume-builder"
+        element={<ResumeBuilder />}
       />
+
+
+
+
+
+
+
+      {/* ================= NOT FOUND ================= */}
 
 
       <Route
-        path="/admin/settings"
-        element={<Settings />}
+        path="*"
+        element={
+          <Navigate
+            to="/login"
+            replace
+          />
+        }
       />
+
 
 
     </Routes>
 
   );
+
 
 }
 

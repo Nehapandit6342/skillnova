@@ -1,17 +1,8 @@
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  Briefcase,
-  FileText,
-  Settings,
-  LogOut
-} from "lucide-react";
-
 import { NavLink } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaUserGraduate,
+  FaFileAlt,
   FaBuilding,
   FaBriefcase,
   FaCog,
@@ -30,17 +21,20 @@ function AdminSidebar() {
       icon: <FaUserGraduate />,
       path: "/admin/students",
     },
-    
-    
     {
-      name: "Employers",
-      icon: <FaBuilding />,
-      path: "/admin/employers",
+      name: "Applications",
+      icon: <FaFileAlt />,
+      path: "/admin/applications",
     },
     {
       name: "Internships",
       icon: <FaBriefcase />,
       path: "/admin/internships",
+    },
+    {
+      name: "Employers",
+      icon: <FaBuilding />,
+      path: "/admin/employers",
     },
     {
       name: "Settings",
@@ -56,17 +50,13 @@ function AdminSidebar() {
 
   return (
     <aside className="w-64 min-h-screen bg-slate-900 text-white flex flex-col shadow-xl">
-
-      {/* Logo */}
       <div className="h-20 flex items-center justify-center border-b border-slate-700">
         <h1 className="text-2xl font-bold text-blue-400">
           SkillNova
         </h1>
       </div>
 
-      {/* Menu */}
       <nav className="flex-1 p-4">
-
         {menu.map((item) => (
           <NavLink
             key={item.name}
@@ -86,9 +76,7 @@ function AdminSidebar() {
             </span>
           </NavLink>
         ))}
-
       </nav>
-
     </aside>
   );
 }
