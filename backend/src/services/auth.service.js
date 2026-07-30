@@ -4,154 +4,44 @@ import prisma from "../config/prisma.js";
 
 export const registerUser = async (data) => {
 
-  const {
-    name,
-    email,
-    password,
-    role,
-    college,
-    degree,
-    careerGoal,
-    companyName,
-    industry,
-    website,
-  } = data;
-
-
-
-  // Check existing user
-
-  const existingUser = await prisma.user.findUnique({
-
-    where:{
-      email
-    }
-
-  });
-
-
-  if(existingUser){
-
-    const error = new Error(
-      "User with this email already exists"
-    );
-
-    error.statusCode = 409;
-
-    throw error;
-
-  }
-
-
-
-  // Hash password
-
-  const hashedPassword = await bcrypt.hash(
-    password,
-    10
-  );
-
-
-
-
-  // Generate email verification OTP
-
-  const otp = Math.floor(
-    100000 + Math.random() * 900000
-  ).toString();
-
-
-
-
-  // Hash OTP
-
-  const otpHash = await bcrypt.hash(
-    otp,
-    10
-  );
-
-
-
-
-
-  const user = await prisma.$transaction(async(tx)=>{
-
-
-    // Create User
-
-    const newUser = await tx.user.create({
-
-      data:{
-
+    const {
         name,
-
         email,
-
-        password:hashedPassword,
-
+        password,
         role,
-
-        isActive:false,
-
-        isEmailVerified:false
-
-      }
-
-    });
-
+        college,
+        degree,
+        careerGoal,
+        companyName,
+        industry,
+        website,
+    } = data;
 
 
 
+    // Check existing user
 
-    // Create Student Profile
+    const existingUser =
+        await prisma.user.findUnique({
 
-    if(role === "STUDENT"){
+            where:{
+                email
+            }
 
-
-      await tx.studentProfile.create({
-
-        data:{
-
-          userId:newUser.id,
-
-          college,
-
-          degree,
-
-          careerGoal
-
-        }
-
-      });
-
-
-    }
+        });
 
 
 
+    if(existingUser){
 
+        const error =
+            new Error(
+                "User with this email already exists"
+            );
 
-    // Create Employer Profile
+        error.statusCode = 409;
 
-    if(role === "EMPLOYER"){
-
-
-      await tx.employerProfile.create({
-
-        data:{
-
-          userId:newUser.id,
-
-          companyName,
-
-          industry,
-
-          website: website || null
-
-        }
-
-      });
-
+        throw error;
 
     }
 
@@ -159,53 +49,16 @@ export const registerUser = async (data) => {
 
 
 
-    // Remove old OTP
+    // Hash password
 
-    await tx.emailVerificationToken.deleteMany({
+    const hashedPassword =
+        await bcrypt.hash(
 
-      where:{
+            password,
 
-        userId:newUser.id
+            10
 
-      }
-
-    });
-
-
-
-
-
-
-
-    // Store verification OTP
-
-    await tx.emailVerificationToken.create({
-
-      data:{
-
-        userId:newUser.id,
-
-        otpHash,
-
-        expiresAt:new Date(
-
-          Date.now() + 
-          10 * 60 * 1000
-
-        )
-
-      }
-
-    });
-
-
-
-
-
-    return newUser;
-
-
-  });
+        );
 
 
 
@@ -213,29 +66,156 @@ export const registerUser = async (data) => {
 
 
 
-  return {
+    const user =
+        await prisma.$transaction(async(tx)=>{
 
-    user:{
 
-      id:user.id,
 
-      name:user.name,
+            // Create User
 
-      email:user.email,
+            const newUser =
+                await tx.user.create({
 
-      role:user.role,
+                    data:{
 
-      isActive:user.isActive,
 
-      isEmailVerified:user.isEmailVerified,
+                        name,
 
-      createdAt:user.createdAt
 
-    },
+                        email,
 
-    otp
 
-  };
+                        password:hashedPassword,
+
+
+                        role,
+
+
+                        isActive:true
+
+
+                    }
+
+                });
+
+
+
+
+
+
+
+            // Create Student Profile
+
+            if(role === "STUDENT"){
+
+
+                await tx.studentProfile.create({
+
+                    data:{
+
+
+                        userId:newUser.id,
+
+
+                        college: college || null,
+
+
+                        degree: degree || null,
+
+
+                        careerGoal: careerGoal || null
+
+
+                    }
+
+                });
+
+
+            }
+
+
+
+
+
+
+
+
+            // Create Employer Profile
+
+            if(role === "EMPLOYER"){
+
+
+                await tx.employerProfile.create({
+
+                    data:{
+
+
+                        userId:newUser.id,
+
+
+                        companyName,
+
+
+                        industry: industry || null,
+
+
+                        website: website || null
+
+
+                    }
+
+                });
+
+
+            }
+
+
+
+
+
+
+
+            return newUser;
+
+
+        });
+
+
+
+
+
+
+
+
+
+    return {
+
+
+        user:{
+
+
+            id:user.id,
+
+
+            name:user.name,
+
+
+            email:user.email,
+
+
+            role:user.role,
+
+
+            isActive:user.isActive,
+
+
+            createdAt:user.createdAt
+
+
+        }
+
+
+    };
 
 
 };

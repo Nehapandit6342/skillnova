@@ -13,9 +13,7 @@ export const authenticate = (req, res, next) => {
             });
         }
 
-
         const token = authHeader.split(" ")[1];
-
 
         if (!token) {
             return res.status(401).json({
@@ -24,19 +22,21 @@ export const authenticate = (req, res, next) => {
             });
         }
 
-
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET
         );
 
-
         req.user = decoded;
+
+        // 👇 Ye line sirf debugging ke liye add ki hai
+        console.log("Authenticated User:", req.user);
 
         next();
 
+    } catch (error) {
 
-    } catch(error) {
+        console.log(error);
 
         return res.status(401).json({
             success: false,

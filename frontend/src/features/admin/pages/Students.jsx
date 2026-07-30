@@ -1,226 +1,472 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import api from "@/lib/api";
 
-const studentsData = [
-  {
-    id: 1,
-    name: "Nisha Yadav",
-    email: "nisha@gmail.com",
-    college: "MBCE",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    name: "Rahul Sharma",
-    email: "rahul@gmail.com",
-    college: "TU",
-    status: "Approved",
-  },
-  {
-    id: 3,
-    name: "Amit Singh",
-    email: "amit@gmail.com",
-    college: "KU",
-    status: "Rejected",
-  },
-];
 
 function Students() {
+
+
+  const [students, setStudents] = useState([]);
+
   const [search, setSearch] = useState("");
+
   const navigate = useNavigate();
 
-  const filteredStudents = studentsData.filter((student) =>
-    student.name.toLowerCase().includes(search.toLowerCase())
+
+
+  useEffect(() => {
+
+
+    const fetchStudents = async () => {
+
+
+      try {
+
+
+        const response = await api.get("/admin/students");
+
+
+        if (response.data.success) {
+
+          setStudents(response.data.data);
+
+        }
+
+
+      } catch (error) {
+
+        console.log("Students Error:", error);
+
+      }
+
+
+    };
+
+
+    fetchStudents();
+
+
+  }, []);
+
+
+
+
+
+
+
+  const filteredStudents = students.filter((student) =>
+
+    student.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+
   );
+
+
+
+
+
+
 
   const handleView = (student) => {
+
     navigate(`/admin/student/${student.id}`);
+
   };
+
+
+
+
+
 
   const handleEdit = (student) => {
+
     navigate(`/admin/edit-student/${student.id}`);
+
   };
 
-  const handleDelete = (student) => {
+
+
+
+
+
+
+  const handleDelete = async (student) => {
+
+
     const confirmDelete = window.confirm(
+
       `Delete ${student.name}?`
+
     );
 
-    if (confirmDelete) {
-      alert("Delete functionality will be added after backend integration.");
+
+    if (!confirmDelete) return;
+
+
+
+    try {
+
+
+      const response = await api.delete(
+
+        `/admin/students/${student.id}`
+
+      );
+
+
+
+      if(response.data.success){
+
+
+        alert("Student deleted successfully");
+
+
+
+        setStudents((prev)=>
+
+          prev.filter(
+
+            (s)=>s.id !== student.id
+
+          )
+
+        );
+
+
+      }
+
+
+
+    } catch(error){
+
+
+      console.log("Delete Error:",error);
+
+      alert("Failed to delete student");
+
+
     }
+
+
   };
 
+
+
+
+
+
+
   return (
-    <div style={{ padding: "30px" }}>
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "25px",
-        }}
-      >
-        <h1>Students Management</h1>
 
-        <Link
-          to="/admin/add-student"
-          style={{
-            background: "#2563eb",
-            color: "#fff",
-            padding: "10px 18px",
-            borderRadius: "6px",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
-          + Add Student
-        </Link>
-      </div>
 
-      {/* Search */}
+    <div className="p-8">
+
+
+
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+
+        Students Management
+
+      </h1>
+
+
+
+
+
+
       <input
+
+
         type="text"
+
+
         placeholder="Search student..."
+
+
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{
-          width: "350px",
-          padding: "10px",
-          marginBottom: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "6px",
-          fontSize: "15px",
-        }}
+
+
+        onChange={(e)=>setSearch(e.target.value)}
+
+
+        className="
+        mb-6
+        w-96
+        rounded-lg
+        border
+        px-4
+        py-2
+        outline-none
+        focus:border-blue-500
+        "
+
       />
 
-      {/* Table */}
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          background: "#fff",
-          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        }}
-      >
-        <thead>
-          <tr style={{ background: "#f3f4f6" }}>
-            <th style={thStyle}>Name</th>
-            <th style={thStyle}>Email</th>
-            <th style={thStyle}>College</th>
-            <th style={thStyle}>Status</th>
-            <th style={thStyle}>Action</th>
+
+
+
+
+
+
+      <div className="overflow-x-auto rounded-xl bg-white shadow-md">
+
+
+      <table className="w-full">
+
+
+        <thead className="bg-gray-100">
+
+
+          <tr>
+
+
+            <th className="px-6 py-3 text-left">
+              Name
+            </th>
+
+
+            <th className="px-6 py-3 text-left">
+              Email
+            </th>
+
+
+            <th className="px-6 py-3 text-left">
+              College
+            </th>
+
+
+            <th className="px-6 py-3 text-center">
+              Action
+            </th>
+
+
           </tr>
+
+
         </thead>
 
+
+
+
+
+
         <tbody>
-          {filteredStudents.length > 0 ? (
-            filteredStudents.map((student) => (
-              <tr key={student.id}>
-                <td style={tdStyle}>{student.name}</td>
-                <td style={tdStyle}>{student.email}</td>
-                <td style={tdStyle}>{student.college}</td>
 
-                <td style={tdStyle}>
-                  <span
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "20px",
-                      color: "#fff",
-                      backgroundColor:
-                        student.status === "Approved"
-                          ? "green"
-                          : student.status === "Rejected"
-                          ? "red"
-                          : "orange",
-                    }}
-                  >
-                    {student.status}
-                  </span>
-                </td>
 
-                <td style={tdStyle}>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                    }}
-                  >
-                    <button
-                      onClick={() => handleView(student)}
-                      style={{
-                        background: "#16a34a",
-                        color: "#fff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      View
-                    </button>
+        {
 
-                    <button
-                      onClick={() => handleEdit(student)}
-                      style={{
-                        background: "#2563eb",
-                        color: "#fff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Edit
-                    </button>
 
-                    <button
-                      onClick={() => handleDelete(student)}
-                      style={{
-                        background: "#dc2626",
-                        color: "#fff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                colSpan="5"
-                style={{
-                  textAlign: "center",
-                  padding: "20px",
-                }}
-              >
-                No student found.
-              </td>
-            </tr>
-          )}
+        filteredStudents.length > 0 ?
+
+
+        filteredStudents.map((student)=>(
+
+
+          <tr
+            key={student.id}
+            className="border-t hover:bg-gray-50"
+          >
+
+
+
+            <td className="px-6 py-4">
+
+              {student.name}
+
+            </td>
+
+
+
+
+
+            <td className="px-6 py-4">
+
+              {student.email}
+
+            </td>
+
+
+
+
+
+            <td className="px-6 py-4">
+
+              {
+                student.studentProfile?.college
+                ||
+                "N/A"
+              }
+
+            </td>
+
+
+
+
+
+
+            <td className="px-6 py-4">
+
+
+              <div className="
+              flex
+              justify-center
+              gap-4
+              ">
+
+
+
+
+
+                {/* View */}
+
+                <button
+
+                  onClick={()=>handleView(student)}
+
+                  title="View Student"
+
+                  className="
+                  text-blue-600
+                  hover:text-blue-800
+                  transition
+                  "
+
+                >
+
+                  <Eye size={20}/>
+
+                </button>
+
+
+
+
+
+
+
+                {/* Edit */}
+
+                <button
+
+                  onClick={()=>handleEdit(student)}
+
+                  title="Edit Student"
+
+                  className="
+                  text-green-600
+                  hover:text-green-800
+                  transition
+                  "
+
+                >
+
+                  <Pencil size={20}/>
+
+                </button>
+
+
+
+
+
+
+
+                {/* Delete */}
+
+                <button
+
+                  onClick={()=>handleDelete(student)}
+
+                  title="Delete Student"
+
+                  className="
+                  text-red-600
+                  hover:text-red-800
+                  transition
+                  "
+
+                >
+
+                  <Trash2 size={20}/>
+
+                </button>
+
+
+
+
+
+
+              </div>
+
+
+
+            </td>
+
+
+
+
+          </tr>
+
+
+        ))
+
+
+
+        :
+
+
+
+        <tr>
+
+
+          <td
+
+            colSpan="4"
+
+            className="
+            py-6
+            text-center
+            text-gray-500
+            "
+
+          >
+
+            No student found
+
+
+          </td>
+
+
+        </tr>
+
+
+
+        }
+
+
+
         </tbody>
+
+
+
       </table>
+
+
+      </div>
+
+
+
+
     </div>
+
+
   );
+
+
 }
 
-const thStyle = {
-  border: "1px solid #ddd",
-  padding: "12px",
-  textAlign: "left",
-  fontWeight: "bold",
-};
 
-const tdStyle = {
-  border: "1px solid #ddd",
-  padding: "12px",
-};
+
+
 
 export default Students;

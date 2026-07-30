@@ -1,51 +1,44 @@
-import { useParams } from "react-router-dom";
-import { useState } from "react";
-
-const students = [
-  {
-    id: 1,
-    fullName: "Nisha Yadav",
-    email: "nisha@gmail.com",
-    phone: "9876543210",
-    college: "MBCE",
-    course: "Computer Engineering",
-    semester: "6",
-    skills: "React, Node.js",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    fullName: "Rahul Sharma",
-    email: "rahul@gmail.com",
-    phone: "9800000000",
-    college: "Tribhuvan University",
-    course: "BCA",
-    semester: "5",
-    skills: "Java, Spring Boot",
-    status: "Approved",
-  },
-  {
-    id: 3,
-    fullName: "Amit Singh",
-    email: "amit@gmail.com",
-    phone: "9811111111",
-    college: "Kathmandu University",
-    course: "BSc CSIT",
-    semester: "7",
-    skills: "Python, Django",
-    status: "Rejected",
-  },
-];
-
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import api from "@/lib/api";
 function EditStudent() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const selectedStudent =
-    students.find((student) => student.id === Number(id)) ||
-    students[0];
+  const [student, setStudent] = useState({
+    name: "",
+    email: "",
+    college: "",
+    degree: "",
+    bio: "",
+    careerGoal: "",
+    skills: "",
+  });
 
-  const [student, setStudent] = useState(selectedStudent);
+  useEffect(() => {
+    fetchStudent();
+  }, [id]);
 
+ const fetchStudent = async () => {
+  try {
+    const response = await api.get(`/admin/students/${id}`);
+
+    if (response.data.success) {
+      setStudent({
+        name: response.data.data.name || "",
+        email: response.data.data.email || "",
+        college: response.data.data.studentProfile?.college || "",
+        degree: response.data.data.studentProfile?.degree || "",
+        bio: response.data.data.studentProfile?.bio || "",
+        careerGoal: response.data.data.studentProfile?.careerGoal || "",
+        skills:
+          response.data.data.studentProfile?.skills?.join(", ") || "",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
   const handleChange = (e) => {
     setStudent({
       ...student,
@@ -53,21 +46,32 @@ function EditStudent() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log(student);
+  try {
+    const response = await api.put(`/admin/students/${id}`, {
+      ...student,
+      skills: student.skills
+        .split(",")
+        .map((skill) => skill.trim()),
+    });
 
-    alert("Student Updated Successfully!");
-  };
+    if (response.data.success) {
+      alert("Student Updated Successfully");
+      navigate("/admin/students");
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+    alert("Something went wrong");
+  }
+};
 
   return (
     <div style={{ padding: "30px" }}>
       <h1>Edit Student</h1>
-
-      <p>
-        <b>Student ID:</b> {id}
-      </p>
 
       <form
         onSubmit={handleSubmit}
@@ -80,10 +84,10 @@ function EditStudent() {
       >
         <input
           type="text"
-          name="fullName"
-          value={student.fullName}
+          name="name"
+          value={student.name}
           onChange={handleChange}
-          placeholder="Full Name"
+          placeholder="Name"
           style={inputStyle}
         />
 
@@ -98,15 +102,6 @@ function EditStudent() {
 
         <input
           type="text"
-          name="phone"
-          value={student.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-          style={inputStyle}
-        />
-
-        <input
-          type="text"
           name="college"
           value={student.college}
           onChange={handleChange}
@@ -116,19 +111,27 @@ function EditStudent() {
 
         <input
           type="text"
-          name="course"
-          value={student.course}
+          name="degree"
+          value={student.degree}
           onChange={handleChange}
-          placeholder="Course"
+          placeholder="Degree"
+          style={inputStyle}
+        />
+
+        <textarea
+          name="bio"
+          value={student.bio}
+          onChange={handleChange}
+          placeholder="Bio"
           style={inputStyle}
         />
 
         <input
           type="text"
-          name="semester"
-          value={student.semester}
+          name="careerGoal"
+          value={student.careerGoal}
           onChange={handleChange}
-          placeholder="Semester"
+          placeholder="Career Goal"
           style={inputStyle}
         />
 
@@ -137,20 +140,9 @@ function EditStudent() {
           name="skills"
           value={student.skills}
           onChange={handleChange}
-          placeholder="Skills"
+          placeholder="React, Node.js, MongoDB"
           style={inputStyle}
         />
-
-        <select
-          name="status"
-          value={student.status}
-          onChange={handleChange}
-          style={inputStyle}
-        >
-          <option value="Pending">Pending</option>
-          <option value="Approved">Approved</option>
-          <option value="Rejected">Rejected</option>
-        </select>
 
         <button type="submit" style={buttonStyle}>
           Update Student

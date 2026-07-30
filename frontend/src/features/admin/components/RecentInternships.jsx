@@ -1,70 +1,85 @@
-function RecentInternships() {
-  const internships = [
-    {
-      title: "Frontend Developer",
-      company: "LeoTech Solutions",
-      applicants: 45,
-      status: "Open",
-    },
-    {
-      title: "Backend Developer",
-      company: "TechNova",
-      applicants: 32,
-      status: "Open",
-    },
-    {
-      title: "UI/UX Designer",
-      company: "Creative Labs",
-      applicants: 18,
-      status: "Closed",
-    },
-    {
-      title: "AI Intern",
-      company: "SkillNova",
-      applicants: 27,
-      status: "Open",
-    },
-  ];
-
+function RecentInternships({ internships }) {
   return (
-    <div
-      style={{
-        background: "#fff",
-        marginTop: "30px",
-        padding: "20px",
-        borderRadius: "15px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h2>Recent Internships</h2>
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-xl font-semibold text-slate-800">
+          Recent Internships
+        </h2>
 
-      <table
-        style={{
-          width: "100%",
-          marginTop: "20px",
-          borderCollapse: "collapse",
-        }}
-      >
-        <thead>
-          <tr>
-            <th style={{ textAlign: "left", padding: "12px" }}>Title</th>
-            <th style={{ textAlign: "left", padding: "12px" }}>Company</th>
-            <th style={{ textAlign: "left", padding: "12px" }}>Applicants</th>
-            <th style={{ textAlign: "left", padding: "12px" }}>Status</th>
-          </tr>
-        </thead>
+        <button className="text-blue-600 text-sm font-medium hover:underline">
+          View All
+        </button>
+      </div>
 
-        <tbody>
-          {internships.map((item, index) => (
-            <tr key={index}>
-              <td style={{ padding: "12px" }}>{item.title}</td>
-              <td style={{ padding: "12px" }}>{item.company}</td>
-              <td style={{ padding: "12px" }}>{item.applicants}</td>
-              <td style={{ padding: "12px" }}>{item.status}</td>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-200">
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Title
+              </th>
+
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Company
+              </th>
+
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Applicants
+              </th>
+
+              <th className="text-left py-3 text-slate-500 font-semibold">
+                Status
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {internships.length > 0 ? (
+              internships.map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-slate-100 hover:bg-slate-50 transition"
+                >
+                  <td className="py-4 font-medium text-slate-800">
+                    {item.title}
+                  </td>
+
+                  <td className="py-4 text-slate-600">
+                    {item.employer?.companyName || "N/A"}
+                  </td>
+
+                  <td className="py-4 text-slate-600">
+                    {item._count?.applications || 0}
+                  </td>
+
+                  <td className="py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        item.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {item.isActive ? "Open" : "Closed"}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="4"
+                  className="text-center py-10 text-slate-400"
+                >
+                  No internships found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

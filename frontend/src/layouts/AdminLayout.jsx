@@ -4,12 +4,17 @@ import AdminSidebar from "@/features/admin/components/AdminSidebar";
 
 function AdminLayout() {
   return (
-    <div style={{ display: "flex" }}>
+    <div className="min-h-screen bg-slate-100 flex">
+      {/* Sidebar */}
       <AdminSidebar />
 
-      <div style={{ flex: 1 }}>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
         <AdminNavbar />
-        <Outlet />
+
+        <main className="flex-1 overflow-y-auto p-6">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

@@ -1,34 +1,10 @@
 import { Link } from "react-router-dom";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
-const employers = [
-  {
-    id: 1,
-    company: "Google",
-    hr: "Rahul Sharma",
-    email: "hr@google.com",
-    industry: "Technology",
-    status: "Active",
-  },
-  {
-    id: 2,
-    company: "Microsoft",
-    hr: "Neha Singh",
-    email: "hr@microsoft.com",
-    industry: "Software",
-    status: "Active",
-  },
-  {
-    id: 3,
-    company: "LeoTech",
-    hr: "Amit Verma",
-    email: "hr@leotech.com",
-    industry: "IT Services",
-    status: "Pending",
-  },
-];
-
-export default function EmployerTable() {
+export default function EmployerTable({
+  employers,
+  onDelete,
+}) {
   return (
     <div className="overflow-x-auto rounded-xl bg-white shadow-md">
       <table className="min-w-full">
@@ -44,54 +20,86 @@ export default function EmployerTable() {
         </thead>
 
         <tbody>
-          {employers.map((employer) => (
-            <tr
-              key={employer.id}
-              className="border-t hover:bg-gray-50"
-            >
-              <td className="px-6 py-4">{employer.company}</td>
-              <td className="px-6 py-4">{employer.hr}</td>
-              <td className="px-6 py-4">{employer.email}</td>
-              <td className="px-6 py-4">{employer.industry}</td>
+          {employers.length > 0 ? (
+            employers.map((employer) => (
+              <tr
+                key={employer.id}
+                className="border-t hover:bg-gray-50"
+              >
+                <td className="px-6 py-4 font-medium">
+                  {employer.companyName}
+                </td>
 
-              <td className="px-6 py-4">
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    employer.status === "Active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {employer.status}
-                </span>
-              </td>
+                <td className="px-6 py-4">
+                  {employer.user?.name}
+                </td>
 
-              <td className="px-6 py-4">
-                <div className="flex justify-center gap-3">
-                  {/* View */}
-                  <Link
-                    to={`/admin/employer/${employer.id}`}
-                    className="text-blue-600 hover:text-blue-800"
+                <td className="px-6 py-4">
+                  {employer.user?.email}
+                </td>
+
+                <td className="px-6 py-4">
+                  {employer.industry || "N/A"}
+                </td>
+
+                <td className="px-6 py-4">
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                      employer.user?.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
                   >
-                    <Eye size={18} />
-                  </Link>
+                    {employer.user?.isActive
+                      ? "Active"
+                      : "Inactive"}
+                  </span>
+                </td>
 
-                  {/* Edit */}
-                  <Link
-                    to={`/admin/edit-employer/${employer.id}`}
-                    className="text-green-600 hover:text-green-800"
-                  >
-                    <Pencil size={18} />
-                  </Link>
+                <td className="px-6 py-4">
+                  <div className="flex justify-center gap-3">
 
-                  {/* Delete */}
-                  <button className="text-red-600 hover:text-red-800">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
+                    {/* View */}
+                    <Link
+                      to={`/admin/employer/${employer.id}`}
+                      className="rounded-md bg-blue-100 p-2 text-blue-600 transition hover:bg-blue-200"
+                      title="View Employer"
+                    >
+                      <Eye size={18} />
+                    </Link>
+
+                    {/* Edit */}
+                    <Link
+                      to={`/admin/edit-employer/${employer.id}`}
+                      className="rounded-md bg-green-100 p-2 text-green-600 transition hover:bg-green-200"
+                      title="Edit Employer"
+                    >
+                      <Pencil size={18} />
+                    </Link>
+
+                    {/* Delete */}
+                    <button
+                      onClick={() => onDelete?.(employer)}
+                      className="rounded-md bg-red-100 p-2 text-red-600 transition hover:bg-red-200"
+                      title="Delete Employer"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan="6"
+                className="py-8 text-center text-gray-500"
+              >
+                No Employers Found
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

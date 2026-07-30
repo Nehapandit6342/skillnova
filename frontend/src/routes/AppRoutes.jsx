@@ -1,80 +1,216 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import MainLayout from "@/layouts/MainLayout";
+
+// ================= LAYOUT =================
+
 import AdminLayout from "@/layouts/AdminLayout";
-import StudentLayout from "@/layouts/StudentLayout";
-import EmployerLayout from "@/layouts/EmployerLayout";
 
-// Public Pages
-import HomePage from "@/features/landing/pages/HomePage";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import RegisterPage from "@/features/auth/pages/RegisterPage";
-import VerifyEmailPage from "@/features/auth/pages/VerifyEmailPage";
 
-// Admin Pages
+
+// ================= ADMIN PAGES =================
+
 import Dashboard from "@/features/admin/pages/Dashboard";
 import Students from "@/features/admin/pages/Students";
-import AddStudent from "@/features/admin/pages/AddStudent";
-import EditStudent from "@/features/admin/pages/EditStudent";
-import StudentDetails from "@/features/admin/pages/StudentDetails";
-
+import Applications from "@/features/admin/pages/Applications";
+import Internships from "@/features/admin/pages/Internships";
 import Employers from "@/features/admin/pages/Employers";
-import AddEmployer from "@/features/admin/pages/AddEmployer";
-import EditEmployer from "@/features/admin/pages/EditEmployer";
-import EmployerDetails from "@/features/admin/pages/EmployerDetails";
+import Settings from "@/features/admin/pages/Settings";
 
-// Student Pages
+import AddInternship from "@/features/admin/pages/AddInternship";
+import EditInternship from "@/features/admin/pages/EditInternship";
+import InternshipDetails from "@/features/admin/pages/InternshipDetails";
+
+
+
+// ================= AUTH =================
+
+import LoginPage from "@/features/auth/pages/LoginPage";
+
+
+
+// ================= STUDENT =================
+
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudentProfile from "@/features/student/pages/StudentProfile";
 import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
 
-// Employer Pages
-import EmployerDashboard from "@/features/employer/pages/EmployerDashboard";
 
-export default function AppRoutes() {
+
+
+function AppRoutes() {
+
+
   return (
+
     <Routes>
-      {/* ================= PUBLIC ROUTES ================= */}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+
+
+      {/* ================= LOGIN ================= */}
+
+      <Route
+        path="/login"
+        element={<LoginPage />}
+      />
+
+
+
+
+      {/* ================= DEFAULT ================= */}
+
+      <Route
+        path="/"
+        element={
+          <Navigate
+            to="/login"
+            replace
+          />
+        }
+      />
+
+
+
+
+
+      {/* ================= ADMIN ================= */}
+
+
+      <Route
+        path="/admin"
+        element={<AdminLayout />}
+      >
+
+
+        <Route
+          index
+          element={
+            <Navigate
+              to="dashboard"
+              replace
+            />
+          }
+        />
+
+
+
+        <Route
+          path="dashboard"
+          element={<Dashboard />}
+        />
+
+
+
+        <Route
+          path="students"
+          element={<Students />}
+        />
+
+
+
+        <Route
+          path="applications"
+          element={<Applications />}
+        />
+
+
+
+        <Route
+          path="internships"
+          element={<Internships />}
+        />
+
+
+
+        <Route
+          path="internships/add"
+          element={<AddInternship />}
+        />
+
+
+
+        <Route
+          path="internships/:id"
+          element={<InternshipDetails />}
+        />
+
+
+
+        <Route
+          path="internships/edit/:id"
+          element={<EditInternship />}
+        />
+
+
+
+        <Route
+          path="employers"
+          element={<Employers />}
+        />
+
+
+
+        <Route
+          path="settings"
+          element={<Settings />}
+        />
+
+
       </Route>
 
-      {/* ================= ADMIN ROUTES ================= */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
 
-        {/* Dashboard */}
-        <Route path="dashboard" element={<Dashboard />} />
 
-        {/* Students */}
-        <Route path="students" element={<Students />} />
-        <Route path="add-student" element={<AddStudent />} />
-        <Route path="edit-student/:id" element={<EditStudent />} />
-        <Route path="student/:id" element={<StudentDetails />} />
 
-        {/* Employers */}
-        <Route path="employers" element={<Employers />} />
-        <Route path="add-employer" element={<AddEmployer />} />
-        <Route path="edit-employer/:id" element={<EditEmployer />} />
-        <Route path="employer/:id" element={<EmployerDetails />} />
-      </Route>
 
-      {/* ================= STUDENT ROUTES ================= */}
-      <Route path="/student" element={<StudentLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<StudentDashboard />} />
-        <Route path="profile" element={<StudentProfile />} />
-        <Route path="resume-analysis" element={<ResumeBuilder />} />
-      </Route>
 
-      {/* ================= EMPLOYER ROUTES ================= */}
-      <Route path="/employer" element={<EmployerLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<EmployerDashboard />} />
-      </Route>
+      {/* ================= STUDENT ================= */}
+
+
+      <Route
+        path="/student/dashboard"
+        element={<StudentDashboard />}
+      />
+
+
+
+      <Route
+        path="/student/profile"
+        element={<StudentProfile />}
+      />
+
+
+
+      <Route
+        path="/student/resume-builder"
+        element={<ResumeBuilder />}
+      />
+
+
+
+
+
+
+
+      {/* ================= NOT FOUND ================= */}
+
+
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to="/login"
+            replace
+          />
+        }
+      />
+
+
+
     </Routes>
+
   );
+
+
 }
+
+
+export default AppRoutes;

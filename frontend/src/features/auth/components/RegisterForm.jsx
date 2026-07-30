@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import RoleSelector from "./RoleSelector";
 
@@ -12,38 +12,43 @@ import useRegister from "../hooks/useRegister";
 
 export default function RegisterForm() {
 
+
+  const navigate = useNavigate();
+
   const registerMutation = useRegister();
 
 
-  const [role,setRole] = useState("STUDENT");
+  const [role, setRole] = useState("STUDENT");
 
 
-  const [formData,setFormData] = useState({
+  const [formData, setFormData] = useState({
 
-    name:"",
-    email:"",
-    password:"",
-    confirmPassword:"",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
 
-    college:"",
-    degree:"",
-    careerGoal:"",
+    college: "",
+    degree: "",
+    careerGoal: "",
 
-    companyName:"",
-    industry:"",
-    website:"",
+    companyName: "",
+    industry: "",
+    website: "",
 
   });
 
 
 
-  const handleChange=(e)=>{
+
+
+  const handleChange = (e) => {
 
     setFormData({
 
       ...formData,
 
-      [e.target.name]:e.target.value
+      [e.target.name]: e.target.value
 
     });
 
@@ -52,7 +57,9 @@ export default function RegisterForm() {
 
 
 
-  const handleSubmit=(e)=>{
+
+
+  const handleSubmit = (e) => {
 
     e.preventDefault();
 
@@ -68,35 +75,41 @@ export default function RegisterForm() {
 
 
 
-    const payload={
 
-      name:formData.name,
 
-      email:formData.email,
+    const payload = {
 
-      password:formData.password,
+
+      name: formData.name,
+
+      email: formData.email,
+
+      password: formData.password,
 
       role,
 
 
-      ...(role==="STUDENT" && {
 
-        college:formData.college,
+      ...(role === "STUDENT" && {
 
-        degree:formData.degree,
+        college: formData.college,
 
-        careerGoal:formData.careerGoal,
+        degree: formData.degree,
+
+        careerGoal: formData.careerGoal,
 
       }),
 
 
-      ...(role==="EMPLOYER" && {
 
-        companyName:formData.companyName,
 
-        industry:formData.industry,
+      ...(role === "EMPLOYER" && {
 
-        website:formData.website,
+        companyName: formData.companyName,
+
+        industry: formData.industry,
+
+        website: formData.website,
 
       })
 
@@ -104,11 +117,35 @@ export default function RegisterForm() {
 
 
 
-    console.log("REGISTER PAYLOAD:",payload);
+
+
+    console.log(
+      "REGISTER PAYLOAD:",
+      payload
+    );
 
 
 
-    registerMutation.mutate(payload);
+
+
+    registerMutation.mutate(payload, {
+
+
+      onSuccess: () => {
+
+
+        alert(
+          "Account created successfully. Please login."
+        );
+
+
+        navigate("/login");
+
+
+      }
+
+
+    });
 
 
   };
@@ -117,7 +154,9 @@ export default function RegisterForm() {
 
 
 
-return (
+
+
+  return (
 
 <form
 onSubmit={handleSubmit}
@@ -125,11 +164,13 @@ className="space-y-6"
 >
 
 
+
 <div className="space-y-2">
 
 <Label>
 Full Name
 </Label>
+
 
 <Input
 
@@ -148,6 +189,9 @@ required
 />
 
 </div>
+
+
+
 
 
 
@@ -185,6 +229,7 @@ required
 
 
 
+
 <div className="grid sm:grid-cols-2 gap-4">
 
 
@@ -212,6 +257,8 @@ required
 />
 
 </div>
+
+
 
 
 
@@ -249,6 +296,8 @@ required
 
 
 
+
+
 <RoleSelector
 
 value={role}
@@ -263,8 +312,11 @@ onChange={setRole}
 
 
 
+
+
 {
-role==="STUDENT" &&
+role === "STUDENT" &&
+
 
 <div className="space-y-4 border rounded-xl p-5">
 
@@ -272,6 +324,7 @@ role==="STUDENT" &&
 <h3 className="font-semibold">
 Student Information
 </h3>
+
 
 
 <Input
@@ -285,6 +338,8 @@ value={formData.college}
 onChange={handleChange}
 
 />
+
+
 
 
 
@@ -303,6 +358,7 @@ onChange={handleChange}
 
 
 
+
 <Input
 
 name="careerGoal"
@@ -316,6 +372,7 @@ onChange={handleChange}
 />
 
 
+
 </div>
 
 }
@@ -327,8 +384,10 @@ onChange={handleChange}
 
 
 
+
 {
-role==="EMPLOYER" &&
+role === "EMPLOYER" &&
+
 
 <div className="space-y-4 border rounded-xl p-5">
 
@@ -336,6 +395,8 @@ role==="EMPLOYER" &&
 <h3 className="font-semibold">
 Company Information
 </h3>
+
+
 
 
 
@@ -353,6 +414,9 @@ onChange={handleChange}
 
 
 
+
+
+
 <Input
 
 name="industry"
@@ -364,6 +428,10 @@ value={formData.industry}
 onChange={handleChange}
 
 />
+
+
+
+
 
 
 
@@ -380,6 +448,7 @@ onChange={handleChange}
 />
 
 
+
 </div>
 
 }
@@ -390,8 +459,11 @@ onChange={handleChange}
 
 
 
+
+
 {
 registerMutation.isError &&
+
 
 <div className="text-red-500 text-sm">
 
@@ -413,9 +485,13 @@ registerMutation.error?.response?.data?.message
 
 {
 JSON.stringify(
+
 registerMutation.error?.response?.data?.errors,
+
 null,
+
 2
+
 )
 
 }
@@ -426,6 +502,7 @@ null,
 </div>
 
 }
+
 
 
 
@@ -446,16 +523,26 @@ disabled={registerMutation.isPending}
 
 
 {
+
 registerMutation.isPending
+
 ?
+
 "Creating Account..."
+
 :
+
 "Create Account"
 
 }
 
 
+
 </Button>
+
+
+
+
 
 
 
@@ -468,8 +555,11 @@ Already have account?
 
 
 <Link
+
 to="/login"
+
 className="text-blue-600 ml-1"
+
 >
 
 Login
@@ -481,8 +571,10 @@ Login
 
 
 
+
+
 </form>
 
-);
+  );
 
 }
