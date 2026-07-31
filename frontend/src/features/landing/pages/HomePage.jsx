@@ -18,6 +18,7 @@ import CTASection from "../components/CTASection";
 export default function HomePage() {
   return (
     <>
+      <Navbar />
       <HeroSection />
       <FeaturePreviewSection />
       <TrustedSection />
