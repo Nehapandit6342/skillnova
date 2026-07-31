@@ -13,7 +13,7 @@ export const getProfile = async (userId) => {
       name: true,
       email: true,
       role: true,
-      isEmailVerified: true,
+
       isActive: true,
       studentProfile: true,
     },

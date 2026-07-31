@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+ 
 }
 
 
@@ -74,7 +75,6 @@ model StudentProfile {
 
   careerGoal String?
 
-
   github String?
 
   linkedin String?
@@ -88,11 +88,7 @@ model StudentProfile {
   applications Application[]
 
 
-  user User @relation(
-    fields: [userId],
-    references: [id],
-    onDelete: Cascade
-  )
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 
   createdAt DateTime @default(now())
@@ -142,11 +138,7 @@ model EmployerProfile {
   internships Internship[]
 
 
-  user User @relation(
-    fields: [userId],
-    references: [id],
-    onDelete: Cascade
-  )
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 
   createdAt DateTime @default(now())
@@ -191,12 +183,7 @@ model Internship {
   employerId String @db.Uuid
 
 
-  employer EmployerProfile @relation(
-    fields: [employerId],
-    references: [id],
-    onDelete: Cascade
-  )
-
+ employer EmployerProfile @relation(fields: [employerId], references: [id], onDelete: Cascade)
 
   applications Application[]
 
@@ -233,20 +220,11 @@ model Application {
 
 
 
-  student StudentProfile @relation(
-    fields: [studentId],
-    references: [id],
-    onDelete: Cascade
-  )
+ 
+student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
 
-
-  internship Internship @relation(
-    fields: [internshipId],
-    references: [id],
-    onDelete: Cascade
-  )
-
+  internship Internship  @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
   @@map("applications")
 }
@@ -275,12 +253,8 @@ model PasswordResetToken {
 
 
 
-  user User @relation(
-    fields: [userId],
-    references: [id],
-    onDelete: Cascade
-  )
-
+ 
+user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
