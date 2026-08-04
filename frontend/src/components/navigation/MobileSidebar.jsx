@@ -21,7 +21,7 @@ export default function MobileSidebar({
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 h-full w-72 bg-white shadow-xl transition-transform duration-300 lg:hidden ${
+        className={`fixed left-0 top-0 z-50 h-full w-72 bg-card shadow-xl transition-transform duration-300 lg:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

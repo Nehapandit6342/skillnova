@@ -9,7 +9,7 @@ export default function SidebarItem({ icon: Icon, title, path }) {
         ${
           isActive
             ? "bg-blue-600 text-white shadow-md"
-            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground"
         }`
       }
     >

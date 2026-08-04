@@ -14,7 +14,7 @@ export default function Topbar({
   onMenuClick,
 }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left */}
         <div className="flex items-center gap-4">
@@ -30,9 +30,9 @@ export default function Topbar({
 
           {/* Page Title */}
           <div>
-            <h1 className="text-xl font-bold text-slate-900">{title}</h1>
+            <h1 className="text-xl font-bold text-foreground">{title}</h1>
 
-            <p className="hidden text-sm text-slate-500 md:block">{subtitle}</p>
+            <p className="hidden text-sm text-muted-foreground md:block">{subtitle}</p>
           </div>
         </div>
 
@@ -53,7 +53,7 @@ export default function Topbar({
           </Button>
 
           {/* User */}
-          <button className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-slate-100">
+          <button className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-muted">
             {user.profileImage ? (
               <img
                 src={user.profileImage}
@@ -71,11 +71,11 @@ export default function Topbar({
             )}
 
             <div className="hidden text-left lg:block">
-              <p className="text-sm font-semibold text-slate-900">
+              <p className="text-sm font-semibold text-foreground">
                 {user.name}
               </p>
 
-              <p className="text-xs text-slate-500">{user.role}</p>
+              <p className="text-xs text-muted-foreground">{user.role}</p>
             </div>
           </button>
         </div>

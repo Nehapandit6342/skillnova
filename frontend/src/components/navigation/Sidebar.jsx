@@ -5,19 +5,19 @@ import SidebarItem from "./SidebarItem";
 
 export default function Sidebar({ items = [], title = "Student Portal" }) {
   return (
-    <aside className="hidden lg:flex lg:w-72 lg:flex-col border-r border-slate-200 bg-white h-screen sticky top-0">
+    <aside className="hidden lg:flex lg:w-72 lg:flex-col border-r border-border bg-card h-screen sticky top-0">
       {/* Logo */}
 
-      <div className="border-b border-slate-200 p-6">
+      <div className="border-b border-border p-6">
         <Link to="/" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white">
             <GraduationCap className="h-6 w-6" />
           </div>
 
           <div>
-            <h1 className="text-xl font-bold text-slate-900">SkillNova</h1>
+            <h1 className="text-xl font-bold text-foreground">SkillNova</h1>
 
-            <p className="text-sm text-slate-500">{title}</p>
+            <p className="text-sm text-muted-foreground">{title}</p>
           </div>
         </Link>
       </div>
@@ -32,8 +32,8 @@ export default function Sidebar({ items = [], title = "Student Portal" }) {
 
       {/* Footer */}
 
-      <div className="border-t border-slate-200 p-5">
-        <p className="text-center text-xs text-slate-400">
+      <div className="border-t border-border p-5">
+        <p className="text-center text-xs text-muted-foreground/70">
           © {new Date().getFullYear()} SkillNova
         </p>
       </div>

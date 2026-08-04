@@ -100,3 +100,50 @@ export const updateProfile = async (userId, data) => {
 
   return getProfile(userId);
 };
+export const getUpcomingDeadlinesService = async (userId) => {
+  // Find the student's profile first
+  const student = await prisma.studentProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!student) {
+    throw new Error("Student profile not found.");
+  }
+
+  // Get applications with internship details
+  const applications = await prisma.application.findMany({
+    where: {
+      studentId: student.id,
+    },
+    include: {
+      internship: {
+        include: {
+          employer: true,
+        },
+      },
+    },
+    orderBy: {
+      appliedAt: "desc",
+    },
+  });
+
+  // Keep only internships with future deadlines
+  return applications
+    .filter(
+      (application) =>
+        application.internship.deadline &&
+        application.internship.deadline > new Date(),
+    )
+    .map((application) => ({
+      id: application.id,
+      internshipId: application.internship.id,
+      role: application.internship.title,
+      company: application.internship.employer.companyName,
+      deadline: application.internship.deadline,
+      status: application.status,
+      location: application.internship.location,
+      type: application.internship.type,
+    }));
+};
