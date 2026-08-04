@@ -1,9 +1,44 @@
 import { CheckCircle2, TrendingUp } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
+import { useResumeAnalysis } from "../../hooks/useResumeAnalysis";
 
 export default function ATSScoreCard() {
-  const score = 88;
+  const { data, isLoading } = useResumeAnalysis();
+
+  if (isLoading) {
+    return (
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        Loading...
+      </section>
+    );
+  }
+
+  const analysis = data?.data?.analysis;
+
+  if (!analysis) {
+    return (
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        No ATS score available.
+      </section>
+    );
+  }
+
+  const score = analysis.atsScore;
+
+  const getScoreLabel = () => {
+    if (score >= 85) return "Excellent";
+    if (score >= 70) return "Good";
+    if (score >= 50) return "Average";
+    return "Needs Improvement";
+  };
+
+  const getFormatting = () => {
+    if (score >= 85) return "Excellent";
+    if (score >= 70) return "Good";
+    if (score >= 50) return "Average";
+    return "Poor";
+  };
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -27,11 +62,11 @@ export default function ATSScoreCard() {
           </div>
         </div>
 
-        <h4 className="mt-5 text-xl font-semibold text-green-600">Excellent</h4>
+        <h4 className="mt-5 text-xl font-semibold text-green-600">
+          {getScoreLabel()}
+        </h4>
 
-        <p className="mt-2 text-slate-500">
-          Your resume is optimized for most ATS systems.
-        </p>
+        <p className="mt-2 text-slate-500">{analysis.summary}</p>
       </div>
 
       {/* Progress */}
@@ -46,9 +81,9 @@ export default function ATSScoreCard() {
             <TrendingUp className="h-6 w-6 text-blue-600" />
 
             <div>
-              <p className="text-sm text-slate-500">Keyword Match</p>
+              <p className="text-sm text-slate-500">ATS Score</p>
 
-              <p className="font-semibold text-slate-900">91%</p>
+              <p className="font-semibold text-slate-900">{score}%</p>
             </div>
           </div>
         </div>
@@ -58,9 +93,9 @@ export default function ATSScoreCard() {
             <CheckCircle2 className="h-6 w-6 text-green-600" />
 
             <div>
-              <p className="text-sm text-slate-500">Formatting</p>
+              <p className="text-sm text-slate-500">Resume Quality</p>
 
-              <p className="font-semibold text-slate-900">Excellent</p>
+              <p className="font-semibold text-slate-900">{getFormatting()}</p>
             </div>
           </div>
         </div>

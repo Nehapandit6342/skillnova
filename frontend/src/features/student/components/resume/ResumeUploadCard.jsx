@@ -1,8 +1,13 @@
 import { CloudUpload, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useResumeAnalysis } from "../../hooks/useResumeAnalysis";
 
-export default function ResumeUploadCard() {
+export default function ResumeUploadCard({ onUpload, isUploading }) {
+  const { data } = useResumeAnalysis();
+
+  const resume = data?.data;
+  const hasResume = !!resume?.resumeUrl;
   return (
     <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 shadow-sm">
       <div className="flex flex-col items-center text-center">
@@ -19,16 +24,40 @@ export default function ResumeUploadCard() {
           formats: PDF and DOCX.
         </p>
 
-        <Button className="mt-8">Choose File</Button>
+        <Button className="mt-8" onClick={onUpload} disabled={isUploading}>
+          {isUploading
+            ? "Uploading..."
+            : hasResume
+              ? "Replace Resume"
+              : "Upload Resume"}
+        </Button>
 
         <div className="mt-8 rounded-xl bg-slate-50 p-4">
           <div className="flex items-center gap-3">
             <FileText className="h-6 w-6 text-blue-600" />
 
             <div className="text-left">
-              <p className="font-medium text-slate-900">No resume uploaded</p>
+              {hasResume ? (
+                <>
+                  <p className="font-medium text-green-600">
+                    Resume uploaded successfully
+                  </p>
 
-              <p className="text-sm text-slate-500">Maximum file size: 5 MB</p>
+                  <p className="text-sm text-slate-500">
+                    Click "Replace Resume " anytime to replace it.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="font-medium text-slate-900">
+                    No resume uploaded
+                  </p>
+
+                  <p className="text-sm text-slate-500">
+                    Maximum file size: 5 MB
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
