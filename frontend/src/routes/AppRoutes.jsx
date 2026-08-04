@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "@/routes/ProtectedRoute";
 import HomePage from "@/features/landing/pages/HomePage";
 
 // ================= LAYOUT =================
@@ -27,6 +28,8 @@ import StudentLayout from "@/layouts/StudentLayout";
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudentProfile from "@/features/student/pages/StudentProfile";
 import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
+import ResumeReport from "@/features/student/pages/ResumeReport";
+import StudentSettings from "@/features/student/pages/Settings";
 
 function AppRoutes() {
   return (
@@ -40,44 +43,58 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
 
       {/* ================== ADMIN ================= */}
+      <Route element={<ProtectedRoute roles={["ADMIN"]} />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
 
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
 
-        <Route path="dashboard" element={<Dashboard />} />
+          <Route path="students" element={<Students />} />
 
-        <Route path="students" element={<Students />} />
+          <Route path="applications" element={<Applications />} />
 
-        <Route path="applications" element={<Applications />} />
+          <Route path="internships" element={<Internships />} />
 
-        <Route path="internships" element={<Internships />} />
+          <Route path="internships/add" element={<AddInternship />} />
 
-        <Route path="internships/add" element={<AddInternship />} />
+          <Route path="internships/:id" element={<InternshipDetails />} />
 
-        <Route path="internships/:id" element={<InternshipDetails />} />
+          <Route path="internships/edit/:id" element={<EditInternship />} />
 
-        <Route path="internships/edit/:id" element={<EditInternship />} />
+          <Route path="employers" element={<Employers />} />
 
-        <Route path="employers" element={<Employers />} />
-
-        <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Route>
 
       {/* ================= STUDENT ================= */}
+      <Route element={<ProtectedRoute roles={["STUDENT"]} />}>
+        <Route path="/student" element={<StudentLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
 
-      <Route path="/student" element={<StudentLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<StudentDashboard />} />
 
-        <Route path="dashboard" element={<StudentDashboard />} />
+          <Route path="profile" element={<StudentProfile />} />
 
-        <Route path="profile" element={<StudentProfile />} />
-
-        <Route path="resume-builder" element={<ResumeBuilder />} />
+          <Route path="resume-builder" element={<ResumeBuilder />} />
+          <Route path="resume-analysis" element={<ResumeReport />} />
+          <Route path="settings" element={<StudentSettings />} />
+        </Route>
       </Route>
 
       {/* ================= NOT FOUND ================= */}
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route
+        path="*"
+        element={
+          <div className="flex min-h-screen items-center justify-center bg-slate-50">
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-slate-900">404</h1>
+              <p className="mt-2 text-slate-500">Page not found.</p>
+            </div>
+          </div>
+        }
+      />
     </Routes>
   );
 }
