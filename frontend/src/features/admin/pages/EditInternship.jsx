@@ -8,9 +8,14 @@ export default function EditInternship() {
 
   const navigate = useNavigate();
 
+
   const [employers, setEmployers] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
+
   const [formData, setFormData] = useState({
+
     title: "",
     description: "",
     location: "",
@@ -19,7 +24,10 @@ export default function EditInternship() {
     deadline: "",
     employerId: "",
     isActive: true,
+
   });
+
+
 
   useEffect(() => {
 
@@ -29,115 +37,179 @@ export default function EditInternship() {
 
   }, []);
 
+
+
+
   const fetchInternship = async () => {
 
     try {
 
-      const response = await api.get(`/internships/${id}`);
+      const response = await api.get(
+        `/admin/internships/${id}`
+      );
 
-      if (response.data.success) {
+
+      if(response.data.success){
 
         const internship = response.data.data;
+
 
         setFormData({
 
           title: internship.title || "",
+
           description: internship.description || "",
+
           location: internship.location || "",
+
           type: internship.type || "",
+
           stipend: internship.stipend || "",
+
           deadline: internship.deadline
             ? internship.deadline.substring(0,10)
             : "",
 
-          employerId: internship.employerId,
+          employerId: internship.employerId || "",
 
           isActive: internship.isActive,
 
         });
 
+
       }
 
-    } catch (error) {
 
-      console.log(error);
+    } catch(error){
+
+      console.log(
+        "Fetch Internship Error:",
+        error.response?.data || error.message
+      );
 
     }
 
   };
+
+
+
+
 
   const fetchEmployers = async () => {
 
     try {
 
-      const response = await api.get("/admin/employers");
+      const response = await api.get(
+        "/admin/employers"
+      );
+
 
       if(response.data.success){
 
-        setEmployers(response.data.data);
+        setEmployers(
+          response.data.data
+        );
 
       }
 
-    } catch(error){
 
-      console.log(error);
+    }catch(error){
+
+      console.log(
+        "Employer Fetch Error:",
+        error.response?.data || error.message
+      );
 
     }
 
   };
+
+
+
+
 
   const handleChange = (e)=>{
 
     const {name,value}=e.target;
 
-    setFormData({
 
-      ...formData,
+    setFormData((prev)=>({
+
+      ...prev,
 
       [name]:
-      name==="isActive"
-      ? value==="true"
-      : value,
 
-    });
+        name==="isActive"
+
+        ? value==="true"
+
+        : value
+
+    }));
 
   };
+
+
+
+
 
   const handleSubmit = async(e)=>{
 
     e.preventDefault();
 
+
     try{
 
-      const response=await api.put(
+      setLoading(true);
 
-        `/internships/${id}`,
+
+      const response = await api.put(
+
+        `/admin/internships/${id}`,
 
         formData
 
       );
 
-      if(response.data.success){
 
-        alert("Internship updated successfully");
+      if(response.data.success){
 
         navigate("/admin/internships");
 
       }
 
+
     }catch(error){
 
-      console.log(error);
+      console.log(
+        "Update Error:",
+        error.response?.data || error.message
+      );
 
-      alert("Update failed");
+
+      alert(
+        error.response?.data?.message ||
+        "Update failed"
+      );
+
+
+    }finally{
+
+      setLoading(false);
 
     }
 
+
   };
 
-  return(
 
-    <div className="max-w-3xl mx-auto p-8">
+
+
+
+  return (
+
+    <div className="max-w-4xl mx-auto p-8">
+
 
       <h1 className="text-3xl font-bold mb-8">
 
@@ -145,29 +217,41 @@ export default function EditInternship() {
 
       </h1>
 
+
+
       <form
+
         onSubmit={handleSubmit}
-        className="space-y-5"
+
+        className="bg-white shadow-lg rounded-xl p-8 space-y-5"
+
       >
 
+
         <input
+          type="text"
           name="title"
           value={formData.title}
           onChange={handleChange}
-          placeholder="Title"
+          placeholder="Internship Title"
           className="w-full border rounded-lg p-3"
+          required
         />
+
 
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
-          placeholder="Description"
           rows={4}
+          placeholder="Description"
           className="w-full border rounded-lg p-3"
+          required
         />
 
+
         <input
+          type="text"
           name="location"
           value={formData.location}
           onChange={handleChange}
@@ -175,21 +259,26 @@ export default function EditInternship() {
           className="w-full border rounded-lg p-3"
         />
 
+
         <input
+          type="text"
           name="type"
           value={formData.type}
           onChange={handleChange}
-          placeholder="Type"
+          placeholder="Remote / Onsite / Hybrid"
           className="w-full border rounded-lg p-3"
         />
 
+
         <input
+          type="text"
           name="stipend"
           value={formData.stipend}
           onChange={handleChange}
           placeholder="Stipend"
           className="w-full border rounded-lg p-3"
         />
+
 
         <input
           type="date"
@@ -199,6 +288,8 @@ export default function EditInternship() {
           className="w-full border rounded-lg p-3"
         />
 
+
+
         <select
           name="employerId"
           value={formData.employerId}
@@ -206,39 +297,88 @@ export default function EditInternship() {
           className="w-full border rounded-lg p-3"
         >
 
+          <option value="">
+            Select Employer
+          </option>
+
+
           {employers.map((employer)=>(
 
             <option
               key={employer.id}
               value={employer.id}
             >
+
               {employer.companyName}
+
             </option>
 
           ))}
 
         </select>
 
+
+
         <select
           name="isActive"
-          value={formData.isActive}
+          value={String(formData.isActive)}
           onChange={handleChange}
           className="w-full border rounded-lg p-3"
         >
 
-          <option value={true}>Active</option>
+          <option value="true">
+            Active
+          </option>
 
-          <option value={false}>Inactive</option>
+          <option value="false">
+            Inactive
+          </option>
+
 
         </select>
 
-        <button
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg"
-        >
-          Update Internship
-        </button>
+
+
+
+        <div className="flex gap-4">
+
+
+          <button
+
+            type="submit"
+
+            disabled={loading}
+
+            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg"
+
+          >
+
+            {loading ? "Updating..." : "Update Internship"}
+
+          </button>
+
+
+
+          <button
+
+            type="button"
+
+            onClick={()=>navigate("/admin/internships")}
+
+            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg"
+
+          >
+
+            Cancel
+
+          </button>
+
+
+        </div>
+
 
       </form>
+
 
     </div>
 

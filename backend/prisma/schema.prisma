@@ -11,7 +11,6 @@ enum Role {
   EMPLOYER
   ADMIN
 }
-
 enum ApplicationStatus {
   PENDING
   ACCEPTED
@@ -181,9 +180,23 @@ model Internship {
 
   type String?
 
+  workMode String?
+
+  duration String?
+
   stipend String?
+  openings Int?
 
   deadline DateTime?
+  responsibilities String[] @default([])
+
+  skills String[] @default([])
+
+  qualifications String[] @default([])
+
+  benefits String[] @default([])
+
+  selectionProcess String[] @default([])
 
   isActive Boolean @default(true)
 
@@ -207,15 +220,36 @@ model Application {
 
   internshipId String @db.Uuid
 
-  status ApplicationStatus @default(PENDING)
+  phone String?
 
-  appliedAt DateTime @default(now())
+  resume String?
+
+  coverLetter String?
+
+  availability String?
+
+  status ApplicationStatus @default(PENDING)
 
   student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   internship Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, internshipId])
   @@map("applications")
+}
+
+enum ApplicationStatus {
+  PENDING
+
+  REVIEWING
+
+  ACCEPTED
+
+  REJECTED
 }
 
 model PasswordResetToken {
@@ -228,6 +262,8 @@ model PasswordResetToken {
   expiresAt DateTime
 
   used Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

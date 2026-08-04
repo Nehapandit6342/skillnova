@@ -99,7 +99,7 @@ npm run dev
 
 Backend will run on:
 
-http://localhost:5000 8. Start Frontend
+http://localhost:5001 8. Start Frontend
 cd frontend
 
 npm run dev

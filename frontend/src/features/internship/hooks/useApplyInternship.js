@@ -5,15 +5,15 @@ import {
 
 
 import {
-    deleteInternship
-} from "@/api/internship.api";
+    applyInternship
+} from "@/api/application.api";
 
 
 import toast from "react-hot-toast";
 
 
 
-export default function useDeleteInternship(){
+export default function useApplyInternship(){
 
 
     const queryClient =
@@ -24,39 +24,27 @@ export default function useDeleteInternship(){
     return useMutation({
 
 
-        mutationFn: deleteInternship,
+        mutationFn:applyInternship,
 
 
         onSuccess:()=>{
 
 
             toast.success(
-                "Internship deleted successfully"
+                "Application submitted successfully"
             );
 
 
-
             queryClient.invalidateQueries({
 
                 queryKey:[
-                    "my-internships"
-                ]
-
-            });
-
-
-
-            queryClient.invalidateQueries({
-
-                queryKey:[
-                    "employer-dashboard-stats"
+                    "my-applications"
                 ]
 
             });
 
 
         },
-
 
 
         onError:(error)=>{
@@ -66,7 +54,7 @@ export default function useDeleteInternship(){
 
                 error?.response?.data?.message
                 ||
-                "Delete failed"
+                "Application failed"
 
             );
 

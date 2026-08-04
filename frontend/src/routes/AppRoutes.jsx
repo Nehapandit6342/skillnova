@@ -1,27 +1,53 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import {
+    Routes,
+    Route,
+    Navigate
+} from "react-router-dom";
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import HomePage from "@/features/landing/pages/HomePage";
 
-// ================= LAYOUT =================
 
-import AdminLayout from "@/layouts/AdminLayout";
 
-// ================= ADMIN PAGES =================
+// ================= HOME =================
 
-import Dashboard from "@/features/admin/pages/Dashboard";
-import Students from "@/features/admin/pages/Students";
-import Applications from "@/features/admin/pages/Applications";
-import Internships from "@/features/admin/pages/Internships";
-import Employers from "@/features/admin/pages/Employers";
-import Settings from "@/features/admin/pages/Settings";
+import HomePage
+from "@/features/landing/pages/HomePage";
 
-import AddInternship from "@/features/admin/pages/AddInternship";
-import EditInternship from "@/features/admin/pages/EditInternship";
-import InternshipDetails from "@/features/admin/pages/InternshipDetails";
 
 // ================= AUTH =================
 
-import LoginPage from "@/features/auth/pages/LoginPage";
+import LoginPage
+from "@/features/auth/pages/LoginPage";
+
+
+
+// ================= LAYOUT =================
+
+import AdminLayout
+from "@/layouts/AdminLayout";
+
+import StudentLayout
+from "@/layouts/StudentLayout";
+
+import EmployerLayout
+from "@/layouts/EmployerLayout";
+
+
+
+
+// ================= PUBLIC INTERNSHIP =================
+
+import InternshipList
+from "@/features/internship/pages/InternshipList";
+
+import InternshipDetails
+from "@/features/internship/pages/InternshipDetails";
+
+import ApplyInternship
+from "@/features/internship/pages/ApplyInternship";
+
+
+
+
 
 // ================= STUDENT =================
 import StudentLayout from "@/layouts/StudentLayout";
@@ -36,10 +62,285 @@ function AppRoutes() {
     <Routes>
       {/* ================= HOME ================= */}
 
-      <Route path="/" element={<HomePage />} />
 
-      {/* ================= LOGIN ================= */}
+<Route
 
+path="/"
+
+element={<HomePage/>}
+
+/>
+
+
+
+
+
+{/* ================= LOGIN ================= */}
+
+
+<Route
+
+path="/login"
+
+element={<LoginPage/>}
+
+/>
+
+
+
+
+
+
+
+
+
+{/* =================================================
+        PUBLIC INTERNSHIP FLOW
+================================================= */}
+
+
+
+<Route
+
+path="/internships"
+
+element={<InternshipList/>}
+
+/>
+
+
+
+
+<Route
+
+path="/internships/:id"
+
+element={<InternshipDetails/>}
+
+/>
+
+
+
+
+<Route
+
+path="/internships/:id/apply"
+
+element={<ApplyInternship/>}
+
+/>
+
+
+
+
+
+
+
+
+
+{/* =================================================
+        STUDENT PORTAL
+================================================= */}
+
+
+{/* =================================================
+        STUDENT PORTAL
+================================================= */}
+
+
+<Route
+
+path="/student"
+
+element={<StudentLayout/>}
+
+>
+
+
+<Route
+
+index
+
+element={
+<Navigate
+to="dashboard"
+replace
+/>
+}
+
+/>
+
+
+
+<Route
+
+path="dashboard"
+
+element={<StudentDashboard/>}
+
+/>
+
+
+
+<Route
+
+path="profile"
+
+element={<StudentProfile/>}
+
+/>
+
+
+
+<Route
+
+path="resume-builder"
+
+element={<ResumeBuilder/>}
+
+/>
+
+
+
+{/* Internship List */}
+
+<Route
+
+path="internships"
+
+element={<InternshipList/>}
+
+/>
+
+
+
+<Route
+
+path="applications"
+
+element={<MyApplications/>}
+
+/>
+
+
+
+</Route>
+
+
+
+
+
+
+
+
+
+
+
+
+{/* =================================================
+        ADMIN PORTAL
+================================================= */}
+
+
+
+<Route
+
+path="/admin"
+
+element={<AdminLayout/>}
+
+>
+
+
+<Route
+
+index
+
+element={
+<Navigate
+to="dashboard"
+replace
+/>
+}
+
+/>
+
+
+
+
+<Route
+
+path="dashboard"
+
+element={<Dashboard/>}
+
+/>
+
+
+
+
+<Route
+
+path="students"
+
+element={<Students/>}
+
+/>
+
+
+
+
+<Route
+
+path="student/:id"
+
+element={<StudentDetails/>}
+
+/>
+
+
+
+
+<Route
+
+path="edit-student/:id"
+
+element={<EditStudent/>}
+
+/>
+
+
+
+
+<Route
+
+path="applications"
+
+element={<AdminApplications/>}
+
+/>
+
+
+
+
+<Route
+
+path="internships"
+
+element={<AdminInternships/>}
+
+/>
+
+
+
+
+<Route
+
+path="internships/add"
+
+element={<AddInternship/>}
+
+/>
       <Route path="/login" element={<LoginPage />} />
 
       {/* ================== ADMIN ================= */}
@@ -82,7 +383,15 @@ function AppRoutes() {
         </Route>
       </Route>
 
-      {/* ================= NOT FOUND ================= */}
+
+
+
+
+
+
+
+
+{/* ================= 404 ================= */}
 
       <Route
         path="*"
@@ -98,5 +407,3 @@ function AppRoutes() {
     </Routes>
   );
 }
-
-export default AppRoutes;

@@ -14,49 +14,79 @@ function Internships() {
 
   useEffect(() => {
 
+    fetchInternships();
 
-    const fetchInternships = async () => {
-
-
-      try {
-
-
-        const { data } = await api.get("/admin/internships");
-
-
-        console.log("Internships:", data);
+  }, []);
 
 
 
-        if(data.success){
+  const fetchInternships = async () => {
 
-          setInternships(
-            data.data || []
-          );
+    try {
 
-        }
+      const { data } = await api.get("/admin/internships");
 
 
+      console.log("Internships:", data);
 
-      } catch(error){
 
+      if (data.success) {
 
-        console.log(
-          "Internship Error:",
-          error.response?.data || error.message
+        setInternships(
+          data.data || []
         );
-
 
       }
 
 
-    };
+    } catch (error) {
+
+      console.log(
+        "Internship Error:",
+        error.response?.data || error.message
+      );
+
+    }
+
+  };
 
 
-    fetchInternships();
+
+  // DELETE INTERNSHIP
+
+  const deleteInternship = async (id) => {
+
+    try {
 
 
-  },[]);
+      await api.delete(
+        `/admin/internships/${id}`
+      );
+
+
+      setInternships((prev) =>
+        prev.filter(
+          (item) => item.id !== id
+        )
+      );
+
+
+      console.log("Internship deleted successfully");
+
+
+    } catch (error) {
+
+
+      console.log(
+        "Delete Error:",
+        error.response?.data || error.message
+      );
+
+
+    }
+
+  };
+
 
 
 
@@ -71,9 +101,15 @@ function Internships() {
       </h1>
 
 
+
       <InternshipTable
+
         internships={internships}
+
+        onDelete={deleteInternship}
+
       />
+
 
 
     </div>
