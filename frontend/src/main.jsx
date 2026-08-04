@@ -27,6 +27,10 @@ import {
     AuthProvider
 } from "./context/AuthContext";
 
+import {
+    ThemeProvider
+} from "./context/ThemeContext";
+
 
 
 
@@ -66,18 +70,24 @@ ReactDOM.createRoot(
             <BrowserRouter>
 
 
-                <AuthProvider>
+                <ThemeProvider>
 
 
-                    <App />
+                    <AuthProvider>
 
 
-                    <Toaster
-                        position="top-right"
-                    />
+                        <App />
 
 
-                </AuthProvider>
+                        <Toaster
+                            position="top-right"
+                        />
+
+
+                    </AuthProvider>
+
+
+                </ThemeProvider>
 
 
             </BrowserRouter>

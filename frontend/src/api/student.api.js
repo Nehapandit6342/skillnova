@@ -32,3 +32,15 @@ export const updateStudentProfile = async ({ formData, profileImage }) => {
 
   return response.data;
 };
+
+// getRecent activity
+export const getRecentActivities = async () => {
+  const response = await api.get("/students/recent-activity");
+  return response.data;
+};
+// get upcomingDeadlines
+
+export const getUpcomingDeadlines = async () => {
+  const response = await api.get("/students/upcoming-deadlines");
+  return response.data;
+};
