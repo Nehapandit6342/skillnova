@@ -1,8 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+    useQuery
+} from "@tanstack/react-query";
+
 
 import {
     getInternshipById
 } from "@/api/internship.api";
+
 
 
 export default function useInternshipById(id){

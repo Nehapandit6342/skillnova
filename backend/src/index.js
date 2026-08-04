@@ -5,7 +5,7 @@ import cors from "cors";
 import prisma from "./config/prisma.js";
 
 
-// Routes
+// ================= ROUTES =================
 
 import authRoutes from "./routes/auth.routes.js";
 import studentRoutes from "./routes/student.routes.js";
@@ -14,8 +14,9 @@ import employerRoutes from "./routes/employer.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import internshipRoutes from "./routes/internship.routes.js";
 import applicationRoutes from "./routes/application.routes.js";
-import candidateRoutes
-from "./routes/candidate.routes.js";
+import candidateRoutes from "./routes/candidate.routes.js";
+
+
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ const app = express();
 
 
 const PORT = process.env.PORT || 5000;
+
+
 
 
 
@@ -40,7 +43,8 @@ app.use(express.json());
 
 
 
-// ================= ROUTES =================
+// ================= API ROUTES =================
+
 
 
 app.use(
@@ -49,10 +53,12 @@ app.use(
 );
 
 
+
 app.use(
     "/api/auth",
     authRoutes
 );
+
 
 
 app.use(
@@ -82,15 +88,24 @@ app.use(
 );
 
 
-app.use(
-"/api/applications",
-applicationRoutes
-);
 
 app.use(
-"/api/candidates",
-candidateRoutes
+    "/api/applications",
+    applicationRoutes
 );
+
+
+
+app.use(
+    "/api/candidates",
+    candidateRoutes
+);
+
+
+
+
+
+
 
 // ================= HEALTH CHECK =================
 
@@ -98,7 +113,9 @@ candidateRoutes
 app.get("/",(req,res)=>{
 
 
-    res.json({
+    res.status(200).json({
+
+        success:true,
 
         message:
         "SkillNova API is running 🚀"
@@ -114,7 +131,10 @@ app.get("/",(req,res)=>{
 
 
 
-// ================= SERVER =================
+
+
+// ================= START SERVER =================
+
 
 
 async function startServer(){
@@ -126,21 +146,26 @@ async function startServer(){
         await prisma.$connect();
 
 
+
         console.log(
-            "Database connected successfully"
+            "Database connected successfully ✅"
         );
 
 
 
-        app.listen(PORT,()=>{
+
+        app.listen(
+            PORT,
+            ()=>{
 
 
-            console.log(
-                `Server running on port ${PORT}`
-            );
+                console.log(
+                    `Server running on port ${PORT} 🚀`
+                );
 
 
-        });
+            }
+        );
 
 
 
@@ -148,15 +173,23 @@ async function startServer(){
 
 
         console.error(
-            "Database connection failed",
+
+            "Database connection failed ❌",
+
             error
+
         );
+
+
+        process.exit(1);
 
 
     }
 
 
 }
+
+
 
 
 

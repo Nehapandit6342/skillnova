@@ -27,8 +27,7 @@ export default function useUpdateInternship(){
         mutationFn:updateInternship,
 
 
-
-        onSuccess:()=>{
+        onSuccess:(_,variables)=>{
 
 
             toast.success(
@@ -46,6 +45,20 @@ export default function useUpdateInternship(){
             });
 
 
+
+            queryClient.invalidateQueries({
+
+                queryKey:[
+
+                    "internship",
+
+                    variables.id
+
+                ]
+
+            });
+
+
         },
 
 
@@ -55,8 +68,7 @@ export default function useUpdateInternship(){
 
             toast.error(
 
-                error.response?.data?.message
-                ||
+                error?.response?.data?.message ||
                 "Update failed"
 
             );

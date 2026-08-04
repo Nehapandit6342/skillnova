@@ -6,113 +6,151 @@ import prisma from "../config/prisma.js";
 // =====================================
 
 export const createApplicationService = async (
-  userId,
-  data
+    userId,
+    data
 ) => {
 
-  const student = await prisma.studentProfile.findUnique({
 
-    where: {
-      userId,
-    },
+    const student =
+    await prisma.studentProfile.findUnique({
 
-  });
-
-
-  if (!student) {
-
-    throw new Error("Student profile not found");
-
-  }
-
-
-
-  const internship = await prisma.internship.findUnique({
-
-    where: {
-      id: data.internshipId,
-    },
-
-  });
-
-
-
-  if (!internship) {
-
-    throw new Error("Internship not found");
-
-  }
-
-
-
-  const alreadyApplied =
-    await prisma.application.findFirst({
-
-      where: {
-
-        studentId: student.id,
-
-        internshipId: data.internshipId,
-
-      },
+        where:{
+            userId
+        }
 
     });
 
 
 
-  if (alreadyApplied) {
+    if(!student){
 
-    throw new Error(
-      "You have already applied for this internship"
-    );
+        throw new Error(
+            "Student profile not found"
+        );
 
-  }
-
-
-
-  const application =
-    await prisma.application.create({
-
-      data: {
-
-        studentId: student.id,
-
-        internshipId: data.internshipId,
-
-        status: "PENDING",
-
-      },
+    }
 
 
-      include: {
 
-        internship: {
 
-          include: {
+    const internship =
+    await prisma.internship.findUnique({
 
-            employer: {
+        where:{
+            id:data.internshipId
+        }
 
-              select: {
+    });
 
-                companyName: true,
 
-              },
 
-            },
+    if(!internship){
 
-          },
+        throw new Error(
+            "Internship not found"
+        );
+
+    }
+
+
+
+
+    const alreadyApplied =
+    await prisma.application.findUnique({
+
+        where:{
+            studentId_internshipId:{
+                studentId:student.id,
+                internshipId:data.internshipId
+            }
+        }
+
+    });
+
+
+
+    if(alreadyApplied){
+
+        throw new Error(
+            "You have already applied for this internship"
+        );
+
+    }
+
+
+
+
+
+    return await prisma.application.create({
+
+        data:{
+
+
+            studentId:student.id,
+
+
+            internshipId:data.internshipId,
+
+
+            phone:data.phone || null,
+
+
+            resume:data.resume || null,
+
+
+            coverLetter:data.coverLetter || null,
+
+
+            availability:data.availability || null,
+
+
+            status:"PENDING"
+
 
         },
 
-      },
+
+
+        include:{
+
+
+            internship:{
+
+
+                include:{
+
+
+                    employer:{
+
+
+                        select:{
+
+
+                            companyName:true
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        }
+
 
     });
 
 
 
-  return application;
-
 };
+
+
 
 
 
@@ -122,77 +160,97 @@ export const createApplicationService = async (
 // GET STUDENT APPLICATIONS
 // =====================================
 
-export const getStudentApplicationsService = async (
-  userId
-) => {
+export const getStudentApplicationsService = async(
+    userId
+)=>{
 
 
-  const student =
+    const student =
     await prisma.studentProfile.findUnique({
 
-      where: {
-
-        userId,
-
-      },
+        where:{
+            userId
+        }
 
     });
 
 
 
-  if (!student) {
+    if(!student){
 
-    throw new Error(
-      "Student profile not found"
-    );
+        throw new Error(
+            "Student profile not found"
+        );
 
-  }
-
-
-
-  return await prisma.application.findMany({
-
-    where: {
-
-      studentId: student.id,
-
-    },
+    }
 
 
-    include: {
+
+    return await prisma.application.findMany({
 
 
-      internship: {
+        where:{
 
-        include: {
 
-          employer: {
+            studentId:student.id
 
-            select: {
-
-              companyName:true,
-
-            },
-
-          },
 
         },
 
-      },
-
-    },
 
 
-    orderBy: {
+        include:{
 
-      appliedAt:"desc",
 
-    },
+            internship:{
 
-  });
+
+                include:{
+
+
+                    employer:{
+
+
+                        select:{
+
+
+                            companyName:true
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        },
+
+
+
+        orderBy:{
+
+
+            createdAt:"desc"
+
+
+        }
+
+
+
+    });
+
 
 
 };
+
+
+
 
 
 
@@ -203,109 +261,122 @@ export const getStudentApplicationsService = async (
 // GET EMPLOYER APPLICATIONS
 // =====================================
 
-export const getEmployerApplicationsService = async (
-  userId
-) => {
+export const getEmployerApplicationsService = async(
+    userId
+)=>{
 
 
-  const employer =
+    const employer =
     await prisma.employerProfile.findUnique({
 
-      where: {
-
-        userId,
-
-      },
+        where:{
+            userId
+        }
 
     });
 
 
 
-  if (!employer) {
+    if(!employer){
 
-    throw new Error(
-      "Employer profile not found"
-    );
+        throw new Error(
+            "Employer profile not found"
+        );
 
-  }
-
-
-
-  return await prisma.application.findMany({
-
-    where: {
-
-      internship: {
-
-        employerId: employer.id,
-
-      },
-
-    },
+    }
 
 
 
-    include: {
+
+    return await prisma.application.findMany({
 
 
-      student: {
+        where:{
 
-        include: {
 
-          user: {
+            internship:{
 
-            select: {
 
-              id:true,
+                employerId:employer.id
 
-              name:true,
 
-              email:true,
+            }
 
-            },
-
-          },
 
         },
 
-      },
 
 
+        include:{
 
-      internship: {
 
-        include: {
+            student:{
 
-          employer: {
 
-            select: {
+                include:{
 
-              companyName:true,
+
+                    user:{
+
+
+                        select:{
+
+
+                            name:true,
+
+                            email:true
+
+
+                        }
+
+
+                    }
+
+
+                }
+
 
             },
 
-          },
+
+
+            internship:{
+
+
+                select:{
+
+
+                    title:true
+
+
+                }
+
+
+            }
+
 
         },
 
-      },
 
 
-    },
+        orderBy:{
+
+
+            createdAt:"desc"
+
+
+        }
 
 
 
-    orderBy: {
+    });
 
-      appliedAt:"desc",
-
-    },
-
-
-  });
 
 
 };
+
+
+
 
 
 
@@ -316,103 +387,75 @@ export const getEmployerApplicationsService = async (
 // UPDATE APPLICATION STATUS
 // =====================================
 
-export const updateApplicationStatusService = async (
-  id,
-  status
-) => {
+export const updateApplicationStatusService = async(
+    id,
+    status
+)=>{
 
 
-  const application =
+    const application =
     await prisma.application.findUnique({
 
-      where: {
-
-        id,
-
-      },
+        where:{
+            id
+        }
 
     });
 
 
 
-  if (!application) {
+    if(!application){
 
-    throw new Error(
-      "Application not found"
-    );
+        throw new Error(
+            "Application not found"
+        );
 
-  }
-
-
-
-  return await prisma.application.update({
-
-    where: {
-
-      id,
-
-    },
+    }
 
 
 
-    data: {
 
-      status,
+    return await prisma.application.update({
 
-    },
-
-
-
-    include: {
+        where:{
+            id
+        },
 
 
-      student: {
+        data:{
 
-        include: {
-
-          user: {
-
-            select: {
-
-              id:true,
-
-              name:true,
-
-              email:true,
-
-            },
-
-          },
+            status
 
         },
 
-      },
+
+        include:{
 
 
+            student:{
 
-      internship: {
 
-        include: {
+                include:{
 
-          employer: {
 
-            select: {
+                    user:true
 
-              companyName:true,
+
+                }
+
 
             },
 
-          },
 
-        },
-
-      },
+            internship:true
 
 
-    },
+        }
 
 
-  });
+
+    });
+
 
 
 };
@@ -422,72 +465,69 @@ export const updateApplicationStatusService = async (
 
 
 
+
+
+
 // =====================================
-// GET ALL APPLICATIONS (ADMIN)
+// ADMIN GET ALL APPLICATIONS
 // =====================================
 
-export const getAllApplicationsService = async () => {
+export const getAllApplicationsService = async()=>{
 
 
-  return await prisma.application.findMany({
-
-    include: {
+    return await prisma.application.findMany({
 
 
-      student: {
+        include:{
 
-        include: {
 
-          user: {
+            student:{
 
-            select: {
 
-              id:true,
+                include:{
 
-              name:true,
 
-              email:true,
+                    user:true
+
+
+                }
+
 
             },
 
-          },
+
+
+            internship:{
+
+
+                include:{
+
+
+                    employer:true
+
+
+                }
+
+
+            }
+
 
         },
 
-      },
+
+
+        orderBy:{
+
+
+            createdAt:"desc"
+
+
+        }
 
 
 
-      internship: {
+    });
 
-        include: {
-
-          employer: {
-
-            select: {
-
-              companyName:true,
-
-            },
-
-          },
-
-        },
-
-      },
-
-
-    },
-
-
-    orderBy: {
-
-      appliedAt:"desc",
-
-    },
-
-
-  });
 
 
 };

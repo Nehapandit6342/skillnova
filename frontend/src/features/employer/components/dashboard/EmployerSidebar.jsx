@@ -29,7 +29,7 @@ const employerSidebarItems = [
 
   {
     title: "Post Internship",
-    path: "/employer/post-internship",
+    path: "/employer/internships/post",
     icon: PlusCircle,
   },
 

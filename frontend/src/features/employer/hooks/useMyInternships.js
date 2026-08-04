@@ -11,12 +11,18 @@ export default function useMyInternships(){
 
     return useQuery({
 
+
         queryKey:[
             "my-internships"
         ],
 
 
-        queryFn:getMyInternships
+
+        queryFn:getMyInternships,
+
+
+
+        staleTime:1000 * 60 * 5
 
 
     });

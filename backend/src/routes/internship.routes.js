@@ -3,8 +3,6 @@ import express from "express";
 
 import {
 
-    createInternship,
-
     createEmployerInternship,
 
     getAllInternships,
@@ -39,8 +37,12 @@ const router = express.Router();
 
 
 
-// ================= PUBLIC =================
+// ==================================================
+// PUBLIC ROUTES
+// ==================================================
 
+
+// Get all internships
 
 router.get(
     "/",
@@ -50,8 +52,23 @@ router.get(
 
 
 
+// Get single internship details
 
-// ================= EMPLOYER =================
+router.get(
+    "/:id",
+    getInternshipById
+);
+
+
+
+
+
+
+
+
+// ==================================================
+// EMPLOYER ROUTES
+// ==================================================
 
 
 // Create internship
@@ -71,7 +88,10 @@ router.post(
 
 
 
-// My internships
+
+
+
+// Get employer's internships
 
 router.get(
 
@@ -88,7 +108,11 @@ router.get(
 
 
 
-// Update
+
+
+
+
+// Update internship
 
 router.put(
 
@@ -105,7 +129,11 @@ router.put(
 
 
 
-// Delete
+
+
+
+
+// Delete internship
 
 router.delete(
 
@@ -121,18 +149,6 @@ router.delete(
 
 
 
-
-
-// ================= PUBLIC DETAILS =================
-
-
-router.get(
-
-    "/:id",
-
-    getInternshipById
-
-);
 
 
 

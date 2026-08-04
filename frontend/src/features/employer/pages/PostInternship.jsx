@@ -1,140 +1,651 @@
-import {
-    useState
-} from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import useCreateInternship from "../hooks/useCreateInternship";
 
 
-import useCreateInternship 
-from "../hooks/useCreateInternship";
+export default function PostInternship() {
 
 
+  const mutation = useCreateInternship();
 
-export default function PostInternship(){
-
-
-    const mutation =
-    useCreateInternship();
+  const navigate = useNavigate();
 
 
 
-    const [form,setForm]=useState({
+  const initialForm = {
 
-        title:"",
-        description:"",
-        location:"",
-        type:"",
-        stipend:"",
-        deadline:""
+    title: "",
+
+    description: "",
+
+    location: "",
+
+    type: "",
+
+    workMode: "",
+
+    duration: "",
+
+    stipend: "",
+
+    openings: "",
+
+    deadline: "",
+
+    responsibilities: "",
+
+    skills: "",
+
+    qualifications: "",
+
+    benefits: "",
+
+    selectionProcess: "",
+
+  };
+
+
+
+  const [form,setForm] = useState(initialForm);
+
+
+
+
+  const handleChange = (e)=>{
+
+
+    setForm({
+
+      ...form,
+
+      [e.target.name]:e.target.value
 
     });
 
 
+  };
 
-    const handleChange=(e)=>{
 
 
-        setForm({
 
-            ...form,
 
-            [e.target.name]:
-            e.target.value
 
-        });
+  const submitHandler = (e)=>{
+
+
+    e.preventDefault();
+
+
+
+    const payload = {
+
+
+      ...form,
+
+
+      openings:
+      form.openings
+      ?
+      Number(form.openings)
+      :
+      null,
+
+
+
+      responsibilities:
+      form.responsibilities
+      .split("\n")
+      .map(item=>item.trim())
+      .filter(Boolean),
+
+
+
+      skills:
+      form.skills
+      .split(",")
+      .map(item=>item.trim())
+      .filter(Boolean),
+
+
+
+      qualifications:
+      form.qualifications
+      .split("\n")
+      .map(item=>item.trim())
+      .filter(Boolean),
+
+
+
+      benefits:
+      form.benefits
+      .split("\n")
+      .map(item=>item.trim())
+      .filter(Boolean),
+
+
+
+      selectionProcess:
+      form.selectionProcess
+      .split("\n")
+      .map(item=>item.trim())
+      .filter(Boolean),
 
 
     };
 
 
 
-    const submitHandler=(e)=>{
 
 
-        e.preventDefault();
+    mutation.mutate(payload,{
+
+      onSuccess:()=>{
 
 
-        mutation.mutate(form);
-
-
-    };
-
+        setForm(initialForm);
 
 
 
-    return (
-
-        <div className="max-w-3xl">
-
-
-            <h1 className="text-2xl font-bold mb-6">
-                Post Internship
-            </h1>
+        navigate(
+          "/employer/internships"
+        );
 
 
-
-            <form
-
-            onSubmit={submitHandler}
-
-            className="space-y-5 bg-white p-6 rounded-xl border"
-
-            >
+      }
 
 
-                {
-                Object.keys(form).map((field)=>(
+    });
 
-                    <input
 
-                    key={field}
-
-                    name={field}
-
-                    value={form[field]}
-
-                    onChange={handleChange}
-
-                    placeholder={
-                        field
-                    }
-
-                    className="
-                    w-full
-                    border
-                    rounded
-                    p-3
-                    "
-
-                    />
-
-                ))
-                }
+  };
 
 
 
-                <button
-
-                className="
-                bg-blue-600
-                text-white
-                px-6
-                py-3
-                rounded-lg
-                "
-
-                >
-
-                    Post Internship
-
-                </button>
 
 
 
-            </form>
+  return (
 
+    <div className="max-w-5xl mx-auto">
+
+
+      <div className="mb-8">
+
+        <h1 className="text-3xl font-bold text-slate-800">
+
+          Post Internship
+
+        </h1>
+
+
+        <p className="text-slate-500 mt-2">
+
+          Create a professional internship opportunity for students.
+
+        </p>
+
+
+      </div>
+
+
+
+
+
+      <form
+
+      onSubmit={submitHandler}
+
+      className="
+      bg-white
+      rounded-2xl
+      shadow
+      border
+      p-8
+      space-y-10
+      "
+
+      >
+
+
+
+
+        <section>
+
+
+          <h2 className="text-xl font-semibold mb-6">
+
+            Basic Information
+
+          </h2>
+
+
+
+
+          <div className="grid md:grid-cols-2 gap-5">
+
+
+            <Input
+            label="Internship Title"
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            placeholder="MERN Stack Developer Intern"
+            />
+
+
+            <Select
+            label="Internship Type"
+            name="type"
+            value={form.type}
+            onChange={handleChange}
+            options={[
+              "Full Time",
+              "Part Time",
+              "Contract"
+            ]}
+            />
+
+
+            <Select
+            label="Work Mode"
+            name="workMode"
+            value={form.workMode}
+            onChange={handleChange}
+            options={[
+              "Remote",
+              "Hybrid",
+              "Onsite"
+            ]}
+            />
+
+
+            <Input
+            label="Location"
+            name="location"
+            value={form.location}
+            onChange={handleChange}
+            placeholder="Kathmandu"
+            />
+
+
+            <Input
+            label="Duration"
+            name="duration"
+            value={form.duration}
+            onChange={handleChange}
+            placeholder="3 Months"
+            />
+
+
+            <Input
+            label="Openings"
+            name="openings"
+            value={form.openings}
+            onChange={handleChange}
+            type="number"
+            placeholder="5"
+            />
+
+
+            <Input
+            label="Stipend"
+            name="stipend"
+            value={form.stipend}
+            onChange={handleChange}
+            placeholder="NPR 15000/month"
+            />
+
+
+            <Input
+            label="Deadline"
+            name="deadline"
+            value={form.deadline}
+            onChange={handleChange}
+            type="date"
+            />
+
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+        <Textarea
+
+        label="Internship Description"
+
+        name="description"
+
+        value={form.description}
+
+        onChange={handleChange}
+
+        placeholder="Explain internship role..."
+
+        />
+
+
+
+
+
+
+        <Textarea
+
+        label="Responsibilities (one per line)"
+
+        name="responsibilities"
+
+        value={form.responsibilities}
+
+        onChange={handleChange}
+
+        placeholder={
+`Develop React components
+Build REST APIs
+Database management`
+        }
+
+        />
+
+
+
+
+
+
+
+        <Textarea
+
+        label="Required Skills (comma separated)"
+
+        name="skills"
+
+        value={form.skills}
+
+        onChange={handleChange}
+
+        placeholder="React, Node.js, PostgreSQL"
+
+        />
+
+
+
+
+
+
+
+        <Textarea
+
+        label="Qualifications"
+
+        name="qualifications"
+
+        value={form.qualifications}
+
+        onChange={handleChange}
+
+        placeholder={
+`BE Computer Engineering
+JavaScript knowledge`
+        }
+
+        />
+
+
+
+
+
+
+        <Textarea
+
+        label="Benefits"
+
+        name="benefits"
+
+        value={form.benefits}
+
+        onChange={handleChange}
+
+        placeholder={
+`Certificate
+Mentorship
+Job Opportunity`
+        }
+
+        />
+
+
+
+
+
+
+
+        <Textarea
+
+        label="Selection Process"
+
+        name="selectionProcess"
+
+        value={form.selectionProcess}
+
+        onChange={handleChange}
+
+        placeholder={
+`Resume Screening
+Technical Interview`
+        }
+
+        />
+
+
+
+
+
+
+
+        <div className="flex justify-end">
+
+
+          <button
+
+          disabled={mutation.isPending}
+
+          className="
+          bg-blue-600
+          hover:bg-blue-700
+          text-white
+          px-8
+          py-3
+          rounded-lg
+          font-semibold
+          "
+
+          >
+
+          {
+            mutation.isPending
+            ?
+            "Publishing..."
+            :
+            "Publish Internship"
+          }
+
+
+          </button>
 
 
         </div>
 
-    );
+
+
+      </form>
+
+
+
+    </div>
+
+  );
+
+}
+
+
+
+
+
+
+
+function Input({label,...props}){
+
+
+return (
+
+<div>
+
+
+<label className="block mb-2 font-medium">
+
+{label}
+
+</label>
+
+
+<input
+
+{...props}
+
+required
+
+className="
+w-full
+border
+rounded-lg
+p-3
+focus:ring-2
+focus:ring-blue-500
+outline-none
+"
+
+/>
+
+
+</div>
+
+);
+
+
+}
+
+
+
+
+
+
+
+function Select({label,options,...props}){
+
+
+return (
+
+<div>
+
+
+<label className="block mb-2 font-medium">
+
+{label}
+
+</label>
+
+
+<select
+
+{...props}
+
+required
+
+className="
+w-full
+border
+rounded-lg
+p-3
+"
+
+>
+
+<option value="">
+Select
+</option>
+
+
+{
+options.map(item=>(
+
+<option key={item} value={item}>
+
+{item}
+
+</option>
+
+))
+}
+
+
+</select>
+
+
+</div>
+
+);
+
+
+}
+
+
+
+
+
+
+
+function Textarea({label,...props}){
+
+
+return (
+
+<div>
+
+
+<label className="block mb-2 font-medium">
+
+{label}
+
+</label>
+
+
+<textarea
+
+{...props}
+
+rows="5"
+
+required
+
+className="
+w-full
+border
+rounded-lg
+p-4
+resize-none
+"
+
+/>
+
+
+</div>
+
+);
+
 
 }
