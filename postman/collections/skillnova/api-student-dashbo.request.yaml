@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/student-dashbo
+url: ""
+method: GET
+order: 4502895850490575

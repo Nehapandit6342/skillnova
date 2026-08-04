@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/ai/resume-analysis
+url: ""
+method: GET
+order: 2018762186969193

@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/auth/login
+url: ""
+method: GET
+order: 352733684878595

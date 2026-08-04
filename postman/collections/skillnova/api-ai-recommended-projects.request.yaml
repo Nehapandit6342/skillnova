@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/ai/recommended-projects
+url: ""
+method: GET
+order: 4357863543454594

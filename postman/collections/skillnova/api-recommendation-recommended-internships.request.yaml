@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/recommendation/recommended-internships
+url: ""
+method: GET
+order: 4451696248603979

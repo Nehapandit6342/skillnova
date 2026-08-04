@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/ai/skill-gap
+url: ""
+method: GET
+order: 3381982486934169

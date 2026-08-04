@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/career/preferences
+url: ""
+method: GET
+order: 4493305847286631

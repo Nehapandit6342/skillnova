@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/ai/resume-improvements
+url: ""
+method: GET
+order: 4461867206114182

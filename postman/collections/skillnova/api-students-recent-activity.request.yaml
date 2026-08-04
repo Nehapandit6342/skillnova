@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/students/recent-activity
+url: ""
+method: GET
+order: 4502958371182394

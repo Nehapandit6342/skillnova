@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/ai/test-parser
+url: ""
+method: GET
+order: 1785568724517
