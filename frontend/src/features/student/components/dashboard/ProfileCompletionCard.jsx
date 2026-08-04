@@ -1,8 +1,104 @@
-import { UserCheck } from "lucide-react";
+import { UserCheck, CheckCircle2, Circle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useStudentProfile } from "../../hooks/useStudentProfile";
 
 import { Button } from "@/components/ui/button";
 
 export default function ProfileCompletionCard() {
+  const { data, isLoading } = useStudentProfile();
+  const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        Loading...
+      </div>
+    );
+  }
+
+  const profile = data?.data;
+  if (!profile) {
+    return (
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="text-xl font-bold">Profile Completion</h2>
+
+        <p className="mt-2 text-slate-500">
+          Start completing your profile to unlock AI recommendations.
+        </p>
+
+        <Button
+          className="mt-6 w-full"
+          onClick={() => navigate("/student/profile")}
+        >
+          Complete Profile
+        </Button>
+      </div>
+    );
+  }
+  const checklist = [
+    {
+      label: "Basic Information",
+      done:
+        !!profile?.name &&
+        !!profile?.email &&
+        !!profile?.phone &&
+        !!profile?.location &&
+        !!profile?.dateOfBirth &&
+        !!profile?.bio,
+    },
+
+    {
+      label: "Education",
+      done:
+        !!profile?.college &&
+        !!profile?.degree &&
+        profile?.semester !== null &&
+        profile?.semester !== undefined &&
+        profile?.cgpa !== null &&
+        profile?.cgpa !== undefined,
+    },
+
+    {
+      label: "Skills",
+      done: profile?.skills?.length > 0,
+    },
+
+    {
+      label: "Resume",
+      done: !!profile?.resumeUrl,
+    },
+
+    {
+      label: "Career Preferences",
+      done:
+        !!profile?.careerGoal &&
+        !!profile?.preferredInternship &&
+        !!profile?.workMode &&
+        !!profile?.preferredLocation &&
+        !!profile?.preferredCompanySize,
+    },
+
+    {
+      label: "Social Links",
+      done: !!profile?.github && !!profile?.linkedin && !!profile?.portfolio,
+    },
+  ];
+
+  const completed = checklist.filter((item) => item.done).length;
+  const total = checklist.length;
+  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const nextIncomplete = checklist.find((item) => !item.done);
+
+  const buttonText = nextIncomplete
+    ? `Complete ${nextIncomplete.label}`
+    : "View Profile";
+  const progressColor =
+    percentage >= 80
+      ? "bg-green-600"
+      : percentage >= 50
+        ? "bg-yellow-500"
+        : "bg-red-500";
+
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex items-center gap-4">
@@ -23,27 +119,55 @@ export default function ProfileCompletionCard() {
 
       <div className="mt-8">
         <div className="flex justify-between">
-          <span className="font-medium text-slate-700">78%</span>
+          <div
+            className={`h-full rounded-full transition-all duration-700 ${progressColor}`}
+            style={{ width: `${percentage}%` }}
+          />
 
-          <span className="text-sm text-slate-500">6 of 8 completed</span>
+          <span className="text-sm text-slate-500">
+            {completed} of {total} profile sections completed
+          </span>
         </div>
 
         <div className="mt-3 h-3 overflow-hidden rounded-full bg-slate-200">
-          <div className="h-full w-[78%] rounded-full bg-indigo-600" />
+          <div
+            className="h-full rounded-full bg-indigo-600 transition-all duration-700 ease-in-out"
+            style={{ width: `${percentage}%` }}
+          />
         </div>
       </div>
 
-      <ul className="mt-8 space-y-3 text-sm text-slate-600">
-        <li>✅ Basic Information</li>
-        <li>✅ Education</li>
-        <li>✅ Skills</li>
-        <li>✅ Resume Uploaded</li>
-        <li>⬜ Certifications</li>
-        <li>⬜ Portfolio</li>
+      <ul className="mt-8 space-y-3">
+        {checklist.map((item) => (
+          <li
+            key={item.label}
+            className={`flex items-center gap-3 rounded-xl p-3 transition-colors ${
+              item.done ? "bg-green-50" : "bg-slate-50"
+            }`}
+          >
+            {item.done ? (
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
+            ) : (
+              <Circle className="h-5 w-5 text-slate-300" />
+            )}
+
+            <div className="flex flex-col">
+              <span className="font-medium">{item.label}</span>
+
+              <span className="text-xs text-slate-500">
+                {item.done ? "Completed" : "Incomplete"}
+              </span>
+            </div>
+          </li>
+        ))}
       </ul>
 
-      <Button variant="outline" className="mt-8 w-full">
-        Complete Profile
+      <Button
+        variant="outline"
+        className="mt-8 w-full"
+        onClick={() => navigate("/student/profile")}
+      >
+        {buttonText}
       </Button>
     </div>
   );

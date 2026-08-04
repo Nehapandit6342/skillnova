@@ -5,7 +5,9 @@ import {
     login,
     forgotPassword,
     verifyResetOtp,
-    resetPassword
+    resetPassword,
+    changePassword,
+    deleteAccount
 } from "../controllers/auth.controller.js";
 
 import { authenticate } from "../middleware/auth.middleware.js";
@@ -53,6 +55,24 @@ router.post(
 );
 
 
+
+
+// ================= CHANGE PASSWORD =================
+
+router.post(
+    "/change-password",
+    authenticate,
+    changePassword
+);
+
+
+// ================= DELETE ACCOUNT =================
+
+router.delete(
+    "/account",
+    authenticate,
+    deleteAccount
+);
 
 
 // ================= CURRENT USER =================

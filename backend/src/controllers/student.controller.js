@@ -1,5 +1,6 @@
 import * as studentService from "../services/student.service.js";
 import { uploadImage } from "../services/upload.service.js";
+import { getUpcomingDeadlinesService } from "../services/student.service.js";
 
 export const getProfile = async (req, res, next) => {
   try {
@@ -51,5 +52,24 @@ export const updateProfile = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// getupcoming deadlines
+export const getUpcomingDeadlines = async (req, res) => {
+  try {
+    const deadlines = await getUpcomingDeadlinesService(req.user.id);
+
+    return res.status(200).json({
+      success: true,
+      deadlines,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch upcoming deadlines.",
+    });
   }
 };

@@ -2,7 +2,7 @@ import { FileText, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export default function ResumeHeader() {
+export default function ResumeHeader({ onUpload, isUploading }) {
   return (
     <section className="rounded-3xl border border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white shadow-sm">
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
@@ -24,9 +24,15 @@ export default function ResumeHeader() {
         </div>
 
         {/* Right */}
-        <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+        <Button
+          size="lg"
+          className="bg-white text-blue-600 hover:bg-blue-50"
+          onClick={onUpload}
+          disabled={isUploading}
+        >
           <Upload className="mr-2 h-5 w-5" />
-          Upload Resume
+
+          {isUploading ? "Uploading..." : "Upload Resume"}
         </Button>
       </div>
     </section>

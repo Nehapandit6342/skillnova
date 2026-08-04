@@ -25,7 +25,7 @@ const studentSidebarItems = [
   },
   {
     title: "Resume Builder",
-    path: "/student/resume",
+    path: "/student/resume-builder",
     icon: FileText,
   },
   {
@@ -33,16 +33,7 @@ const studentSidebarItems = [
     path: "/student/resume-analysis",
     icon: ScanSearch,
   },
-  {
-    title: "Skill Gap Analysis",
-    path: "/student/skill-gap",
-    icon: BarChart3,
-  },
-  {
-    title: "Career Roadmap",
-    path: "/student/roadmap",
-    icon: Map,
-  },
+
   {
     title: "Internships",
     path: "/student/internships",
