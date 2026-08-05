@@ -17,8 +17,9 @@ ADD COLUMN     "coverLetter" TEXT,
 ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "phone" TEXT,
 ADD COLUMN     "resume" TEXT,
-ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ALTER COLUMN "status" SET DEFAULT 'PENDING';
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL,
+DROP COLUMN "status",
+ADD COLUMN     "status" "ApplicationStatus" NOT NULL DEFAULT 'PENDING';
 
 -- CreateIndex
 CREATE UNIQUE INDEX "applications_studentId_internshipId_key" ON "applications"("studentId", "internshipId");
