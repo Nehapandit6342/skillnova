@@ -1,10 +1,11 @@
 import {
   BrainCircuit,
   BadgeCheck,
-  FileSearch,
   Sparkles,
   CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import SectionContainer from "@/components/common/SectionContainer";
@@ -39,7 +40,12 @@ export default function AIResumeSection() {
             ))}
           </div>
 
-          <Button className="mt-8">Analyze Resume</Button>
+          <Link to="/register">
+            <Button className="mt-8">
+              Analyze Resume
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
 
         {/* Right */}

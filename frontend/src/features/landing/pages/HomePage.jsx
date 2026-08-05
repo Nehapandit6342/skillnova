@@ -2,105 +2,96 @@ import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/navigation/Footer";
 
 import HeroSection from "../components/HeroSection";
-import FeaturePreviewSection from "../components/FeaturePreviewSection";
+import InternshipExplorerSection from "../components/InternshipExplorerSection";
 import TrustedSection from "../components/TrustedSection";
+import StatisticsSection from "../components/StatisticsSection";
+import FeaturedCompaniesSection from "../components/FeaturedCompaniesSection";
+import FeaturePreviewSection from "../components/FeaturePreviewSection";
 import WhySkillNovaSection from "../components/WhySkillNovaSection";
 import HowItWorksSection from "../components/HowItWorksSection";
 import AIResumeSection from "../components/AIResumeSection";
 import SkillGapSection from "../components/SkillGapSection";
 import CareerRoadmapSection from "../components/CareerRoadmapSection";
-import InternshipRecommendationSection from "../components/InternshipRecommendationSection";
-
-import FeaturedCompaniesSection from "../components/FeaturedCompaniesSection";
-import LatestInternshipsSection from "../components/LatestInternshipsSection";
-
 import CareerDomainsSection from "../components/CareerDomainsSection";
 import StudentJourneySection from "../components/StudentJourneySection";
-
-import StatisticsSection from "../components/StatisticsSection";
 import TestimonialsSection from "../components/TestimonialsSection";
 import FAQSection from "../components/FAQSection";
 import CTASection from "../components/CTASection";
 
+function Band({ className, children }) {
+  return <div className={className}>{children}</div>;
+}
 
 export default function HomePage() {
-
   return (
     <>
-
       <Navbar />
 
+      <main>
+        {/* Hero */}
+        <HeroSection />
 
-      {/* Hero */}
-      <HeroSection />
+        {/* Internship search + filter (live backend data) */}
+        <Band className="bg-slate-50/70">
+          <InternshipExplorerSection />
+        </Band>
 
+        {/* Trusted Technologies */}
+        <TrustedSection />
 
-      {/* Features */}
-      <FeaturePreviewSection />
+        {/* Real-time platform statistics */}
+        <Band className="bg-slate-50/70">
+          <StatisticsSection />
+        </Band>
 
+        {/* Featured Companies */}
+        <FeaturedCompaniesSection />
 
-      {/* Trusted Companies */}
-      <TrustedSection />
+        {/* Feature Highlights */}
+        <Band className="bg-slate-50/70">
+          <FeaturePreviewSection />
+        </Band>
 
+        {/* Why SkillNova */}
+        <WhySkillNovaSection />
 
-      {/* Statistics (Real Data) */}
-      <StatisticsSection />
+        {/* Process */}
+        <Band className="bg-slate-50/70">
+          <HowItWorksSection />
+        </Band>
 
+        {/* AI Resume */}
+        <AIResumeSection />
 
-      {/* Featured Companies (Real Data) */}
-      <FeaturedCompaniesSection />
+        {/* Skill Gap */}
+        <Band className="bg-slate-50/70">
+          <SkillGapSection />
+        </Band>
 
+        {/* Career Roadmap */}
+        <CareerRoadmapSection />
 
-      {/* Latest Internships (Real Data) */}
-      <LatestInternshipsSection />
+        {/* Career Domains */}
+        <Band className="bg-slate-50/70">
+          <CareerDomainsSection />
+        </Band>
 
+        {/* Student Journey */}
+        <StudentJourneySection />
 
-      {/* Why SkillNova */}
-      <WhySkillNovaSection />
+        {/* Testimonials */}
+        <Band className="bg-slate-50/70">
+          <TestimonialsSection />
+        </Band>
 
+        {/* FAQ */}
+        <FAQSection />
 
-      {/* Process */}
-      <HowItWorksSection />
-
-
-      {/* AI Resume */}
-      <AIResumeSection />
-
-
-      {/* Skill Gap */}
-      <SkillGapSection />
-
-
-      {/* Career Roadmap */}
-      <CareerRoadmapSection />
-
-
-      {/* Internship Recommendation */}
-      <InternshipRecommendationSection />
-
-
-      {/* Student Journey */}
-      <StudentJourneySection />
-
-
-      {/* Career Domains */}
-      <CareerDomainsSection />
-
-
-      {/* Testimonials */}
-      <TestimonialsSection />
-
-
-      {/* FAQ */}
-      <FAQSection />
-
-
-      {/* CTA */}
-      <CTASection />
-
+        {/* CTA */}
+        <CTASection />
+      </main>
 
       <Footer />
-
     </>
   );
 }

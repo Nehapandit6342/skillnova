@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Banknote,
   Briefcase,
-  Building2,
   CalendarDays,
   CheckCircle2,
   Clock,
@@ -130,40 +129,29 @@ export default function InternshipDetails() {
         {/* Overview card */}
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-xl font-bold text-white shadow-md">
-                {company.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">
-                  {internship.title}
-                </h1>
-                <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500">
-                  <Building2 className="h-4 w-4" />
-                  {company}
-                  {internship.employer?.industry && (
-                    <span className="ml-1 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-600">
-                      {internship.employer.industry}
-                    </span>
-                  )}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {internship.location && (
-                    <Chip icon={<MapPin className="h-3.5 w-3.5" />}>
-                      {internship.location}
-                    </Chip>
-                  )}
-                  {(internship.workMode || internship.type) && (
-                    <Chip icon={<Briefcase className="h-3.5 w-3.5" />}>
-                      {internship.workMode || internship.type}
-                    </Chip>
-                  )}
-                  {internship.category && (
-                    <Chip icon={<Tag className="h-3.5 w-3.5" />}>
-                      {internship.category}
-                    </Chip>
-                  )}
-                </div>
+            <div className="min-w-0">
+              <h1 className="text-2xl font-bold text-slate-900">
+                {internship.title}
+              </h1>
+              <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500">
+                {company}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {internship.location && (
+                  <Chip icon={<MapPin className="h-3.5 w-3.5" />}>
+                    {internship.location}
+                  </Chip>
+                )}
+                {(internship.workMode || internship.type) && (
+                  <Chip icon={<Briefcase className="h-3.5 w-3.5" />}>
+                    {internship.workMode || internship.type}
+                  </Chip>
+                )}
+                {internship.category && (
+                  <Chip icon={<Tag className="h-3.5 w-3.5" />}>
+                    {internship.category}
+                  </Chip>
+                )}
               </div>
             </div>
 

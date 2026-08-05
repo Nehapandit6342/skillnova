@@ -49,10 +49,16 @@ export default function FeaturedCompaniesSection() {
               className="rounded-3xl border border-slate-200 bg-white p-7 transition hover:-translate-y-2 hover:shadow-xl"
             >
 
-              <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-blue-100 text-blue-600">
-
-                <Building2 size={30} />
-
+              <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-blue-100 text-blue-600">
+                {company.logo ? (
+                  <img
+                    src={company.logo}
+                    alt={company.companyName}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Building2 size={30} />
+                )}
               </div>
 
 

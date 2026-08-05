@@ -12,6 +12,11 @@ export default function TestimonialsSection() {
     isLoading,
   } = useTestimonials();
 
+  // Hide the whole section until backend testimonials exist
+  if (!isLoading && testimonials.length === 0) {
+    return null;
+  }
+
   return (
     <SectionContainer>
       <SectionHeading
@@ -23,10 +28,6 @@ export default function TestimonialsSection() {
       {isLoading ? (
         <div className="py-10 text-center text-slate-500">
           Loading testimonials...
-        </div>
-      ) : testimonials.length === 0 ? (
-        <div className="py-10 text-center text-slate-500">
-          No testimonials available.
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">

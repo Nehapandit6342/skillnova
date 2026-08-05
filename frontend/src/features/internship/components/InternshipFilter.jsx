@@ -68,6 +68,8 @@ export default function InternshipFilter({
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
+            name="internship-search"
+            aria-label="Search internships"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by title, company, or skill..."
@@ -91,6 +93,7 @@ export default function InternshipFilter({
           <select
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+            name="internship-location"
             aria-label="Filter by location"
             className={`${inputHeight} w-full cursor-pointer appearance-none rounded-xl border bg-slate-50/60 pl-10 pr-9 text-sm font-medium outline-none transition-all focus:ring-4 focus:ring-blue-500/10 ${
               location
@@ -114,6 +117,7 @@ export default function InternshipFilter({
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
+            name="internship-type"
             aria-label="Filter by work type"
             className={`${inputHeight} w-full cursor-pointer appearance-none rounded-xl border bg-slate-50/60 pl-10 pr-9 text-sm font-medium outline-none transition-all focus:ring-4 focus:ring-blue-500/10 ${
               type
