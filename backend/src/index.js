@@ -19,6 +19,7 @@ import recommendationRoutes from "./routes/recommendation.routes.js";
 import matchRoutes from "./routes/match.routes.js";
 import careerRoutes from "./routes/career.routes.js";
 import studentDashboardRoutes from "./routes/studentDashboard.routes.js";
+import publicRoutes from "./routes/public.routes.js";
 dotenv.config();
 
 const app = express();
@@ -54,6 +55,8 @@ app.use("/api/candidates", candidateRoutes);
 app.use("/api/recommendation", recommendationRoutes);
 app.use("/api/match", matchRoutes);
 app.use("/api/career", careerRoutes);
+
+app.use("/api/public", publicRoutes);
 
 // ================= HEALTH CHECK =================
 

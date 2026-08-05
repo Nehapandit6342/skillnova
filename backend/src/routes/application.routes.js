@@ -1,168 +1,90 @@
 import express from "express";
 
+import upload from "../middleware/upload.middleware.js";
 
 import {
-
-    createApplication,
-
-    getStudentApplications,
-
-    getEmployerApplications,
-
-    updateApplicationStatus,
-
-    getAllApplications
-
+  createApplication,
+  getStudentApplications,
+  getEmployerApplications,
+  updateApplicationStatus,
+  getAllApplications,
 } from "../controllers/application.controller.js";
 
+import { authenticate } from "../middleware/auth.middleware.js";
 
-
-import {
-
-    authenticate
-
-} from "../middleware/auth.middleware.js";
-
-
-
-import {
-
-    authorize
-
-} from "../middleware/role.middleware.js";
-
-
+import { authorize } from "../middleware/role.middleware.js";
 
 const router = express.Router();
-
-
-
-
-
-
 
 // ==================================================
 // STUDENT APPLICATION
 // ==================================================
 
-
-
 // Apply for Internship
 
 router.post(
-
-    "/",
-
-    authenticate,
-
-    authorize("STUDENT"),
-
-    createApplication
-
+  "/",
+  authenticate,
+  authorize("STUDENT"),
+  upload.single("resume"),
+  createApplication,
 );
-
-
-
-
-
 
 // Get My Applications
 
 router.get(
+  "/my",
 
-    "/my",
+  authenticate,
 
-    authenticate,
+  authorize("STUDENT"),
 
-    authorize("STUDENT"),
-
-    getStudentApplications
-
+  getStudentApplications,
 );
-
-
-
-
-
-
-
-
 
 // ==================================================
 // EMPLOYER APPLICATION MANAGEMENT
 // ==================================================
 
-
-
-
 // View applicants for employer internships
 
 router.get(
+  "/employer",
 
-    "/employer",
+  authenticate,
 
-    authenticate,
+  authorize("EMPLOYER"),
 
-    authorize("EMPLOYER"),
-
-    getEmployerApplications
-
+  getEmployerApplications,
 );
-
-
-
-
-
-
 
 // Update application status
 // ACCEPTED / REJECTED / REVIEWING
 
-
 router.patch(
+  "/:id/status",
 
-    "/:id/status",
+  authenticate,
 
-    authenticate,
+  authorize("EMPLOYER"),
 
-    authorize("EMPLOYER"),
-
-    updateApplicationStatus
-
+  updateApplicationStatus,
 );
-
-
-
-
-
-
-
-
 
 // ==================================================
 // ADMIN
 // ==================================================
 
-
-
 // Get all applications
 
-
 router.get(
+  "/",
 
-    "/",
+  authenticate,
 
-    authenticate,
+  authorize("ADMIN"),
 
-    authorize("ADMIN"),
-
-    getAllApplications
-
+  getAllApplications,
 );
-
-
-
-
-
 
 export default router;

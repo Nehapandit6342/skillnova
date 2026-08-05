@@ -1,694 +1,265 @@
 import prisma from "../config/prisma.js";
 
-
 // ================= HELPER =================
 
-const safeArray = (value)=>{
+const safeArray = (value) => {
+  if (!value) {
+    return [];
+  }
 
-    if(!value){
-        return [];
-    }
-
-    return Array.isArray(value)
-        ? value
-        : [];
-
+  return Array.isArray(value) ? value : [];
 };
-
-
-
-
 
 // ================= CREATE INTERNSHIP =================
 
-export const createInternshipService = async(data)=>{
-
-    return await prisma.internship.create({
-
-        data
-
-    });
-
+export const createInternshipService = async (data) => {
+  return await prisma.internship.create({
+    data,
+  });
 };
-
-
-
-
-
-
 
 // ================= GET ALL INTERNSHIPS =================
 
-export const getAllInternshipsService = async()=>{
+export const getAllInternshipsService = async () => {
+  return await prisma.internship.findMany({
+    include: {
+      employer: {
+        include: {
+          user: {
+            select: {
+              name: true,
 
-
-    return await prisma.internship.findMany({
-
-        include:{
-
-
-            employer:{
-
-
-                include:{
-
-
-                    user:{
-
-
-                        select:{
-
-
-                            name:true,
-
-                            email:true
-
-
-                        }
-
-
-                    }
-
-
-                }
-
-
-            }
-
-
+              email: true,
+            },
+          },
         },
+      },
+    },
 
-
-        orderBy:{
-
-
-            createdAt:"desc"
-
-
-        }
-
-
-    });
-
-
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 };
-
-
-
-
-
-
 
 // ================= GET INTERNSHIP BY ID =================
 
-export const getInternshipByIdService = async(id)=>{
+export const getInternshipByIdService = async (id) => {
+  return await prisma.internship.findUnique({
+    where: {
+      id,
+    },
 
-
-    return await prisma.internship.findUnique({
-
-
-        where:{
-
-
-            id
-
-
+    include: {
+      employer: {
+        include: {
+          user: true,
         },
+      },
 
-
-        include:{
-
-
-            employer:{
-
-
-                include:{
-
-
-                    user:true
-
-
-                }
-
-
-            },
-
-
-            _count:{
-
-
-                select:{
-
-
-                    applications:true
-
-
-                }
-
-
-            }
-
-
-        }
-
-
-    });
-
-
+      _count: {
+        select: {
+          applications: true,
+        },
+      },
+    },
+  });
 };
-
-
-
-
-
-
-
-
 
 // ================= UPDATE INTERNSHIP =================
 
-export const updateInternshipService = async(
-
-    userId,
-
-    internshipId,
-
-    data
-
-)=>{
-
-
-    const employer =
-    await prisma.employerProfile.findUnique({
-
-
-        where:{
-
-
-            userId
-
-
-        }
-
-
-    });
-
-
-
-
-    if(!employer){
-
-        throw new Error(
-            "Employer profile not found"
-        );
-
-    }
-
-
-
-
-
-
-    const internship =
-    await prisma.internship.findUnique({
-
-
-        where:{
-
-
-            id: internshipId
-
-
-        }
-
-
-    });
-
-
-
-
-
-    if(!internship){
-
-
-        throw new Error(
-            "Internship not found"
-        );
-
-    }
-
-
-
-
-
-
-
-    if(internship.employerId !== employer.id){
-
-
-        throw new Error(
-            "Unauthorized action"
-        );
-
-    }
-
-
-
-
-
-
-
-    return await prisma.internship.update({
-
-
-        where:{
-
-
-            id: internshipId
-
-
-        },
-
-
-        data:{
-
-
-            title:data.title,
-
-            description:data.description,
-
-            location:data.location,
-
-
-            type:data.type,
-
-
-            workMode:data.workMode,
-
-
-            duration:data.duration,
-
-
-            stipend:data.stipend,
-
-
-
-            openings:
-            data.openings
-            ?
-            Number(data.openings)
-            :
-            null,
-
-
-
-            responsibilities:
-            safeArray(data.responsibilities),
-
-
-
-            skills:
-            safeArray(data.skills),
-
-
-
-            qualifications:
-            safeArray(data.qualifications),
-
-
-
-            benefits:
-            safeArray(data.benefits),
-
-
-
-            selectionProcess:
-            safeArray(data.selectionProcess),
-
-
-
-            deadline:
-            data.deadline
-            ?
-            new Date(data.deadline)
-            :
-            null
-
-
-        }
-
-
-    });
-
-
+export const updateInternshipService = async (
+  userId,
+
+  internshipId,
+
+  data,
+) => {
+  const employer = await prisma.employerProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!employer) {
+    throw new Error("Employer profile not found");
+  }
+
+  const internship = await prisma.internship.findUnique({
+    where: {
+      id: internshipId,
+    },
+  });
+
+  if (!internship) {
+    throw new Error("Internship not found");
+  }
+
+  if (internship.employerId !== employer.id) {
+    throw new Error("Unauthorized action");
+  }
+
+  return await prisma.internship.update({
+    where: {
+      id: internshipId,
+    },
+
+    data: {
+      title: data.title,
+      description: data.description,
+
+      category: data.category,
+      companyOverview: data.companyOverview,
+      experienceLevel: data.experienceLevel,
+      educationLevel: data.educationLevel,
+      salaryType: data.salaryType,
+      applicationEmail: data.applicationEmail,
+
+      status: data.status || "OPEN",
+      location: data.location,
+      type: data.type,
+      workMode: data.workMode,
+      duration: data.duration,
+      stipend: data.stipend,
+
+      openings: data.openings ? Number(data.openings) : null,
+
+      responsibilities: safeArray(data.responsibilities),
+
+      skills: safeArray(data.skills),
+
+      qualifications: safeArray(data.qualifications),
+
+      benefits: safeArray(data.benefits),
+
+      selectionProcess: safeArray(data.selectionProcess),
+
+      deadline: data.deadline ? new Date(data.deadline) : null,
+    },
+  });
 };
-
-
-
-
-
-
-
-
 
 // ================= DELETE INTERNSHIP =================
 
-export const deleteInternshipService = async(
-
-    userId,
-
-    internshipId
-
-)=>{
-
-
-    const employer =
-    await prisma.employerProfile.findUnique({
-
-
-        where:{
-
-
-            userId
-
-
-        }
-
-
-    });
-
-
-
-
-
-    if(!employer){
-
-
-        throw new Error(
-            "Employer profile not found"
-        );
-
-    }
-
-
-
-
-
-
-
-    const internship =
-    await prisma.internship.findUnique({
-
-
-        where:{
-
-
-            id: internshipId
-
-
-        }
-
-
-    });
-
-
-
-
-
-
-    if(!internship){
-
-
-        throw new Error(
-            "Internship not found"
-        );
-
-    }
-
-
-
-
-
-
-
-    if(internship.employerId !== employer.id){
-
-
-        throw new Error(
-            "Unauthorized action"
-        );
-
-    }
-
-
-
-
-
-
-
-    return await prisma.internship.delete({
-
-
-        where:{
-
-
-            id: internshipId
-
-
-        }
-
-
-    });
-
-
+export const deleteInternshipService = async (
+  userId,
+
+  internshipId,
+) => {
+  const employer = await prisma.employerProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!employer) {
+    throw new Error("Employer profile not found");
+  }
+
+  const internship = await prisma.internship.findUnique({
+    where: {
+      id: internshipId,
+    },
+  });
+
+  if (!internship) {
+    throw new Error("Internship not found");
+  }
+
+  if (internship.employerId !== employer.id) {
+    throw new Error("Unauthorized action");
+  }
+
+  return await prisma.internship.delete({
+    where: {
+      id: internshipId,
+    },
+  });
 };
-
-
-
-
-
-
-
-
 
 // ================= GET EMPLOYER INTERNSHIPS =================
 
-export const getEmployerInternshipsService = async(userId)=>{
+export const getEmployerInternshipsService = async (userId) => {
+  const employer = await prisma.employerProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
 
+  if (!employer) {
+    throw new Error("Employer profile not found");
+  }
 
-    const employer =
-    await prisma.employerProfile.findUnique({
+  return await prisma.internship.findMany({
+    where: {
+      employerId: employer.id,
+    },
 
-
-        where:{
-
-
-            userId
-
-
-        }
-
-
-    });
-
-
-
-
-
-
-    if(!employer){
-
-
-        throw new Error(
-            "Employer profile not found"
-        );
-
-    }
-
-
-
-
-
-
-
-    return await prisma.internship.findMany({
-
-
-        where:{
-
-
-            employerId: employer.id
-
-
+    include: {
+      _count: {
+        select: {
+          applications: true,
         },
+      },
+    },
 
-
-        include:{
-
-
-            _count:{
-
-
-                select:{
-
-
-                    applications:true
-
-
-                }
-
-
-            }
-
-
-        },
-
-
-        orderBy:{
-
-
-            createdAt:"desc"
-
-
-        }
-
-
-    });
-
-
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 };
-
-
-
-
-
-
-
-
 
 // ================= CREATE EMPLOYER INTERNSHIP =================
 
-export const createEmployerInternshipService = async(
+export const createEmployerInternshipService = async (
+  userId,
 
-    userId,
+  data,
+) => {
+  const employer = await prisma.employerProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
 
-    data
+  if (!employer) {
+    throw new Error("Employer profile not found");
+  }
 
-)=>{
+  return await prisma.internship.create({
+    data: {
+      title: data.title,
+      description: data.description,
 
+      category: data.category,
+      companyOverview: data.companyOverview,
+      experienceLevel: data.experienceLevel,
+      educationLevel: data.educationLevel,
+      salaryType: data.salaryType,
+      applicationEmail: data.applicationEmail,
+      status: data.status || "OPEN",
 
-    const employer =
-    await prisma.employerProfile.findUnique({
+      location: data.location,
+      type: data.type,
+      workMode: data.workMode,
+      duration: data.duration,
+      stipend: data.stipend,
 
+      openings: data.openings ? Number(data.openings) : null,
 
-        where:{
+      responsibilities: safeArray(data.responsibilities),
 
+      skills: safeArray(data.skills),
 
-            userId
+      qualifications: safeArray(data.qualifications),
 
+      benefits: safeArray(data.benefits),
 
-        }
+      selectionProcess: safeArray(data.selectionProcess),
 
+      deadline: data.deadline ? new Date(data.deadline) : null,
 
-    });
-
-
-
-
-
-    if(!employer){
-
-
-        throw new Error(
-            "Employer profile not found"
-        );
-
-    }
-
-
-
-
-
-
-
-    return await prisma.internship.create({
-
-
-        data:{
-
-
-            title:data.title,
-
-
-            description:data.description,
-
-
-            location:data.location,
-
-
-            type:data.type,
-
-
-            workMode:data.workMode,
-
-
-            duration:data.duration,
-
-
-            stipend:data.stipend,
-
-
-
-            openings:
-            data.openings
-            ?
-            Number(data.openings)
-            :
-            null,
-
-
-
-            responsibilities:
-            safeArray(data.responsibilities),
-
-
-
-            skills:
-            safeArray(data.skills),
-
-
-
-            qualifications:
-            safeArray(data.qualifications),
-
-
-
-            benefits:
-            safeArray(data.benefits),
-
-
-
-            selectionProcess:
-            safeArray(data.selectionProcess),
-
-
-
-            deadline:
-            data.deadline
-            ?
-            new Date(data.deadline)
-            :
-            null,
-
-
-
-            employerId:employer.id
-
-
-        }
-
-
-    });
-
-
+      employerId: employer.id,
+    },
+  });
 };
