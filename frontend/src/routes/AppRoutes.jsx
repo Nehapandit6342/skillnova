@@ -1,9 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import ProtectedRoute from "@/routes/ProtectedRoute";
-
+import MainLayout from "@/layouts/MainLayout";
 /* ---------- Public ---------- */
 import HomePage from "@/features/landing/pages/HomePage";
+import FeaturesPage from "@/features/landing/pages/FeaturesPage";
+import AboutPage from "@/features/landing/pages/AboutPages";
+import ContactPage from "@/features/landing/pages/ContactPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 
 /* ---------- Layouts ---------- */
@@ -54,6 +57,9 @@ function AppRoutes() {
       {/* ================= HOME ================= */}
 
       <Route path="/" element={<HomePage />} />
+      <Route path="/features" element={<FeaturesPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
 
       {/* ================= LOGIN ================= */}
 
@@ -62,12 +68,13 @@ function AppRoutes() {
       {/* =================================================
         PUBLIC INTERNSHIP FLOW
 ================================================= */}
+      <Route element={<MainLayout />}>
+        <Route path="/internships" element={<InternshipList />} />
 
-      <Route path="/internships" element={<InternshipList />} />
+        <Route path="/internships/:id" element={<InternshipDetails />} />
 
-      <Route path="/internships/:id" element={<InternshipDetails />} />
-
-      <Route path="/internships/:id/apply" element={<ApplyInternship />} />
+        <Route path="/internships/:id/apply" element={<ApplyInternship />} />
+      </Route>
 
       {/* =================================================
         STUDENT PORTAL
@@ -102,7 +109,7 @@ function AppRoutes() {
 
           <Route path="internships/add" element={<AddInternship />} />
 
-          <Route path="internships/:id" element={<InternshipDetails />} />
+          <Route path="internships/:id" element={<AdminInternshipDetails />} />
 
           <Route path="employers" element={<Employers />} />
 
