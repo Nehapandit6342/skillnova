@@ -11,7 +11,12 @@ enum Role {
   EMPLOYER
   ADMIN
 }
-
+enum CompanyStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
 
 model User {
   id String @id @default(uuid()) @db.Uuid
@@ -44,11 +49,10 @@ model StudentProfile {
 
   userId String @unique @db.Uuid
 
-  profileImage     String?
-  resumeUrl        String?
-  resumeFileName String?
-  resumeText       String?
-  resumeUploadedAt DateTime?
+
+  profileImage String?
+
+  resume String?
 
   phone String?
 
@@ -65,29 +69,29 @@ model StudentProfile {
 
   cgpa Float?
 
- 
+
+  careerGoal String?
+
 
   github String?
 
   linkedin String?
 
   portfolio String?
-careerGoal String?
 
-preferredInternship String?
-
-workMode String?
-
-preferredLocation String?
 
 preferredCompanySize String?
   skills String[] @default([])
 
   applications Application[]
 
-  resumeAnalysis ResumeAnalysis?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
@@ -96,39 +100,9 @@ preferredCompanySize String?
   @@map("student_profiles")
 }
 
-model ResumeAnalysis {
-  id String @id @default(uuid()) @db.Uuid
 
-  studentId String @unique @db.Uuid
 
-  atsScore Int
 
-  summary String
-
-  strengths Json
-
-  weaknesses Json
-
-  missingSkills Json
-
-  recommendedProjects Json
-
-  recommendedInternships Json
-
-  careerRoadmap Json
-
-  improvementSuggestions Json @default("[]")
-  learningPlan Json?
-  aiModel       String?
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("resume_analysis")
-}
 
 model EmployerProfile {
   id String @id @default(uuid()) @db.Uuid
@@ -151,7 +125,9 @@ model EmployerProfile {
 
   foundedYear Int?
 
-  internships Internship[]
+
+
+internships Internship[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -162,36 +138,29 @@ model EmployerProfile {
   @@map("employer_profiles")
 }
 
+
+
+
+
 model Internship {
   id String @id @default(uuid()) @db.Uuid
 
   title String
 
-  description    String
-  category       String?
-  requiredSkills String[] @default([])
+
+  description String
+
 
   location String?
 
   type String?
 
-  workMode String?
-
-  duration String?
 
   stipend String?
-  openings Int?
+
 
   deadline DateTime?
-  responsibilities String[] @default([])
 
-  skills String[] @default([])
-
-  qualifications String[] @default([])
-
-  benefits String[] @default([])
-
-  selectionProcess String[] @default([])
 
   isActive Boolean @default(true)
 
@@ -215,37 +184,37 @@ model Application {
 
   internshipId String @db.Uuid
 
-  phone String?
 
-  resume String?
 
-  coverLetter String?
+  status String @default("PENDING")
 
-  availability String?
 
-  status ApplicationStatus @default(PENDING)
 
-  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  appliedAt DateTime @default(now())
 
-  internship Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
 
-  updatedAt DateTime @updatedAt
+  student StudentProfile @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
 
-  @@unique([studentId, internshipId])
+
+  internship Internship @relation(
+    fields: [internshipId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
+
   @@map("applications")
 }
 
-enum ApplicationStatus {
-  PENDING
 
-  REVIEWING
 
-  ACCEPTED
 
-  REJECTED
-}
 
 model PasswordResetToken {
   id String @id @default(uuid()) @db.Uuid
@@ -258,13 +227,91 @@ model PasswordResetToken {
 
   used Boolean @default(false)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
- 
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
   @@index([userId])
   @@index([expiresAt])
   @@map("password_reset_tokens")
-} 
+
+}
+// ================= TESTIMONIAL =================
+
+model Testimonial {
+
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  designation String
+
+  company String
+
+  image String?
+
+  message String
+
+  rating Int @default(5)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+
+
+// ================= COMPANIES =================
+
+model Company {
+
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  logo String?
+
+  website String?
+
+  description String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("companies")
+}
+
+
+
+// ================= FAQ =================
+
+model FAQ {
+
+  id String @id @default(uuid()) @db.Uuid
+
+  question String
+
+  answer String
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}

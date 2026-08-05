@@ -1,180 +1,104 @@
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-
 import DashboardCard from "../components/DashboardCard";
 import DashboardCharts from "../components/DashboardCharts";
 import RecentStudents from "../components/RecentStudents";
 import RecentInternships from "../components/RecentInternships";
 import ApplicationTable from "../components/ApplicationTable";
 
+import useDashboard from "../hooks/useDashboard";
+
+
 
 function Dashboard() {
 
 
-  const [stats, setStats] = useState([]);
+  const {
+    data: dashboard,
+    isLoading,
+    isError
 
-  const [recentStudents, setRecentStudents] = useState([]);
+  } = useDashboard();
 
-  const [applications, setApplications] = useState([]);
 
-  const [internships, setInternships] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-
-
-
-
-
-  useEffect(() => {
-
-
-    fetchDashboard();
-
-
-  }, []);
-
-
-
-
-
-  const fetchDashboard = async () => {
-
-
-    try {
-
-
-      setLoading(true);
-
-
-
-      const response = await api.get(
-        "/admin/dashboard"
-      );
-
-
-
-      console.log(
-  "Dashboard Data:",
-  JSON.stringify(response.data, null, 2)
-);
-
-
-      if(response.data.success){
-
-
-        const dashboard = response.data.data;
-
-
-
-        setStats([
-
-
-          {
-            title: "Total Students",
-            value: dashboard.totalStudents || 0,
-          },
-
-
-          {
-            title: "Total Employers",
-            value: dashboard.totalEmployers || 0,
-          },
-
-
-          {
-            title: "Total Internships",
-            value: dashboard.totalInternships || 0,
-          },
-
-
-          {
-            title: "Pending Applications",
-            value: dashboard.pendingApplications || 0,
-          },
-
-
-        ]);
-
-
-
-        setRecentStudents(
-
-          dashboard.recentStudents || []
-
-        );
-
-
-
-        setInternships(
-
-          dashboard.recentInternships || []
-
-        );
-
-
-
-        setApplications(
-
-          dashboard.recentApplications || []
-
-        );
-
-
-      }
-
-
-
-    } catch(error){
-
-
-      console.log(
-
-        "Dashboard Error:",
-
-        error.response?.data || error.message
-
-      );
-
-
-    } finally {
-
-
-      setLoading(false);
-
-
-    }
-
-
-  };
-
-
-
-
-
-
-
-  if(loading){
-
+  if(isLoading){
 
     return (
 
       <div className="p-8 text-center">
 
-
         <h2 className="text-xl font-semibold">
-
           Loading Dashboard...
-
         </h2>
-
 
       </div>
 
     );
 
+  }
+
+
+
+  if(isError){
+
+    return (
+
+      <div className="p-8 text-center">
+
+        <h2 className="text-xl font-semibold text-red-500">
+          Dashboard Error
+        </h2>
+
+      </div>
+
+    );
 
   }
 
+
+
+  const stats = [
+
+
+    {
+      title:"Total Students",
+      value: dashboard.totalStudents || 0
+    },
+
+
+    {
+      title:"Total Employers",
+      value: dashboard.totalEmployers || 0
+    },
+
+
+    {
+      title:"Total Internships",
+      value: dashboard.totalInternships || 0
+    },
+
+
+    {
+      title:"Pending Applications",
+      value: dashboard.pendingApplications || 0
+    },
+
+
+  ];
+
+
+
+  const recentStudents =
+    dashboard.recentStudents || [];
+
+
+
+  const internships =
+    dashboard.recentInternships || [];
+
+
+
+  const applications =
+    dashboard.recentApplications || [];
 
 
 
@@ -204,7 +128,6 @@ function Dashboard() {
 
 
 
-
       {/* STAT CARDS */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -212,7 +135,6 @@ function Dashboard() {
 
         {
           stats.map((item,index)=>(
-
 
             <DashboardCard
 
@@ -223,7 +145,6 @@ function Dashboard() {
               value={item.value}
 
             />
-
 
           ))
 
@@ -237,10 +158,10 @@ function Dashboard() {
 
 
 
-
       {/* CHARTS */}
 
       <div className="mt-8">
+
 
         <DashboardCharts
 
@@ -250,6 +171,7 @@ function Dashboard() {
 
         />
 
+
       </div>
 
 
@@ -257,9 +179,7 @@ function Dashboard() {
 
 
 
-
-
-      {/* RECENT APPLICATIONS */}
+      {/* APPLICATIONS */}
 
       <div className="mt-8">
 
@@ -272,7 +192,6 @@ function Dashboard() {
 
 
       </div>
-
 
 
 
@@ -304,11 +223,11 @@ function Dashboard() {
 
 
 
-
     </div>
 
 
   );
+
 
 }
 

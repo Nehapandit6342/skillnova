@@ -96,6 +96,8 @@ export const register = async (req, res) => {
 // ================= LOGIN =================
 
 export const login = async (req, res) => {
+      console.log("===== LOGIN API HIT =====");
+
   try {
     const { email, password } = req.body;
 

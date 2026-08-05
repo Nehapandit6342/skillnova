@@ -30,7 +30,67 @@ export const createInternshipService = async(data)=>{
     });
 
 };
+// ================= GET LATEST INTERNSHIPS (HOMEPAGE) =================
 
+export const getLatestInternshipsService = async () => {
+
+
+    return await prisma.internship.findMany({
+
+        where: {
+
+            isActive: true
+
+        },
+
+
+        select: {
+
+            id: true,
+
+            title: true,
+
+            description: true,
+
+            location: true,
+
+            type: true,
+
+            stipend: true,
+
+            deadline: true,
+
+
+            employer: {
+
+                select: {
+
+                    companyName: true,
+
+                    logo: true,
+
+                    industry: true
+
+                }
+
+            }
+
+        },
+
+
+        orderBy: {
+
+            createdAt: "desc"
+
+        },
+
+
+        take: 6
+
+    });
+
+
+};
 
 
 
