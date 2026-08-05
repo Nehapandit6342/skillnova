@@ -1,29 +1,16 @@
 import express from "express";
 
+import upload from "../middleware/upload.middleware.js";
 
 import {
-
-    createApplication,
-
-    getStudentApplications,
-
-    getEmployerApplications,
-
-    updateApplicationStatus,
-
-    getAllApplications
-
+  createApplication,
+  getStudentApplications,
+  getEmployerApplications,
+  updateApplicationStatus,
+  getAllApplications,
 } from "../controllers/application.controller.js";
 
-
-
-import {
-
-    authenticate
-
-} from "../middleware/auth.middleware.js";
-
-
+import { authenticate } from "../middleware/auth.middleware.js";
 
 import {
 
@@ -72,24 +59,14 @@ router.post(
 // Student Applications
 
 router.get(
+  "/my",
 
-    "/my",
+  authenticate,
 
-    authenticate,
+  authorize("STUDENT"),
 
-    authorize("STUDENT"),
-
-    getStudentApplications
-
+  getStudentApplications,
 );
-
-
-
-
-
-
-
-
 
 // ==================================================
 // EMPLOYER APPLICATION MANAGEMENT
@@ -100,35 +77,25 @@ router.get(
 // View applicants
 
 router.get(
+  "/employer",
 
-    "/employer",
+  authenticate,
 
-    authenticate,
+  authorize("EMPLOYER"),
 
-    authorize("EMPLOYER"),
-
-    getEmployerApplications
-
+  getEmployerApplications,
 );
-
-
-
-
-
-
 
 // Update application status
 
 router.patch(
+  "/:id/status",
 
-    "/:id/status",
+  authenticate,
 
-    authenticate,
+  authorize("EMPLOYER"),
 
-    authorize("EMPLOYER"),
-
-    updateApplicationStatus
-
+  updateApplicationStatus,
 );
 
 
@@ -144,15 +111,13 @@ router.patch(
 
 
 router.get(
+  "/",
 
-    "/",
+  authenticate,
 
-    authenticate,
+  authorize("ADMIN"),
 
-    authorize("ADMIN"),
-
-    getAllApplications
-
+  getAllApplications,
 );
 
 

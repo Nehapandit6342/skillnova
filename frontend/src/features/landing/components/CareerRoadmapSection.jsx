@@ -1,4 +1,5 @@
-import { Map, CheckCircle2, Circle, ArrowDown } from "lucide-react";
+import { ArrowRight, Map, CheckCircle2, Circle, ArrowDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import SectionContainer from "@/components/common/SectionContainer";
 import SectionHeading from "@/components/common/SectionHeading";
@@ -44,7 +45,12 @@ export default function CareerRoadmapSection() {
             description="SkillNova creates a customized roadmap based on your current skills, experience, and career goals."
           />
 
-          <Button className="mt-8">Generate My Roadmap</Button>
+          <Link to="/register">
+            <Button className="mt-8">
+              Generate My Roadmap
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
 
         {/* Right */}

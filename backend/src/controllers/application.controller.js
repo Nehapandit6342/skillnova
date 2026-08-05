@@ -1,11 +1,9 @@
 import {
-
-    createApplicationService,
-    getStudentApplicationsService,
-    getEmployerApplicationsService,
-    updateApplicationStatusService,
-    getAllApplicationsService
-
+  createApplicationService,
+  getStudentApplicationsService,
+  getEmployerApplicationsService,
+  updateApplicationStatusService,
+  getAllApplicationsService,
 } from "../services/application.service.js";
 
 
@@ -16,9 +14,11 @@ import {
 // STUDENT APPLY INTERNSHIP
 // =================================
 
-export const createApplication = async(req,res)=>{
+export const createApplication = async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
 
-    try{
+    console.log("FILE:", req.file);
 
 
         const applicationData = {
@@ -49,10 +49,8 @@ export const createApplication = async(req,res)=>{
 
 
 
-        const application =
-        await createApplicationService(
-
-            req.user.id,
+    const application = await createApplicationService(
+      req.user.id,
 
             applicationData
 

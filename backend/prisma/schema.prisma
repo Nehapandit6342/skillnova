@@ -46,6 +46,7 @@ model StudentProfile {
   profileImage     String?
   resumeUrl        String?
   resumeFileName   String?
+  resumeFileName   String?
   resumeText       String?
   resumeUploadedAt DateTime?
 
@@ -70,21 +71,32 @@ model StudentProfile {
 
   portfolio  String?
   careerGoal String?
+  portfolio  String?
+  careerGoal String?
 
+  preferredInternship String?
   preferredInternship String?
 
   workMode String?
+  workMode String?
 
   preferredLocation String?
+  preferredLocation String?
 
+  preferredCompanySize String?
+  skills               String[] @default([])
   preferredCompanySize String?
   skills               String[] @default([])
 
   applications Application[]
 
-  resumeAnalysis ResumeAnalysis?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
@@ -114,6 +126,9 @@ model ResumeAnalysis {
 
   careerRoadmap Json
 
+  improvementSuggestions Json    @default("[]")
+  learningPlan           Json?
+  aiModel                String?
   improvementSuggestions Json    @default("[]")
   learningPlan           Json?
   aiModel                String?
@@ -148,7 +163,9 @@ model EmployerProfile {
 
   foundedYear Int?
 
-  internships Internship[]
+
+
+internships Internship[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -159,26 +176,42 @@ model EmployerProfile {
   @@map("employer_profiles")
 }
 
+
+
+
+
 model Internship {
   id String @id @default(uuid()) @db.Uuid
 
   title String
 
-  description    String
-  category       String?
+  description     String
+  category        String?
+  companyOverview String?
+
+  experienceLevel String?
+
+  educationLevel String?
+
+  salaryType String?
+
+  applicationEmail String?
+
   requiredSkills String[] @default([])
 
   location String?
 
   type String?
 
-  workMode String?
 
-  duration String?
-
+  stipend         String?
+  openings        Int?
+  applicationLink String?
   stipend  String?
   openings Int?
 
+  deadline         DateTime?
+  responsibilities String[]  @default([])
   deadline         DateTime?
   responsibilities String[]  @default([])
 
@@ -190,7 +223,8 @@ model Internship {
 
   selectionProcess String[] @default([])
 
-  isActive Boolean @default(true)
+  isActive Boolean          @default(true)
+  status   InternshipStatus @default(OPEN)
 
   employerId String @db.Uuid
 
@@ -240,26 +274,34 @@ model Application {
 
   status ApplicationStatus @default(PENDING)
 
-  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student StudentProfile @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
 
-  internship Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
+  internship Internship @relation(
+    fields: [internshipId],
+    references: [id],
+    onDelete: Cascade
+  )
 
-  updatedAt DateTime @updatedAt
 
-  @@unique([studentId, internshipId])
+
   @@map("applications")
 }
 
-enum ApplicationStatus {
-  PENDING
 
-  REVIEWING
 
-  ACCEPTED
 
   REJECTED
+}
+
+enum InternshipStatus {
+  OPEN
+  PAUSED
+  CLOSED
 }
 
 model PasswordResetToken {
@@ -280,4 +322,6 @@ model PasswordResetToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("password_reset_tokens")
+}
+
 }

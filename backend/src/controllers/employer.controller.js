@@ -1,7 +1,9 @@
 import {
     getEmployerProfile,
     updateEmployerProfile,
-    getAllEmployers
+    getAllEmployers,
+    getFeaturedEmployers
+
 } from "../services/employer.service.js";
 
 import {
@@ -200,6 +202,45 @@ export const getDashboardStats = async(req,res)=>{
 
         });
 
+
+    }
+
+};
+// =================================================
+// GET FEATURED EMPLOYERS (PUBLIC HOMEPAGE)
+// =================================================
+
+export const getFeaturedCompanies = async (req, res) => {
+
+    try {
+
+        const companies =
+            await getFeaturedEmployers();
+
+
+        return res.status(200).json({
+
+            success: true,
+
+            data: companies
+
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                error.message ||
+                "Failed to fetch featured companies"
+
+        });
 
     }
 

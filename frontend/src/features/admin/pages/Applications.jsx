@@ -1,283 +1,89 @@
-import { useEffect, useState } from "react";
 import api from "@/lib/api";
+import useApplications from "../hooks/useApplications";
 import ApplicationTable from "../components/ApplicationTable";
 
-
 function Applications() {
+  const {
+    data: applications = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useApplications();
 
-
-  const [applications, setApplications] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-
-  const [error, setError] = useState("");
-
-
-
-
-
-  useEffect(() => {
-
-    fetchApplications();
-
-  }, []);
-
-
-
-
-
-  const fetchApplications = async () => {
-
+  const updateStatus = async (id, status) => {
     try {
-
-      setLoading(true);
-      setError("");
-
-      const response = await api.get(
-        "/admin/applications"
-      );
-
-
-      console.log(
-        "APPLICATION DATA:",
-        response.data
-      );
-
-
-      if(response.data.success){
-
-        setApplications(
-          response.data.data || []
-        );
-
-      }
-
-
-    } catch(error){
-
-      console.log(
-        "Fetch Applications Error:",
-        error.response?.data || error.message
-      );
-
-
-      setError(
-        error.response?.data?.message ||
-        "Failed to load applications"
-      );
-
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  };
-
-
-
-
-
-
-
-  // UPDATE STATUS
-
-  const updateStatus = async (id,status)=>{
-
-
-    try{
-
-
       const response = await api.put(
-
         `/admin/applications/${id}`,
-
-        {
-          status
-        }
-
+        { status }
       );
 
-
-
-      if(response.data.success){
-
-
-        fetchApplications();
-
-
+      if (response.data.success) {
+        alert("Application updated successfully");
+        refetch();
       }
-
-
-
-    }catch(error){
-
-
-      console.log(
-        "Status Update Error:",
-        error.response?.data || error.message
-      );
-
-
+    } catch (error) {
+      console.log(error);
+      alert("Failed to update application");
     }
-
-
   };
 
-
-
-
-
-
-
-  // DELETE APPLICATION
-
-  const deleteApplication = async(id)=>{
-
-
+  const deleteApplication = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this application?"
     );
 
+    if (!confirmDelete) return;
 
-    if(!confirmDelete) return;
-
-
-
-    try{
-
-
+    try {
       const response = await api.delete(
-
         `/admin/applications/${id}`
-
       );
 
-
-
-      if(response.data.success){
-
-
-        setApplications((prev)=>
-
-          prev.filter(
-            (app)=> app.id !== id
-          )
-
-        );
-
-
+      if (response.data.success) {
+        alert("Application deleted successfully");
+        refetch();
       }
-
-
-
-    }catch(error){
-
-
-      console.log(
-        "Delete Application Error:",
-        error.response?.data || error.message
-      );
-
-
+    } catch (error) {
+      console.log(error);
+      alert("Failed to delete application");
     }
-
-
   };
 
-
-
-
-
-
-
-
-  if(loading){
-
-
+  if (isLoading) {
     return (
-
-      <div className="p-8 text-center">
-
-        <h2 className="text-xl font-semibold">
-          Loading applications...
-        </h2>
-
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        Loading Applications...
       </div>
-
     );
-
-
   }
 
-
-
-
-
-
-
-
-  if(error){
-
-
+  if (isError) {
     return (
-
-      <div className="p-8">
-
-        <div className="bg-red-100 text-red-600 p-5 rounded-xl">
-
-          {error}
-
-        </div>
-
-
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-red-500">
+        Failed to load applications.
       </div>
-
     );
-
-
   }
-
-
-
-
-
-
-
 
   return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">
+          Applications
+        </h1>
 
-    <div className="min-h-screen bg-slate-50 p-8">
-
-
-      <h1 className="text-3xl font-bold mb-6">
-
-        Applications
-
-      </h1>
-
-
-
+        <p className="text-gray-500 mt-2">
+          Manage internship applications.
+        </p>
+      </div>
 
       <ApplicationTable
-
         applications={applications}
-
         onStatusUpdate={updateStatus}
-
         onDelete={deleteApplication}
-
       />
-
-
-
     </div>
-
   );
-
-
 }
-
 
 export default Applications;

@@ -1,28 +1,26 @@
+import { useEffect, useState } from "react";
 import SectionContainer from "@/components/common/SectionContainer";
-
-import {
-  SiReact,
-  SiNodedotjs,
-  SiPostgresql,
-  SiTailwindcss,
-  SiExpress,
-  SiJsonwebtokens,
-  SiPrisma,
-  SiGooglegemini,
-} from "react-icons/si";
-
-const technologies = [
-  { name: "React", icon: SiReact },
-  { name: "Node.js", icon: SiNodedotjs },
-  { name: "PostgreSQL", icon: SiPostgresql },
-  { name: "Tailwind CSS", icon: SiTailwindcss },
-  { name: "Express", icon: SiExpress },
-  { name: "JWT", icon: SiJsonwebtokens },
-  { name: "Prisma", icon: SiPrisma },
-  { name: "Gemini AI", icon: SiGooglegemini },
-];
+import api from "@/lib/api";
 
 export default function TrustedSection() {
+  const [technologies, setTechnologies] = useState([]);
+
+  useEffect(() => {
+    fetchTechnologies();
+  }, []);
+
+  const fetchTechnologies = async () => {
+    try {
+      const res = await api.get("/public/home");
+
+      if (res.data.success) {
+        setTechnologies(res.data.data.technologies || []);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SectionContainer className="py-14">
       <div className="text-center">
@@ -31,13 +29,20 @@ export default function TrustedSection() {
         </p>
 
         <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:grid-cols-8">
-          {technologies.map(({ name, icon: Icon }) => (
+          {technologies.map((tech) => (
             <div
-              key={name}
+              key={tech.name}
               className="flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
             >
-              <Icon className="h-8 w-8 text-slate-700" />
-              <span className="text-sm font-medium text-slate-600">{name}</span>
+              <img
+                src={tech.icon}
+                alt={tech.name}
+                className="h-10 w-10 object-contain"
+              />
+
+              <span className="text-sm font-medium text-slate-600">
+                {tech.name}
+              </span>
             </div>
           ))}
         </div>

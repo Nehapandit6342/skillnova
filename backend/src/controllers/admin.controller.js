@@ -31,6 +31,29 @@ import {
   // Settings
   getAdminSettingsService,
   updateAdminSettingsService,
+  
+// Testimonials
+getTestimonialsService,
+createTestimonialService,
+updateTestimonialService,
+deleteTestimonialService,
+toggleTestimonialService,
+
+// Companies
+getCompaniesService,
+createCompanyService,
+updateCompanyService,
+deleteCompanyService,
+toggleCompanyService,
+
+// FAQs
+getFAQsService,
+createFAQService,
+updateFAQService,
+deleteFAQService,
+toggleFAQService,
+
+
 
 } from "../services/admin.service.js";
 
@@ -649,4 +672,285 @@ export const updateAdminSettings = async (req, res) => {
 
   }
 
+};
+// =================================================
+// TESTIMONIALS
+// =================================================
+
+// GET ALL TESTIMONIALS
+
+export const getTestimonials = async (req, res) => {
+  try {
+    const testimonials = await getTestimonialsService();
+
+    res.status(200).json({
+      success: true,
+      data: testimonials,
+    });
+  } catch (error) {
+    console.log("GET TESTIMONIALS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// CREATE TESTIMONIAL
+
+export const createTestimonial = async (req, res) => {
+  try {
+    const testimonial = await createTestimonialService(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: "Testimonial created successfully",
+      data: testimonial,
+    });
+  } catch (error) {
+    console.log("CREATE TESTIMONIAL ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// UPDATE TESTIMONIAL
+
+export const updateTestimonial = async (req, res) => {
+  try {
+    const testimonial = await updateTestimonialService(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Testimonial updated successfully",
+      data: testimonial,
+    });
+  } catch (error) {
+    console.log("UPDATE TESTIMONIAL ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// DELETE TESTIMONIAL
+
+export const deleteTestimonial = async (req, res) => {
+  try {
+    await deleteTestimonialService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: "Testimonial deleted successfully",
+    });
+  } catch (error) {
+    console.log("DELETE TESTIMONIAL ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// TOGGLE ACTIVE / INACTIVE
+
+export const toggleTestimonial = async (req, res) => {
+  try {
+    const testimonial = await toggleTestimonialService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: "Status updated successfully",
+      data: testimonial,
+    });
+  } catch (error) {
+    console.log("TOGGLE TESTIMONIAL ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// =================================================
+// COMPANIES
+// =================================================
+
+export const getCompanies = async (req, res) => {
+  try {
+    const companies = await getCompaniesService();
+
+    res.status(200).json({
+      success: true,
+      data: companies,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const createCompany = async (req, res) => {
+  try {
+    const company = await createCompanyService(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: company,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const updateCompany = async (req, res) => {
+  try {
+    const company = await updateCompanyService(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json({
+      success: true,
+      data: company,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteCompany = async (req, res) => {
+  try {
+    await deleteCompanyService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: "Company deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const toggleCompany = async (req, res) => {
+  try {
+    const company = await toggleCompanyService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      data: company,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// =================================================
+// FAQ
+// =================================================
+
+export const getFAQs = async (req, res) => {
+  try {
+    const faqs = await getFAQsService();
+
+    res.status(200).json({
+      success: true,
+      data: faqs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const createFAQ = async (req, res) => {
+  try {
+    const faq = await createFAQService(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: faq,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const updateFAQ = async (req, res) => {
+  try {
+    const faq = await updateFAQService(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json({
+      success: true,
+      data: faq,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteFAQ = async (req, res) => {
+  try {
+    await deleteFAQService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: "FAQ deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const toggleFAQ = async (req, res) => {
+  try {
+    const faq = await toggleFAQService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      data: faq,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

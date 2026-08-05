@@ -1,122 +1,69 @@
-import { useEffect, useState } from "react";
-
+import useInternships from "../hooks/useInternships";
 import api from "@/lib/api";
-
 import InternshipTable from "../components/InternshipTable";
 
-
 function Internships() {
-
-
-  const [internships, setInternships] = useState([]);
-
-
-
-  useEffect(() => {
-
-    fetchInternships();
-
-  }, []);
-
-
-
-  const fetchInternships = async () => {
-
-    try {
-
-      const { data } = await api.get("/admin/internships");
-
-
-      console.log("Internships:", data);
-
-
-      if (data.success) {
-
-        setInternships(
-          data.data || []
-        );
-
-      }
-
-
-    } catch (error) {
-
-      console.log(
-        "Internship Error:",
-        error.response?.data || error.message
-      );
-
-    }
-
-  };
-
-
-
-  // DELETE INTERNSHIP
+  const {
+    data: internships = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useInternships();
 
   const deleteInternship = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this internship?"
+    );
+
+    if (!confirmDelete) return;
 
     try {
+      const response = await api.delete(`/admin/internships/${id}`);
 
-
-      await api.delete(
-        `/admin/internships/${id}`
-      );
-
-
-      setInternships((prev) =>
-        prev.filter(
-          (item) => item.id !== id
-        )
-      );
-
-
-      console.log("Internship deleted successfully");
-
-
+      if (response.data.success) {
+        alert("Internship deleted successfully");
+        refetch();
+      }
     } catch (error) {
-
-
-      console.log(
-        "Delete Error:",
-        error.response?.data || error.message
-      );
-
-
+      console.log(error);
+      alert("Failed to delete internship");
     }
-
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        Loading Internships...
+      </div>
+    );
+  }
 
-
-
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-red-500">
+        Failed to load internships.
+      </div>
+    );
+  }
 
   return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">
+          Internships
+        </h1>
 
-    <div className="min-h-screen bg-slate-50 p-8">
-
-
-      <h1 className="text-3xl font-bold mb-6">
-        Internships
-      </h1>
-
-
+        <p className="text-gray-500 mt-2">
+          Manage all internships posted by employers.
+        </p>
+      </div>
 
       <InternshipTable
-
         internships={internships}
-
         onDelete={deleteInternship}
-
       />
-
-
-
     </div>
-
   );
-
 }
-
 
 export default Internships;

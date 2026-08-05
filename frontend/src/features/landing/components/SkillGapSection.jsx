@@ -1,4 +1,5 @@
-import { CheckCircle2, Circle, BrainCircuit } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, BrainCircuit } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import SectionContainer from "@/components/common/SectionContainer";
 import SectionHeading from "@/components/common/SectionHeading";
@@ -95,7 +96,12 @@ export default function SkillGapSection() {
             </div>
           </div>
 
-          <Button className="mt-8 w-full">Generate Learning Plan</Button>
+          <Link to="/register">
+            <Button className="mt-8 w-full">
+              Generate Learning Plan
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </SectionContainer>

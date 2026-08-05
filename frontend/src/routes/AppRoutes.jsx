@@ -6,6 +6,9 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 // ================= PUBLIC =================
 
 import HomePage from "@/features/landing/pages/HomePage";
+import FeaturesPage from "@/features/landing/pages/FeaturesPage";
+import AboutPage from "@/features/landing/pages/AboutPages";
+import ContactPage from "@/features/landing/pages/ContactPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
 
@@ -40,6 +43,7 @@ import ApplyInternship from "@/features/internship/pages/ApplyInternship";
 // ================= ADMIN =================
 
 import Dashboard from "@/features/admin/pages/Dashboard";
+
 import Students from "@/features/admin/pages/Students";
 import Settings from "@/features/admin/pages/Settings";
 import AddInternship from "@/features/admin/pages/AddInternship";
