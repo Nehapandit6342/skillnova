@@ -1,8 +1,6 @@
 import { Router } from "express";
 
-import {
-  getHomeData,
-} from "../controllers/public.controller.js";
+import { getHomeData } from "../controllers/public.controller.js";
 
 const router = Router();
 
@@ -12,9 +10,6 @@ const router = Router();
 
 // Homepage data: stats, latest internships, technologies
 
-router.get(
-  "/home",
-  getHomeData,
-);
+router.get("/home", getHomeData);
 
 export default router;

@@ -13,7 +13,9 @@ import {
 
     updateInternship,
 
-    deleteInternship
+    deleteInternship,
+        getLatestInternships
+
 
 
 } from "../controllers/internship.controller.js";
@@ -49,7 +51,12 @@ router.get(
     getAllInternships
 );
 
+// Latest internships for homepage
 
+router.get(
+    "/latest",
+    getLatestInternships
+);
 
 
 // Get single internship details

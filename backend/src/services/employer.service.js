@@ -291,3 +291,49 @@ export const getEmployerDashboardStats = async (userId) => {
 
 
 };
+// ================= GET FEATURED EMPLOYERS (HOMEPAGE) =================
+
+export const getFeaturedEmployers = async () => {
+
+
+  return await prisma.employerProfile.findMany({
+
+    where: {
+
+      isFeatured: true,
+
+    },
+
+
+    select: {
+
+      id: true,
+
+      companyName: true,
+
+      logo: true,
+
+      website: true,
+
+      industry: true,
+
+      location: true,
+
+      description: true,
+
+    },
+
+
+    take: 6,
+
+
+    orderBy: {
+
+      createdAt: "desc",
+
+    },
+
+  });
+
+
+};

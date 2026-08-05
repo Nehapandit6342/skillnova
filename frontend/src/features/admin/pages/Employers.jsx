@@ -1,33 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
 
 import api from "@/lib/api";
 import EmployerTable from "../components/EmployerTable";
+import useEmployers from "../hooks/useEmployers";
 
 export default function Employers() {
-  const [employers, setEmployers] = useState([]);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetchEmployers();
-  }, []);
-
-  const fetchEmployers = async () => {
-    try {
-      const response = await api.get("/admin/employers");
-
-      console.log("Employers Data:", response.data);
-
-      if (response.data.success) {
-        setEmployers(response.data.data);
-      }
-    } catch (error) {
-      console.log(
-        "Employer Fetch Error:",
-        error.response?.data || error.message
-      );
-    }
-  };
+  const {
+    data: employers = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useEmployers();
 
   const handleDelete = async (employer) => {
     const confirmDelete = window.confirm(
@@ -43,10 +29,7 @@ export default function Employers() {
 
       if (response.data.success) {
         alert("Employer deleted successfully");
-
-        setEmployers((prev) =>
-          prev.filter((e) => e.id !== employer.id)
-        );
+        refetch();
       }
     } catch (error) {
       console.log(error);
@@ -60,24 +43,40 @@ export default function Employers() {
       .includes(search.toLowerCase())
   );
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        Loading Employers...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-red-500">
+        Failed to load employers.
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">
           Employers
         </h1>
 
-        <p className="mt-1 text-gray-500">
+        <p className="text-gray-500 mt-2">
           Manage all registered employers.
         </p>
       </div>
 
       {/* Search */}
-      <div className="relative mb-6">
+      <div className="relative mb-8 max-w-md">
         <Search
           size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
         />
 
         <input
@@ -85,7 +84,7 @@ export default function Employers() {
           placeholder="Search employer..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 outline-none focus:border-blue-500"
+          className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 outline-none focus:border-blue-600"
         />
       </div>
 

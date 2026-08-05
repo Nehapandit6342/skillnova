@@ -82,9 +82,13 @@ model StudentProfile {
 
   applications Application[]
 
-  resumeAnalysis ResumeAnalysis?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
 
   createdAt DateTime @default(now())
 
@@ -148,7 +152,9 @@ model EmployerProfile {
 
   foundedYear Int?
 
-  internships Internship[]
+
+
+internships Internship[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -158,6 +164,10 @@ model EmployerProfile {
 
   @@map("employer_profiles")
 }
+
+
+
+
 
 model Internship {
   id String @id @default(uuid()) @db.Uuid
@@ -182,9 +192,6 @@ model Internship {
 
   type String?
 
-  workMode String?
-
-  duration String?
 
   stipend         String?
   openings        Int?
@@ -224,34 +231,36 @@ model Application {
 
   internshipId String @db.Uuid
 
-  phone String?
 
-  resume String?
 
-  coverLetter String?
+  status String @default("PENDING")
 
-  availability String?
 
-  status ApplicationStatus @default(PENDING)
 
-  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  appliedAt DateTime @default(now())
 
-  internship Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
 
-  updatedAt DateTime @updatedAt
+  student StudentProfile @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
 
-  @@unique([studentId, internshipId])
+
+  internship Internship @relation(
+    fields: [internshipId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
+
   @@map("applications")
 }
 
-enum ApplicationStatus {
-  PENDING
 
-  REVIEWING
 
-  ACCEPTED
 
   REJECTED
 }

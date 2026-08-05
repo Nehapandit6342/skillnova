@@ -3,7 +3,9 @@ import { Router } from "express";
 import {
     getProfile,
     updateProfile,
-    getEmployers
+    getEmployers,
+        getFeaturedCompanies
+
 } from "../controllers/employer.controller.js";
 import {
     getDashboardStats
@@ -20,7 +22,17 @@ import {
 
 const router = Router();
 
+// =================================================
+// PUBLIC HOMEPAGE ROUTES
+// =================================================
 
+
+// Get featured companies for homepage
+
+router.get(
+    "/featured",
+    getFeaturedCompanies
+);
 
 // =================================================
 // ADMIN ROUTES

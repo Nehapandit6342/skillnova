@@ -1,32 +1,104 @@
+import prisma from "../config/prisma.js";
+
 import {
-
-    createEmployerInternshipService,
-
+    createInternshipService,
     getAllInternshipsService,
-
     getInternshipByIdService,
-
     updateInternshipService,
-
     deleteInternshipService,
-
-    getEmployerInternshipsService
+    createEmployerInternshipService,
+    getEmployerInternshipsService,
+        getLatestInternshipsService
 
 } from "../services/internship.service.js";
 
 
 
-
-
-
-
 // ==================================================
-// CREATE EMPLOYER INTERNSHIP
+// CREATE INTERNSHIP
 // ==================================================
 
-export const createEmployerInternship = async (req, res) => {
+export const createInternship = async (req, res) => {
 
     try {
+
+
+        const employer =
+        await prisma.employerProfile.findUnique({
+
+            where:{
+                userId:req.user.id
+            }
+
+        });
+
+
+
+        if(!employer){
+
+            return res.status(404).json({
+
+                success:false,
+
+                message:"Employer profile not found"
+
+            });
+
+        }
+
+
+
+        const internship =
+        await createInternshipService({
+
+            ...req.body,
+
+            employerId: employer.id
+
+        });
+
+
+
+        res.status(201).json({
+
+            success:true,
+
+            message:"Internship created successfully",
+
+            data:internship
+
+        });
+
+
+
+    } catch(error){
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+
+    }
+
+};
+
+
+
+
+
+// ==================================================
+// EMPLOYER CREATE INTERNSHIP
+// ==================================================
+
+export const createEmployerInternship = async(req,res)=>{
+
+
+    try{
 
 
         const internship =
@@ -40,36 +112,34 @@ export const createEmployerInternship = async (req, res) => {
 
 
 
-        return res.status(201).json({
+        res.status(201).json({
 
-            success: true,
+            success:true,
 
-            message: "Internship created successfully",
+            message:"Internship posted successfully",
 
-            data: internship
+            data:internship
 
         });
 
 
 
-    } catch (error) {
+    }catch(error){
 
 
-        return res.status(400).json({
+        res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
 
     }
 
+
 };
-
-
-
 
 
 
@@ -80,9 +150,10 @@ export const createEmployerInternship = async (req, res) => {
 // GET MY INTERNSHIPS
 // ==================================================
 
-export const getMyInternships = async (req, res) => {
+export const getMyInternships = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const internships =
@@ -94,34 +165,32 @@ export const getMyInternships = async (req, res) => {
 
 
 
-        return res.status(200).json({
+        res.status(200).json({
 
-            success: true,
+            success:true,
 
-            data: internships
+            data:internships
 
         });
 
 
 
-    } catch (error) {
+    }catch(error){
 
 
-        return res.status(400).json({
+        res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
 
     }
 
+
 };
-
-
-
 
 
 
@@ -132,9 +201,10 @@ export const getMyInternships = async (req, res) => {
 // GET ALL INTERNSHIPS
 // ==================================================
 
-export const getAllInternships = async (req, res) => {
+export const getAllInternships = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const internships =
@@ -142,34 +212,32 @@ export const getAllInternships = async (req, res) => {
 
 
 
-        return res.status(200).json({
+        res.status(200).json({
 
-            success: true,
+            success:true,
 
-            data: internships
+            data:internships
 
         });
 
 
 
-    } catch (error) {
+    }catch(error){
 
 
-        return res.status(500).json({
+        res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
 
     }
 
+
 };
-
-
-
 
 
 
@@ -180,9 +248,10 @@ export const getAllInternships = async (req, res) => {
 // GET INTERNSHIP BY ID
 // ==================================================
 
-export const getInternshipById = async (req, res) => {
+export const getInternshipById = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const internship =
@@ -194,14 +263,14 @@ export const getInternshipById = async (req, res) => {
 
 
 
-        if (!internship) {
+        if(!internship){
 
 
             return res.status(404).json({
 
-                success: false,
+                success:false,
 
-                message: "Internship not found"
+                message:"Internship not found"
 
             });
 
@@ -210,33 +279,32 @@ export const getInternshipById = async (req, res) => {
 
 
 
-        return res.status(200).json({
+        res.status(200).json({
 
-            success: true,
+            success:true,
 
-            data: internship
+            data:internship
 
         });
 
 
 
-    } catch (error) {
+    }catch(error){
 
 
-        return res.status(500).json({
+        res.status(500).json({
 
-            success: false,
+            success:false,
 
-            message: error.message
+            message:error.message
 
         });
 
 
     }
 
+
 };
-
-
 
 
 
@@ -248,69 +316,57 @@ export const getInternshipById = async (req, res) => {
 // UPDATE INTERNSHIP
 // ==================================================
 
-export const updateInternship = async (req, res) => {
+export const updateInternship = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const internship =
         await updateInternshipService(
 
+
             req.user.id,
+
 
             req.params.id,
 
+
             req.body
+
 
         );
 
 
 
-        return res.status(200).json({
+        res.status(200).json({
 
-            success: true,
+            success:true,
 
-            message: "Internship updated successfully",
+            message:"Internship updated successfully",
 
-            data: internship
+            data:internship
 
         });
 
 
 
-    } catch (error) {
+    }catch(error){
 
 
-        if (error.message === "Unauthorized action") {
+        res.status(500).json({
 
+            success:false,
 
-            return res.status(403).json({
-
-                success: false,
-
-                message: error.message
-
-            });
-
-
-        }
-
-
-
-        return res.status(400).json({
-
-            success: false,
-
-            message: error.message
+            message:error.message
 
         });
 
 
     }
 
+
 };
-
-
 
 
 
@@ -322,18 +378,62 @@ export const updateInternship = async (req, res) => {
 // DELETE INTERNSHIP
 // ==================================================
 
-export const deleteInternship = async (req, res) => {
+export const deleteInternship = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         await deleteInternshipService(
 
+
             req.user.id,
+
 
             req.params.id
 
+
         );
+
+
+
+        res.status(200).json({
+
+            success:true,
+
+            message:"Internship deleted successfully"
+
+        });
+
+
+
+    }catch(error){
+
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+
+    }
+
+
+};
+// ==================================================
+// GET LATEST INTERNSHIPS (HOMEPAGE)
+// ==================================================
+
+export const getLatestInternships = async (req, res) => {
+
+    try {
+
+
+        const internships =
+            await getLatestInternshipsService();
 
 
 
@@ -341,36 +441,20 @@ export const deleteInternship = async (req, res) => {
 
             success: true,
 
-            message: "Internship deleted successfully"
+            data: internships
 
         });
 
 
 
-    } catch (error) {
+    } catch(error) {
 
 
-        if (error.message === "Unauthorized action") {
+        return res.status(500).json({
 
+            success:false,
 
-            return res.status(403).json({
-
-                success: false,
-
-                message: error.message
-
-            });
-
-
-        }
-
-
-
-        return res.status(400).json({
-
-            success: false,
-
-            message: error.message
+            message:error.message
 
         });
 

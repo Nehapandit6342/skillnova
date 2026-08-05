@@ -122,6 +122,39 @@ async function main() {
   });
 
   console.log("✅ Seed completed successfully");
+    // ================= TESTIMONIALS =================
+
+  await prisma.testimonial.createMany({
+    data: [
+      {
+        name: "Aarav Sharma",
+        designation: "Frontend Developer Intern",
+        company: "Cotiviti Nepal",
+        message:
+          "SkillNova helped me improve my resume and I landed my first internship within two weeks.",
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: "Priya Karki",
+        designation: "Software Engineering Student",
+        company: "Leapfrog Technology",
+        message:
+          "The AI resume analysis gave me practical suggestions that significantly improved my resume quality.",
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: "Rohit Adhikari",
+        designation: "Backend Developer Intern",
+        company: "F1Soft",
+        message:
+          "The internship recommendations matched my skills perfectly and saved me a lot of time.",
+        rating: 5,
+        isActive: true,
+      },
+    ],
+  });
 }
 
 main()

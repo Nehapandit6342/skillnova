@@ -1008,3 +1008,148 @@ export const updateAdminSettingsService = async (id, data) => {
     },
   });
 };
+// =================================================
+// TESTIMONIALS
+// =================================================
+
+export const getTestimonialsService = async () => {
+  return await prisma.testimonial.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
+export const createTestimonialService = async (data) => {
+  return await prisma.testimonial.create({
+    data,
+  });
+};
+
+export const updateTestimonialService = async (id, data) => {
+  return await prisma.testimonial.update({
+    where: {
+      id,
+    },
+    data,
+  });
+};
+
+export const deleteTestimonialService = async (id) => {
+  return await prisma.testimonial.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export const toggleTestimonialService = async (id) => {
+  const testimonial = await prisma.testimonial.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return await prisma.testimonial.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive: !testimonial.isActive,
+    },
+  });
+};
+// =================================================
+// COMPANIES
+// =================================================
+
+export const getCompaniesService = async () => {
+  return await prisma.company.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
+export const createCompanyService = async (data) => {
+  return await prisma.company.create({
+    data,
+  });
+};
+
+export const updateCompanyService = async (id, data) => {
+  return await prisma.company.update({
+    where: { id },
+    data,
+  });
+};
+
+export const deleteCompanyService = async (id) => {
+  return await prisma.company.delete({
+    where: { id },
+  });
+};
+
+export const toggleCompanyService = async (id) => {
+  const company = await prisma.company.findUnique({
+    where: { id },
+  });
+
+  if (!company) {
+    throw new Error("Company not found");
+  }
+
+  return await prisma.company.update({
+    where: { id },
+    data: {
+      isActive: !company.isActive,
+    },
+  });
+};
+// =================================================
+// FAQ
+// =================================================
+
+export const getFAQsService = async () => {
+  return await prisma.fAQ.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
+export const createFAQService = async (data) => {
+  return await prisma.fAQ.create({
+    data,
+  });
+};
+
+export const updateFAQService = async (id, data) => {
+  return await prisma.fAQ.update({
+    where: { id },
+    data,
+  });
+};
+
+export const deleteFAQService = async (id) => {
+  return await prisma.fAQ.delete({
+    where: { id },
+  });
+};
+
+export const toggleFAQService = async (id) => {
+  const faq = await prisma.fAQ.findUnique({
+    where: { id },
+  });
+
+  if (!faq) {
+    throw new Error("FAQ not found");
+  }
+
+  return await prisma.fAQ.update({
+    where: { id },
+    data: {
+      isActive: !faq.isActive,
+    },
+  });
+};

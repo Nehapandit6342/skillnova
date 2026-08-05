@@ -4,10 +4,7 @@ import cors from "cors";
 
 import prisma from "./config/prisma.js";
 
-// Routes
-
 import authRoutes from "./routes/auth.routes.js";
-import aiRoutes from "./routes/ai.routes.js";
 import studentRoutes from "./routes/student.routes.js";
 import testRoutes from "./routes/test.routes.js";
 import employerRoutes from "./routes/employer.routes.js";
@@ -24,33 +21,19 @@ dotenv.config();
 
 const app = express();
 
-const PORT = process.env.PORT || 5000;
-
-// ================= MIDDLEWARE =================
+const PORT = process.env.PORT || 5001;
 
 app.use(cors());
-
 app.use(express.json());
 
-// ================= ROUTES =================
-
 app.use("/api/test", testRoutes);
-
 app.use("/api/auth", authRoutes);
-
 app.use("/api/students", studentRoutes);
-app.use("/api/student-dashboard", studentDashboardRoutes);
-
-app.use("/api/ai", aiRoutes);
-
 app.use("/api/employer", employerRoutes);
-
 app.use("/api/admin", adminRoutes);
-
 app.use("/api/internships", internshipRoutes);
-
+app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/applications", applicationRoutes);
-
 app.use("/api/candidates", candidateRoutes);
 app.use("/api/recommendation", recommendationRoutes);
 app.use("/api/match", matchRoutes);
@@ -66,8 +49,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// ================= SERVER =================
-
 async function startServer() {
   try {
     await prisma.$connect();
@@ -78,7 +59,7 @@ async function startServer() {
       console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("Database connection failed", error);
+    console.error(error);
   }
 }
 
