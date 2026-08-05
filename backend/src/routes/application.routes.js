@@ -32,10 +32,11 @@ import {
 } from "../middleware/role.middleware.js";
 
 
+import upload from "../middleware/upload.middleware.js";
+
+
 
 const router = express.Router();
-
-
 
 
 
@@ -47,7 +48,7 @@ const router = express.Router();
 
 
 
-// Apply for Internship
+// Apply Internship
 
 router.post(
 
@@ -56,6 +57,8 @@ router.post(
     authenticate,
 
     authorize("STUDENT"),
+
+    upload.single("resume"),
 
     createApplication
 
@@ -66,7 +69,7 @@ router.post(
 
 
 
-// Get My Applications
+// Student Applications
 
 router.get(
 
@@ -94,8 +97,7 @@ router.get(
 
 
 
-
-// View applicants for employer internships
+// View applicants
 
 router.get(
 
@@ -116,8 +118,6 @@ router.get(
 
 
 // Update application status
-// ACCEPTED / REJECTED / REVIEWING
-
 
 router.patch(
 
@@ -138,14 +138,9 @@ router.patch(
 
 
 
-
 // ==================================================
 // ADMIN
 // ==================================================
-
-
-
-// Get all applications
 
 
 router.get(
@@ -159,7 +154,6 @@ router.get(
     getAllApplications
 
 );
-
 
 
 

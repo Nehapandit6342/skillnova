@@ -12,7 +12,6 @@ enum Role {
   ADMIN
 }
 
-
 model User {
   id String @id @default(uuid()) @db.Uuid
 
@@ -46,7 +45,7 @@ model StudentProfile {
 
   profileImage     String?
   resumeUrl        String?
-  resumeFileName String?
+  resumeFileName   String?
   resumeText       String?
   resumeUploadedAt DateTime?
 
@@ -65,23 +64,21 @@ model StudentProfile {
 
   cgpa Float?
 
- 
-
   github String?
 
   linkedin String?
 
-  portfolio String?
-careerGoal String?
+  portfolio  String?
+  careerGoal String?
 
-preferredInternship String?
+  preferredInternship String?
 
-workMode String?
+  workMode String?
 
-preferredLocation String?
+  preferredLocation String?
 
-preferredCompanySize String?
-  skills String[] @default([])
+  preferredCompanySize String?
+  skills               String[] @default([])
 
   applications Application[]
 
@@ -117,9 +114,9 @@ model ResumeAnalysis {
 
   careerRoadmap Json
 
-  improvementSuggestions Json @default("[]")
-  learningPlan Json?
-  aiModel       String?
+  improvementSuggestions Json    @default("[]")
+  learningPlan           Json?
+  aiModel                String?
 
   createdAt DateTime @default(now())
 
@@ -179,11 +176,11 @@ model Internship {
 
   duration String?
 
-  stipend String?
+  stipend  String?
   openings Int?
 
-  deadline DateTime?
-  responsibilities String[] @default([])
+  deadline         DateTime?
+  responsibilities String[]  @default([])
 
   skills String[] @default([])
 
@@ -215,13 +212,31 @@ model Application {
 
   internshipId String @db.Uuid
 
+  // Applicant Snapshot
+
+  fullName String?
+
+  email String?
+
   phone String?
+
+  location String?
+
+  college String?
+
+  degree String?
+
+  // Application Data
 
   resume String?
 
   coverLetter String?
 
+  whyHireMe String?
+
   availability String?
+
+  expectedDuration String?
 
   status ApplicationStatus @default(PENDING)
 
@@ -260,11 +275,9 @@ model PasswordResetToken {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
- 
-
   createdAt DateTime @default(now())
 
   @@index([userId])
   @@index([expiresAt])
   @@map("password_reset_tokens")
-} 
+}

@@ -473,31 +473,36 @@ export const deleteInternshipService = async(
 
 // ================= GET EMPLOYER INTERNSHIPS =================
 
+// ================= GET EMPLOYER INTERNSHIPS =================
+
 export const getEmployerInternshipsService = async(userId)=>{
+
+
+    console.log(
+        "Searching employer profile for user:",
+        userId
+    );
 
 
     const employer =
     await prisma.employerProfile.findUnique({
 
-
         where:{
-
-
             userId
-
-
         }
-
 
     });
 
 
 
+    console.log(
+        "Employer found:",
+        employer
+    );
 
 
 
     if(!employer){
-
 
         throw new Error(
             "Employer profile not found"
@@ -509,16 +514,12 @@ export const getEmployerInternshipsService = async(userId)=>{
 
 
 
-
-
-    return await prisma.internship.findMany({
-
+    const internships =
+    await prisma.internship.findMany({
 
         where:{
 
-
             employerId: employer.id
-
 
         },
 
@@ -528,32 +529,36 @@ export const getEmployerInternshipsService = async(userId)=>{
 
             _count:{
 
-
                 select:{
-
 
                     applications:true
 
-
                 }
 
-
             }
-
 
         },
 
 
         orderBy:{
 
-
             createdAt:"desc"
-
 
         }
 
 
     });
+
+
+
+    console.log(
+        "Internships:",
+        internships
+    );
+
+
+
+    return internships;
 
 
 };
@@ -568,36 +573,26 @@ export const getEmployerInternshipsService = async(userId)=>{
 
 // ================= CREATE EMPLOYER INTERNSHIP =================
 
+// ================= CREATE EMPLOYER INTERNSHIP =================
+
 export const createEmployerInternshipService = async(
-
     userId,
-
     data
-
 )=>{
 
 
     const employer =
     await prisma.employerProfile.findUnique({
 
-
         where:{
-
-
             userId
-
-
         }
-
 
     });
 
 
 
-
-
     if(!employer){
-
 
         throw new Error(
             "Employer profile not found"
@@ -607,11 +602,8 @@ export const createEmployerInternshipService = async(
 
 
 
-
-
-
-
-    return await prisma.internship.create({
+    const internship =
+    await prisma.internship.create({
 
 
         data:{
@@ -635,16 +627,14 @@ export const createEmployerInternshipService = async(
             duration:data.duration,
 
 
-            stipend:data.stipend,
+            stipend:data.stipend || null,
 
 
 
             openings:
             data.openings
-            ?
-            Number(data.openings)
-            :
-            null,
+            ? Number(data.openings)
+            : null,
 
 
 
@@ -675,20 +665,23 @@ export const createEmployerInternshipService = async(
 
             deadline:
             data.deadline
-            ?
-            new Date(data.deadline)
-            :
-            null,
+            ? new Date(data.deadline)
+            : null,
 
 
 
-            employerId:employer.id
+            employerId:
+            employer.id
 
 
         }
 
 
     });
+
+
+
+    return internship;
 
 
 };

@@ -1,210 +1,551 @@
+import { useNavigate } from "react-router-dom";
+
 import useCandidates from "../hooks/useCandidates";
 
 
 
-export default function Candidates() {
+export default function Candidates(){
+
+
+    const navigate = useNavigate();
+
+
 
     const {
-
         data,
-
         isLoading
-
     } = useCandidates();
 
 
 
+
     const candidates =
-        data?.data || [];
+    data?.data || [];
 
 
 
-    if (isLoading) {
+
+
+    if(isLoading){
 
         return (
-            <p>Loading candidates...</p>
+
+            <div className="p-6">
+
+                Loading candidates...
+
+            </div>
+
         );
 
     }
 
 
 
+
+
+
+
+
     return (
+
 
         <div className="space-y-6">
 
+
+
             <h1 className="text-2xl font-bold">
 
-                Candidates
+                Accepted Candidates
 
             </h1>
 
 
 
+
+
+
+
             {
+                candidates.length === 0
 
-                candidates.length === 0 ?
 
-                    (
+                ?
 
-                        <div
+
+                (
+
+                    <div
+
+                    className="
+                    bg-white
+                    border
+                    rounded-xl
+                    p-6
+                    "
+
+                    >
+
+                        No accepted candidates yet.
+
+
+                    </div>
+
+
+                )
+
+
+
+                :
+
+
+
+                (
+
+                <div className="grid gap-5">
+
+
+
+
+
+                {
+                    candidates.map((application)=>(
+
+
+
+
+                    <div
+
+                    key={application.id}
+
+
+                    className="
+                    bg-white
+                    border
+                    rounded-xl
+                    p-6
+                    shadow-sm
+                    "
+
+
+                    >
+
+
+
+
+
+
+
+                    {/* Header */}
+
+
+                    <div
+                    className="
+                    flex
+                    justify-between
+                    items-start
+                    "
+                    >
+
+
+
+                        <div>
+
+
+                            <h2
                             className="
-                            bg-white
-                            border
-                            rounded-xl
-                            p-6
+                            text-xl
+                            font-bold
                             "
-                        >
+                            >
 
-                            No candidates found.
+                                {
+                                    application.student?.user?.name
+                                    ||
+                                    "Unknown Candidate"
+                                }
+
+
+                            </h2>
+
+
+
+
+                            <p className="text-gray-600">
+
+
+                                {
+                                    application.student?.user?.email
+                                    ||
+                                    "No email"
+                                }
+
+
+                            </p>
+
+
 
                         </div>
 
-                    )
 
-                    :
 
-                    (
 
-                        <div className="grid gap-5">
+
+                        <span
+
+                        className="
+                        bg-green-100
+                        text-green-700
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+                        font-semibold
+                        "
+
+                        >
+
+                            ACCEPTED
+
+
+                        </span>
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+                    {/* Details */}
+
+
+                    <div
+
+                    className="
+                    mt-5
+                    space-y-2
+                    text-sm
+                    "
+
+                    >
+
+
+
+
+                        <p>
+
+                            <b>
+                            Internship:
+                            </b>
+
+                            {" "}
+
+                            {
+                                application.internship?.title
+                                ||
+                                "N/A"
+                            }
+
+                        </p>
+
+
+
+
+
+
+                        <p>
+
+                            <b>
+                            College:
+                            </b>
+
+                            {" "}
+
+                            {
+                                application.student?.college
+                                ||
+                                "N/A"
+                            }
+
+
+                        </p>
+
+
+
+
+
+
+
+                        <p>
+
+                            <b>
+                            Degree:
+                            </b>
+
+                            {" "}
+
+                            {
+                                application.student?.degree
+                                ||
+                                "N/A"
+                            }
+
+
+                        </p>
+
+
+
+
+
+
+
+                        <p>
+
+                            <b>
+                            Semester:
+                            </b>
+
+                            {" "}
+
+                            {
+                                application.student?.semester
+                                ||
+                                "N/A"
+                            }
+
+
+                        </p>
+
+
+
+
+
+
+
+                        <p>
+
+                            <b>
+                            CGPA:
+                            </b>
+
+                            {" "}
+
+                            {
+                                application.student?.cgpa
+                                ||
+                                "N/A"
+                            }
+
+
+                        </p>
+
+
+
+
+
+
+
+                        <p>
+
+                            <b>
+                            Skills:
+                            </b>
+
+                            {" "}
 
                             {
 
-                                candidates.map((item) => (
+                            application.student?.skills?.length
 
-                                    <div
+                            ?
 
-                                        key={item.id}
+                            application.student.skills.join(", ")
 
-                                        className="
-                                        bg-white
-                                        border
-                                        rounded-xl
-                                        p-6
-                                        shadow-sm
-                                        "
+                            :
 
-                                    >
-
-                                        <h2 className="text-xl font-bold">
-
-                                            {item.student.user.name}
-
-                                        </h2>
-
-
-
-                                        <p className="text-gray-600">
-
-                                            {item.student.user.email}
-
-                                        </p>
-
-
-
-                                        <div className="mt-4 space-y-1 text-sm">
-
-                                            <p>
-
-                                                Internship:
-
-                                                {" "}
-
-                                                {item.internship.title}
-
-                                            </p>
-
-                                            <p>
-
-                                                College:
-
-                                                {" "}
-
-                                                {item.student.college || "N/A"}
-
-                                            </p>
-
-                                            <p>
-
-                                                Degree:
-
-                                                {" "}
-
-                                                {item.student.degree || "N/A"}
-
-                                            </p>
-
-                                            <p>
-
-                                                Skills:
-
-                                                {" "}
-
-                                                {
-
-                                                    item.student.skills?.length
-
-                                                        ?
-
-                                                        item.student.skills.join(", ")
-
-                                                        :
-
-                                                        "N/A"
-
-                                                }
-
-                                            </p>
-
-                                            <p>
-
-                                                Status:
-
-                                                {" "}
-
-                                                <span
-                                                    className="font-semibold"
-                                                >
-                                                    {item.status}
-                                                </span>
-
-                                            </p>
-
-                                        </div>
-
-
-
-                                        <div className="mt-5 flex gap-3">
-
-                                            <button
-                                                className="
-                                                bg-blue-600
-                                                text-white
-                                                px-4
-                                                py-2
-                                                rounded-lg
-                                                "
-                                            >
-
-                                                View Profile
-
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-                                ))
+                            "N/A"
 
                             }
 
-                        </div>
 
-                    )
+                        </p>
+
+
+
+
+
+
+
+                        <p>
+
+                            <b>
+                            Phone:
+                            </b>
+
+                            {" "}
+
+                            {
+                                application.phone
+                                ||
+                                application.student?.phone
+                                ||
+                                "N/A"
+                            }
+
+
+                        </p>
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+                    {/* Actions */}
+
+
+                    <div
+
+                    className="
+                    mt-6
+                    flex
+                    gap-3
+                    "
+
+                    >
+
+
+
+
+
+                        <button
+
+
+                        onClick={()=>{
+
+
+                            navigate(
+                                `/employer/candidates/${application.id}`
+                            )
+
+
+                        }}
+
+
+                        className="
+                        bg-blue-600
+                        hover:bg-blue-700
+                        text-white
+                        px-5
+                        py-2
+                        rounded-lg
+                        "
+
+                        >
+
+                            View Profile
+
+
+                        </button>
+
+
+
+
+
+
+
+
+                        {
+
+                        application.student?.resumeUrl &&
+
+                        (
+
+                        <a
+
+
+                        href={application.student.resumeUrl}
+
+
+                        target="_blank"
+
+
+                        rel="noopener noreferrer"
+
+
+                        className="
+                        bg-gray-800
+                        text-white
+                        px-5
+                        py-2
+                        rounded-lg
+                        "
+
+                        >
+
+                            View Resume
+
+
+                        </a>
+
+
+                        )
+
+                        }
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+                    ))
+
+                }
+
+
+
+
+
+
+                </div>
+
+
+                )
 
             }
 
+
+
+
+
         </div>
+
 
     );
 

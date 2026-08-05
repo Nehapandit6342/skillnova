@@ -1,11 +1,11 @@
 import {
     useParams,
-    useLocation,
     useNavigate
 } from "react-router-dom";
 
 
 import {
+    useEffect,
     useState
 } from "react";
 
@@ -29,32 +29,44 @@ import {
 } from "@/api/application.api";
 
 
+import {
+    useAuth
+} from "@/context/AuthContext";
+
+
+import useInternshipById
+from "../hooks/useInternshipById";
+
+
+
 
 
 
 export default function ApplyInternship(){
 
 
+const {id}=useParams();
+
+
+const navigate = useNavigate();
+
+
+
 const {
-    id
-}=useParams();
+    user,
+    isAuthenticated
+}=useAuth();
 
 
 
-const location =
-useLocation();
+const {
+    data,
+    isLoading
+}=useInternshipById(id);
 
 
 
-const navigate =
-useNavigate();
-
-
-
-
-const internship =
-location.state?.internship;
-
+const internship=data?.data;
 
 
 
@@ -64,22 +76,196 @@ const [loading,setLoading]=useState(false);
 
 
 
-
 const [form,setForm]=useState({
 
-fullName:"",
-email:"",
-phone:"",
-location:"",
-college:"",
-degree:"",
-resume:null,
-coverLetter:"",
-whyHireMe:"",
-availability:"",
-duration:""
+    fullName:"",
+
+    email:"",
+
+    phone:"",
+
+    location:"",
+
+    college:"",
+
+    degree:"",
+
+    resume:null,
+
+    coverLetter:"",
+
+    whyHireMe:"",
+
+    availability:"",
+
+    expectedDuration:""
 
 });
+
+
+
+
+
+
+
+// ==========================
+// AUTO FILL USER
+// ==========================
+
+useEffect(()=>{
+
+
+if(user){
+
+
+setForm(prev=>({
+
+    ...prev,
+
+    fullName:user.name || "",
+
+    email:user.email || ""
+
+}));
+
+
+}
+
+
+},[user]);
+
+
+
+
+
+
+
+
+
+// ==========================
+// AUTH CHECK
+// ==========================
+
+if(!isAuthenticated){
+
+
+navigate(
+
+"/login",
+
+{
+
+replace:true,
+
+state:{
+from:`/internships/${id}/apply`
+}
+
+}
+
+);
+
+
+return null;
+
+
+}
+
+
+
+
+
+
+
+// ==========================
+// ROLE CHECK
+// ==========================
+
+
+if(user?.role !== "STUDENT"){
+
+
+return (
+
+<div className="
+min-h-screen
+flex
+items-center
+justify-center
+">
+
+
+<h1 className="
+text-2xl
+font-bold
+">
+
+Only students can apply for internships
+
+</h1>
+
+
+</div>
+
+
+);
+
+
+}
+
+
+
+
+
+
+
+if(isLoading){
+
+
+return (
+
+<div className="
+min-h-screen
+flex
+justify-center
+items-center
+">
+
+Loading internship details...
+
+</div>
+
+);
+
+
+}
+
+
+
+
+
+
+
+if(!internship){
+
+
+return (
+
+<div className="
+text-center
+py-20
+">
+
+Internship not found
+
+</div>
+
+);
+
+
+}
+
+
 
 
 
@@ -94,14 +280,14 @@ setForm({
 
 ...form,
 
-[e.target.name]:
-
-e.target.value
+[e.target.name]:e.target.value
 
 });
 
 
 };
+
+
 
 
 
@@ -117,15 +303,21 @@ e.preventDefault();
 
 
 
+
 if(!form.resume){
+
 
 toast.error(
 "Please upload your resume"
 );
 
+
 return;
 
+
 }
+
+
 
 
 
@@ -137,36 +329,98 @@ setLoading(true);
 
 
 
-const data =
-new FormData();
+const formData=new FormData();
 
 
 
-data.append(
+
+
+formData.append(
 "internshipId",
 id
 );
 
 
 
-
-Object.entries(form)
-.forEach(
-([key,value])=>{
-
-data.append(
-key,
-value
-);
-
-}
+formData.append(
+"fullName",
+form.fullName
 );
 
 
+formData.append(
+"email",
+form.email
+);
+
+
+formData.append(
+"phone",
+form.phone
+);
+
+
+formData.append(
+"location",
+form.location
+);
+
+
+formData.append(
+"college",
+form.college
+);
+
+
+formData.append(
+"degree",
+form.degree
+);
+
+
+formData.append(
+"coverLetter",
+form.coverLetter
+);
+
+
+formData.append(
+"whyHireMe",
+form.whyHireMe
+);
+
+
+formData.append(
+"availability",
+form.availability
+);
+
+
+formData.append(
+"expectedDuration",
+form.expectedDuration
+);
 
 
 
-await createApplication(data);
+
+
+// file
+
+formData.append(
+"resume",
+form.resume
+);
+
+
+
+
+
+
+
+
+await createApplication(formData);
+
 
 
 
@@ -181,7 +435,7 @@ toast.success(
 
 
 navigate(
-"/student/applications"
+"/student/dashboard"
 );
 
 
@@ -190,9 +444,12 @@ navigate(
 catch(error){
 
 
+console.log(error);
+
+
 toast.error(
 
-error.response?.data?.message
+error?.response?.data?.message
 ||
 "Application failed"
 
@@ -221,40 +478,26 @@ setLoading(false);
 
 return (
 
-
-<div
-className="
+<div className="
 max-w-5xl
 mx-auto
 py-10
-"
->
+">
 
 
-
-<div
-
-className="
+<div className="
 bg-white
 rounded-3xl
 border
 shadow-sm
 p-10
-"
-
->
+">
 
 
-
-<h1
-
-className="
+<h1 className="
 text-3xl
 font-bold
-text-gray-800
-"
-
->
+">
 
 Internship Application
 
@@ -262,23 +505,15 @@ Internship Application
 
 
 
-<p
-className="
+<p className="
 text-gray-500
 mt-2
 mb-8
-"
->
+">
 
-{
-internship?.title
-||
-"Complete your application"
-}
+{internship.title}
 
 </p>
-
-
 
 
 
@@ -300,32 +535,22 @@ space-y-8
 
 
 
+<Section title="Personal Information">
 
 
-{/* PERSONAL INFORMATION */}
-
-
-
-<Section
-
-title="Personal Information"
-
->
-
-
-
-<div
-className="
+<div className="
 grid
 md:grid-cols-2
 gap-5
-"
->
+">
+
 
 
 <Input
 
 name="fullName"
+
+value={form.fullName}
 
 placeholder="Full Name"
 
@@ -337,9 +562,12 @@ onChange={handleChange}
 
 
 
+
 <Input
 
 name="email"
+
+value={form.email}
 
 placeholder="Email Address"
 
@@ -352,9 +580,12 @@ onChange={handleChange}
 
 
 
+
 <Input
 
 name="phone"
+
+value={form.phone}
 
 placeholder="Phone Number"
 
@@ -371,6 +602,8 @@ onChange={handleChange}
 
 name="location"
 
+value={form.location}
+
 placeholder="Current Location"
 
 icon={<MapPin/>}
@@ -378,6 +611,7 @@ icon={<MapPin/>}
 onChange={handleChange}
 
 />
+
 
 
 </div>
@@ -393,29 +627,21 @@ onChange={handleChange}
 
 
 
-{/* EDUCATION */}
+<Section title="Academic Information">
 
 
-<Section
-
-title="Academic Information"
-
->
-
-
-<div
-className="
+<div className="
 grid
 md:grid-cols-2
 gap-5
-"
->
-
+">
 
 
 <Input
 
 name="college"
+
+value={form.college}
 
 placeholder="College / University"
 
@@ -428,9 +654,12 @@ onChange={handleChange}
 
 
 
+
 <Input
 
 name="degree"
+
+value={form.degree}
 
 placeholder="Degree Program"
 
@@ -439,9 +668,7 @@ onChange={handleChange}
 />
 
 
-
 </div>
-
 
 
 </Section>
@@ -454,18 +681,10 @@ onChange={handleChange}
 
 
 
-{/* RESUME */}
+<Section title="Resume Upload">
 
 
-<Section
-
-title="Resume Upload"
-
->
-
-
-<label
-className="
+<label className="
 border-2
 border-dashed
 rounded-xl
@@ -474,26 +693,21 @@ flex
 flex-col
 items-center
 cursor-pointer
-hover:bg-gray-50
-"
->
+">
 
 
-<Upload
-size={35}
-/>
+<Upload size={35}/>
 
 
-<p
-className="
+<p className="
 mt-3
 font-medium
-"
->
+">
 
 Upload Resume PDF
 
 </p>
+
 
 
 
@@ -505,7 +719,7 @@ accept=".pdf"
 
 hidden
 
-onChange={(e)=>
+onChange={(e)=>{
 
 
 setForm({
@@ -514,10 +728,10 @@ setForm({
 
 resume:e.target.files[0]
 
-})
+});
 
 
-}
+}}
 
 
 />
@@ -528,27 +742,29 @@ resume:e.target.files[0]
 
 
 
+
 {
+
 form.resume &&
 
-<p
-className="
+
+<p className="
 mt-3
 text-green-600
 flex
-gap-2
 items-center
-"
->
+gap-2
+">
+
 
 <FileText size={18}/>
 
-{
-form.resume.name
-}
+
+{form.resume.name}
 
 
 </p>
+
 
 }
 
@@ -564,26 +780,18 @@ form.resume.name
 
 
 
-{/* COVER LETTER */}
-
-
-
-<Section
-
-title="Cover Letter"
-
->
+<Section title="Cover Letter">
 
 
 <textarea
 
 name="coverLetter"
 
-rows="6"
+value={form.coverLetter}
 
-placeholder="
-Explain why you are interested in this internship...
-"
+rows="5"
+
+placeholder="Explain why you are interested in this internship"
 
 className="
 w-full
@@ -597,7 +805,6 @@ onChange={handleChange}
 />
 
 
-
 </Section>
 
 
@@ -608,27 +815,18 @@ onChange={handleChange}
 
 
 
-{/* ADDITIONAL */}
-
-
-
-<Section
-
-title="Additional Information"
-
->
-
+<Section title="Additional Information">
 
 
 <textarea
 
 name="whyHireMe"
 
+value={form.whyHireMe}
+
 rows="5"
 
-placeholder="
-Why should we select you?
-"
+placeholder="Why should we select you?"
 
 className="
 w-full
@@ -650,7 +848,9 @@ onChange={handleChange}
 
 name="availability"
 
-placeholder="Availability (Example: Immediately)"
+value={form.availability}
+
+placeholder="Availability"
 
 onChange={handleChange}
 
@@ -658,12 +858,14 @@ onChange={handleChange}
 
 
 
-<div className="mt-5">
+
 
 
 <Input
 
-name="duration"
+name="expectedDuration"
+
+value={form.expectedDuration}
 
 placeholder="Expected Internship Duration"
 
@@ -672,13 +874,8 @@ onChange={handleChange}
 />
 
 
-</div>
-
-
-
 
 </Section>
-
 
 
 
@@ -707,11 +904,17 @@ font-semibold
 
 
 {
+
 loading
+
 ?
+
 "Submitting..."
+
 :
+
 "Submit Application"
+
 }
 
 
@@ -722,13 +925,12 @@ loading
 
 
 
+
 </form>
 
 
 
-
 </div>
-
 
 
 </div>
@@ -750,8 +952,13 @@ loading
 function Input({
 
 name,
+
 placeholder,
+
 icon,
+
+value,
+
 onChange
 
 }){
@@ -759,31 +966,36 @@ onChange
 
 return (
 
-<div
-className="
+<div className="
 relative
-"
->
+">
 
 
 {
+
 icon &&
-<div
-className="
+
+<div className="
 absolute
 left-3
 top-3
 text-gray-400
-"
->
+">
+
 {icon}
+
 </div>
+
 }
+
+
 
 
 <input
 
 name={name}
+
+value={value || ""}
 
 placeholder={placeholder}
 
@@ -818,8 +1030,11 @@ pr-4
 
 
 function Section({
+
 title,
+
 children
+
 }){
 
 
@@ -827,31 +1042,26 @@ return (
 
 <div>
 
-<h2
 
-className="
+<h2 className="
 text-xl
 font-bold
 mb-4
-"
-
->
+">
 
 {title}
 
 </h2>
 
 
-<div
-className="
+
+<div className="
 bg-gray-50
 rounded-2xl
 p-6
-"
->
+">
 
 {children}
-
 
 </div>
 

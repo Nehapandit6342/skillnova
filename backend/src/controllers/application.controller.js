@@ -11,6 +11,7 @@ import {
 
 
 
+
 // =================================
 // STUDENT APPLY INTERNSHIP
 // =================================
@@ -20,14 +21,46 @@ export const createApplication = async(req,res)=>{
     try{
 
 
+        const applicationData = {
+
+
+            ...req.body,
+
+
+
+            resume:
+
+            req.file
+
+            ?
+
+            req.file.originalname
+
+            :
+
+            null
+
+
+
+        };
+
+
+
+
+
+
         const application =
         await createApplicationService(
 
             req.user.id,
 
-            req.body
+            applicationData
 
         );
+
+
+
+
 
 
 
@@ -35,31 +68,44 @@ export const createApplication = async(req,res)=>{
 
             success:true,
 
+
             message:
+
             "Application submitted successfully",
 
+
             data:application
+
 
         });
 
 
 
-    }catch(error){
+
+
+    }
+    catch(error){
+
 
 
         return res.status(400).json({
 
             success:false,
 
+
             message:error.message
 
+
         });
+
 
 
     }
 
 
 };
+
+
 
 
 
@@ -83,6 +129,7 @@ export const getStudentApplications = async(
 
 
         const applications =
+
         await getStudentApplicationsService(
 
             req.user.id
@@ -91,24 +138,32 @@ export const getStudentApplications = async(
 
 
 
+
+
         return res.status(200).json({
 
             success:true,
 
+
             data:applications
+
 
         });
 
 
 
-    }catch(error){
+
+    }
+    catch(error){
 
 
         return res.status(500).json({
 
             success:false,
 
+
             message:error.message
+
 
         });
 
@@ -117,6 +172,8 @@ export const getStudentApplications = async(
 
 
 };
+
+
 
 
 
@@ -140,6 +197,7 @@ export const getEmployerApplications = async(
 
 
         const applications =
+
         await getEmployerApplicationsService(
 
             req.user.id
@@ -148,24 +206,32 @@ export const getEmployerApplications = async(
 
 
 
+
+
         return res.status(200).json({
 
             success:true,
 
+
             data:applications
+
 
         });
 
 
 
-    }catch(error){
+
+    }
+    catch(error){
 
 
         return res.status(500).json({
 
             success:false,
 
+
             message:error.message
+
 
         });
 
@@ -174,6 +240,8 @@ export const getEmployerApplications = async(
 
 
 };
+
+
 
 
 
@@ -202,6 +270,8 @@ export const updateApplicationStatus = async(
 
 
 
+
+
         const allowedStatus = [
 
             "PENDING",
@@ -216,6 +286,9 @@ export const updateApplicationStatus = async(
 
 
 
+
+
+
         if(!allowedStatus.includes(status)){
 
 
@@ -223,8 +296,11 @@ export const updateApplicationStatus = async(
 
                 success:false,
 
+
                 message:
+
                 "Invalid application status"
+
 
             });
 
@@ -235,7 +311,10 @@ export const updateApplicationStatus = async(
 
 
 
+
+
         const application =
+
         await updateApplicationStatusService(
 
             req.params.id,
@@ -248,20 +327,29 @@ export const updateApplicationStatus = async(
 
 
 
+
+
         return res.status(200).json({
 
             success:true,
 
+
             message:
+
             "Application status updated successfully",
 
+
             data:application
+
 
         });
 
 
 
-    }catch(error){
+
+
+    }
+    catch(error){
 
 
 
@@ -269,7 +357,9 @@ export const updateApplicationStatus = async(
 
             success:false,
 
+
             message:error.message
+
 
         });
 
@@ -279,6 +369,9 @@ export const updateApplicationStatus = async(
 
 
 };
+
+
+
 
 
 
@@ -302,7 +395,11 @@ export const getAllApplications = async(
 
 
         const applications =
+
         await getAllApplicationsService();
+
+
+
 
 
 
@@ -310,13 +407,18 @@ export const getAllApplications = async(
 
             success:true,
 
+
             data:applications
+
 
         });
 
 
 
-    }catch(error){
+
+
+    }
+    catch(error){
 
 
 
@@ -324,9 +426,12 @@ export const getAllApplications = async(
 
             success:false,
 
+
             message:error.message
 
+
         });
+
 
 
     }

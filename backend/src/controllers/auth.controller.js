@@ -6,16 +6,20 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import {
-    sendPasswordResetOtp
+    sendPasswordResetOtp,
+    sendWelcomeEmail
 } from "../services/mail.service.js";
 
 
 
 // ================= REGISTER =================
 
+// ================= REGISTER =================
+
 export const register = async (req, res) => {
 
     try {
+
 
         const validatedData =
             registerSchema.parse(req.body);
@@ -28,18 +32,56 @@ export const register = async (req, res) => {
 
 
 
+
+        // ================= SEND WELCOME EMAIL =================
+
+        try {
+
+
+            await sendWelcomeEmail(
+
+                result.user.email,
+
+                result.user.name,
+
+                result.user.role
+
+            );
+
+
+        } catch(emailError){
+
+
+            console.log(
+                "Welcome email error:",
+                emailError.message
+            );
+
+
+        }
+
+
+
+
+
         return res.status(201).json({
 
+
             success: true,
+
 
             message:
                 "Account created successfully.",
 
+
             data: {
+
 
                 user: result.user
 
+
             }
+
 
         });
 
@@ -53,13 +95,17 @@ export const register = async (req, res) => {
 
             return res.status(400).json({
 
-                success: false,
+
+                success:false,
+
 
                 message:
                     "Validation failed",
 
+
                 errors:
                     error.issues
+
 
             });
 
@@ -69,15 +115,19 @@ export const register = async (req, res) => {
 
 
 
+
         return res.status(
             error.statusCode || 500
         )
         .json({
 
-            success: false,
+
+            success:false,
+
 
             message:
                 error.message || "Server error"
+
 
         });
 

@@ -1,6 +1,7 @@
 import prisma from "../config/prisma.js";
 
 
+
 // =====================================
 // CREATE APPLICATION (STUDENT)
 // =====================================
@@ -33,6 +34,8 @@ export const createApplicationService = async (
 
 
 
+
+
     const internship =
     await prisma.internship.findUnique({
 
@@ -41,6 +44,8 @@ export const createApplicationService = async (
         }
 
     });
+
+
 
 
 
@@ -55,17 +60,71 @@ export const createApplicationService = async (
 
 
 
+
+
+
+    // Internship active check
+
+    if(!internship.isActive){
+
+        throw new Error(
+            "This internship is no longer available"
+        );
+
+    }
+
+
+
+
+
+
+
+    // Deadline check
+
+    if(
+        internship.deadline
+        &&
+        new Date(internship.deadline)
+        <
+        new Date()
+    ){
+
+        throw new Error(
+            "Application deadline has expired"
+        );
+
+    }
+
+
+
+
+
+
+
+
+
+    // Duplicate application check
+
     const alreadyApplied =
     await prisma.application.findUnique({
 
         where:{
+
             studentId_internshipId:{
+
                 studentId:student.id,
+
                 internshipId:data.internshipId
+
             }
+
         }
 
     });
+
+
+
+
 
 
 
@@ -76,6 +135,10 @@ export const createApplicationService = async (
         );
 
     }
+
+
+
+
 
 
 
@@ -92,16 +155,63 @@ export const createApplicationService = async (
             internshipId:data.internshipId,
 
 
-            phone:data.phone || null,
+
+            // ==========================
+            // APPLICANT INFORMATION
+            // ==========================
 
 
-            resume:data.resume || null,
+            fullName:
+            data.fullName || null,
 
 
-            coverLetter:data.coverLetter || null,
+            email:
+            data.email || null,
 
 
-            availability:data.availability || null,
+            phone:
+            data.phone || null,
+
+
+            location:
+            data.location || null,
+
+
+            college:
+            data.college || null,
+
+
+            degree:
+            data.degree || null,
+
+
+
+
+
+            // ==========================
+            // APPLICATION INFORMATION
+            // ==========================
+
+
+            resume:
+            data.resume || null,
+
+
+            coverLetter:
+            data.coverLetter || null,
+
+
+            whyHireMe:
+            data.whyHireMe || null,
+
+
+            availability:
+            data.availability || null,
+
+
+            expectedDuration:
+            data.expectedDuration || null,
+
 
 
             status:"PENDING"
@@ -156,6 +266,8 @@ export const createApplicationService = async (
 
 
 
+
+
 // =====================================
 // GET STUDENT APPLICATIONS
 // =====================================
@@ -183,6 +295,8 @@ export const getStudentApplicationsService = async(
         );
 
     }
+
+
 
 
 
@@ -288,6 +402,8 @@ export const getEmployerApplicationsService = async(
 
 
 
+
+
     return await prisma.application.findMany({
 
 
@@ -313,7 +429,26 @@ export const getEmployerApplicationsService = async(
             student:{
 
 
-                include:{
+                select:{
+
+
+                    college:true,
+
+                    degree:true,
+
+                    semester:true,
+
+                    cgpa:true,
+
+                    skills:true,
+
+                    github:true,
+
+                    linkedin:true,
+
+                    portfolio:true,
+
+                    bio:true,
 
 
                     user:{
@@ -383,6 +518,8 @@ export const getEmployerApplicationsService = async(
 
 
 
+
+
 // =====================================
 // UPDATE APPLICATION STATUS
 // =====================================
@@ -411,6 +548,8 @@ export const updateApplicationStatusService = async(
         );
 
     }
+
+
 
 
 
@@ -459,6 +598,8 @@ export const updateApplicationStatusService = async(
 
 
 };
+
+
 
 
 

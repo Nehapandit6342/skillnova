@@ -8,7 +8,7 @@
 
 */
 -- CreateEnum
--- CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'REVIEWING', 'ACCEPTED', 'REJECTED');
+CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'REVIEWING', 'ACCEPTED', 'REJECTED');
 
 -- AlterTable
 ALTER TABLE "applications" DROP COLUMN "appliedAt",

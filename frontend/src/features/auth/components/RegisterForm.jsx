@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 import RoleSelector from "./RoleSelector";
 
@@ -21,6 +22,12 @@ export default function RegisterForm() {
   const [role, setRole] = useState("STUDENT");
 
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+
+
   const [formData, setFormData] = useState({
 
     name: "",
@@ -40,8 +47,6 @@ export default function RegisterForm() {
 
 
 
-
-
   const handleChange = (e) => {
 
     setFormData({
@@ -58,11 +63,9 @@ export default function RegisterForm() {
 
 
 
-
   const handleSubmit = (e) => {
 
     e.preventDefault();
-
 
 
     if(formData.password !== formData.confirmPassword){
@@ -76,9 +79,7 @@ export default function RegisterForm() {
 
 
 
-
     const payload = {
-
 
       name: formData.name,
 
@@ -119,15 +120,6 @@ export default function RegisterForm() {
 
 
 
-    console.log(
-      "REGISTER PAYLOAD:",
-      payload
-    );
-
-
-
-
-
     registerMutation.mutate(payload, {
 
 
@@ -149,7 +141,6 @@ export default function RegisterForm() {
 
 
   };
-
 
 
 
@@ -196,7 +187,6 @@ required
 
 
 
-
 <div className="space-y-2">
 
 <Label>
@@ -233,18 +223,21 @@ required
 <div className="grid sm:grid-cols-2 gap-4">
 
 
-<div>
+
+<div className="space-y-2">
 
 <Label>
 Password
 </Label>
 
 
+<div className="relative">
+
 <Input
 
 name="password"
 
-type="password"
+type={showPassword ? "text" : "password"}
 
 value={formData.password}
 
@@ -252,9 +245,41 @@ onChange={handleChange}
 
 autoComplete="new-password"
 
+className="pr-10"
+
 required
 
 />
+
+
+<button
+
+type="button"
+
+onClick={() => setShowPassword(!showPassword)}
+
+className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+
+>
+
+{
+
+showPassword
+
+?
+
+<EyeOff size={18}/>
+
+:
+
+<Eye size={18}/>
+
+}
+
+</button>
+
+
+</div>
 
 </div>
 
@@ -263,18 +288,24 @@ required
 
 
 
-<div>
+
+
+
+<div className="space-y-2">
 
 <Label>
 Confirm Password
 </Label>
 
 
+<div className="relative">
+
+
 <Input
 
 name="confirmPassword"
 
-type="password"
+type={showConfirmPassword ? "text" : "password"}
 
 value={formData.confirmPassword}
 
@@ -282,14 +313,50 @@ onChange={handleChange}
 
 autoComplete="new-password"
 
+className="pr-10"
+
 required
 
 />
 
+
+
+<button
+
+type="button"
+
+onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+
+className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+
+>
+
+{
+
+showConfirmPassword
+
+?
+
+<EyeOff size={18}/>
+
+:
+
+<Eye size={18}/>
+
+}
+
+
+</button>
+
+
 </div>
 
 
 </div>
+
+
+</div>
+
 
 
 
@@ -399,7 +466,6 @@ Company Information
 
 
 
-
 <Input
 
 name="companyName"
@@ -416,7 +482,6 @@ onChange={handleChange}
 
 
 
-
 <Input
 
 name="industry"
@@ -428,7 +493,6 @@ value={formData.industry}
 onChange={handleChange}
 
 />
-
 
 
 
@@ -480,25 +544,6 @@ registerMutation.error?.response?.data?.message
 </p>
 
 
-
-<pre>
-
-{
-JSON.stringify(
-
-registerMutation.error?.response?.data?.errors,
-
-null,
-
-2
-
-)
-
-}
-
-</pre>
-
-
 </div>
 
 }
@@ -535,7 +580,6 @@ registerMutation.isPending
 "Create Account"
 
 }
-
 
 
 </Button>

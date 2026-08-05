@@ -18,6 +18,13 @@ import useInternshipById
 from "../hooks/useInternshipById";
 
 
+import {
+    useAuth
+} from "@/context/AuthContext";
+
+
+
+
 
 
 
@@ -37,9 +44,20 @@ export default function InternshipDetails(){
 
 
     const {
+        token,
+        user
+    } = useAuth();
+
+
+
+
+
+
+    const {
         data,
         isLoading
     } = useInternshipById(id);
+
 
 
 
@@ -51,16 +69,23 @@ export default function InternshipDetails(){
 
 
 
+
+
+
+
     if(isLoading){
+
 
         return (
 
-            <div className="
+            <div
+            className="
             min-h-screen
             flex
             items-center
             justify-center
-            ">
+            "
+            >
 
                 Loading internship details...
 
@@ -75,14 +100,20 @@ export default function InternshipDetails(){
 
 
 
+
+
+
     if(!internship){
+
 
         return (
 
-            <div className="
+            <div
+            className="
             p-10
             text-center
-            ">
+            "
+            >
 
                 Internship not found
 
@@ -91,6 +122,85 @@ export default function InternshipDetails(){
         );
 
     }
+
+
+
+
+
+
+
+
+
+    const handleApply = ()=>{
+
+
+
+        // =========================
+        // GUEST USER
+        // =========================
+
+
+        if(!token){
+
+
+            navigate(
+
+                "/login",
+
+                {
+
+                    state:{
+
+                        from:
+                        `/internships/${id}/apply`
+
+                    }
+
+                }
+
+            );
+
+
+            return;
+
+
+        }
+
+
+
+
+
+
+        // =========================
+        // ONLY STUDENT APPLY
+        // =========================
+
+
+        if(user?.role !== "STUDENT"){
+
+
+            return;
+
+
+        }
+
+
+
+
+
+
+        navigate(
+
+            `/internships/${id}/apply`
+
+        );
+
+
+
+    };
+
+
+
 
 
 
@@ -111,6 +221,9 @@ export default function InternshipDetails(){
 
 
 
+
+
+
             {/* HEADER */}
 
 
@@ -125,6 +238,7 @@ export default function InternshipDetails(){
             >
 
 
+
                 <div
                 className="
                 flex
@@ -136,7 +250,9 @@ export default function InternshipDetails(){
 
 
 
+
                     <div>
+
 
 
                         <h1
@@ -153,6 +269,9 @@ export default function InternshipDetails(){
 
 
 
+
+
+
                         <div
                         className="
                         flex
@@ -163,7 +282,9 @@ export default function InternshipDetails(){
                         "
                         >
 
+
                             <Building2 size={20}/>
+
 
 
                             {
@@ -175,7 +296,10 @@ export default function InternshipDetails(){
                             }
 
 
+
                         </div>
+
+
 
 
                     </div>
@@ -183,18 +307,25 @@ export default function InternshipDetails(){
 
 
 
+
+
+
+
+
+                    {
+
+
+                    (!user || user.role === "STUDENT")
+
+                    &&
+
+
+                    (
+
                     <button
 
 
-                    onClick={()=>navigate(
-                        `/internships/${id}/apply`,
-                        {
-                            state:{
-                                internship
-                            }
-                        }
-                    )}
-
+                    onClick={handleApply}
 
 
                     className="
@@ -212,7 +343,69 @@ export default function InternshipDetails(){
 
                         Apply Now
 
+
                     </button>
+
+
+                    )
+
+                    }
+
+
+
+
+
+
+
+
+
+                    {
+
+
+                    user &&
+
+                    (
+                    user.role === "EMPLOYER"
+                    ||
+                    user.role === "ADMIN"
+                    )
+
+                    &&
+
+
+                    (
+
+                    <button
+
+
+                    disabled
+
+
+                    className="
+                    bg-gray-300
+                    text-gray-600
+                    px-10
+                    py-3
+                    rounded-xl
+                    font-semibold
+                    cursor-not-allowed
+                    h-fit
+                    "
+
+                    >
+
+                        View Only
+
+
+                    </button>
+
+
+                    )
+
+
+                    }
+
+
 
 
 
@@ -225,7 +418,12 @@ export default function InternshipDetails(){
 
 
 
-                {/* INFO */}
+
+
+
+
+                {/* INFORMATION */}
+
 
 
                 <div
@@ -239,55 +437,98 @@ export default function InternshipDetails(){
 
 
 
+
+
                     <Info
+
                     icon={<MapPin/>}
+
                     label="Location"
+
                     value={
-                        internship.location ||
+                        internship.location
+                        ||
                         "Remote"
                     }
+
                     />
 
 
 
 
+
+
+
                     <Info
+
                     icon={<Briefcase/>}
+
                     label="Type"
+
                     value={
                         internship.type
+                        ||
+                        "Not specified"
                     }
+
                     />
 
 
 
 
+
+
+
                     <Info
+
                     icon={<Clock/>}
+
                     label="Duration"
+
                     value={
                         internship.duration
+                        ||
+                        "Not specified"
                     }
+
                     />
+
+
+
 
 
 
 
                     <Info
+
                     icon={<Banknote/>}
+
                     label="Stipend"
+
                     value={
+
                         internship.stipend
+
                         ?
+
                         `NPR ${internship.stipend}`
+
                         :
+
                         "Unpaid"
+
                     }
+
                     />
+
+
+
 
 
 
                 </div>
+
+
 
 
             </div>
@@ -300,13 +541,23 @@ export default function InternshipDetails(){
 
 
 
-            <Section title="About Internship">
 
 
-                <p className="
+
+
+            <Section
+
+            title="About Internship"
+
+            >
+
+
+                <p
+                className="
                 text-gray-600
                 leading-7
-                ">
+                "
+                >
 
                     {
                         internship.description
@@ -314,6 +565,7 @@ export default function InternshipDetails(){
 
 
                 </p>
+
 
 
             </Section>
@@ -327,24 +579,36 @@ export default function InternshipDetails(){
 
 
             {
-                internship.responsibilities?.length > 0 &&
 
 
-                <Section
-                title="Roles & Responsibilities"
-                >
+            internship.responsibilities?.length > 0
+
+            &&
 
 
-                    <List
+            (
 
-                    items={
-                        internship.responsibilities
-                    }
+            <Section
 
-                    />
+            title="Roles & Responsibilities"
+
+            >
 
 
-                </Section>
+                <List
+
+                items={
+                    internship.responsibilities
+                }
+
+                />
+
+
+            </Section>
+
+
+            )
+
 
             }
 
@@ -357,53 +621,83 @@ export default function InternshipDetails(){
 
 
             {
-                internship.skills?.length > 0 &&
 
 
-                <Section
-                title="Required Skills"
+            internship.skills?.length > 0
+
+            &&
+
+
+            (
+
+            <Section
+
+            title="Required Skills"
+
+            >
+
+
+
+                <div
+
+                className="
+                flex
+                flex-wrap
+                gap-3
+                "
+
                 >
 
 
-                    <div
+
+                {
+
+                internship.skills.map(
+
+                (skill,index)=>(
+
+
+                    <span
+
+
+                    key={index}
+
+
                     className="
-                    flex
-                    flex-wrap
-                    gap-3
+                    bg-blue-100
+                    text-blue-700
+                    px-4
+                    py-2
+                    rounded-full
                     "
+
                     >
 
-                    {
-                        internship.skills.map(
-                            (skill,index)=>(
-
-                            <span
-
-                            key={index}
-
-                            className="
-                            bg-blue-100
-                            text-blue-700
-                            px-4
-                            py-2
-                            rounded-full
-                            "
-
-                            >
-
-                                {skill}
-
-                            </span>
-
-                            )
-                        )
-                    }
+                        {skill}
 
 
-                    </div>
+                    </span>
 
 
-                </Section>
+                )
+
+
+                )
+
+                }
+
+
+
+                </div>
+
+
+
+
+            </Section>
+
+
+            )
+
 
             }
 
@@ -416,26 +710,42 @@ export default function InternshipDetails(){
 
 
             {
-                internship.benefits?.length > 0 &&
 
 
-                <Section
-                title="Benefits"
-                >
+            internship.benefits?.length > 0
+
+            &&
 
 
-                    <List
+            (
 
-                    items={
-                        internship.benefits
-                    }
+            <Section
 
-                    />
+            title="Benefits"
+
+            >
 
 
-                </Section>
+                <List
+
+                items={
+                    internship.benefits
+                }
+
+                />
+
+
+            </Section>
+
+
+            )
+
 
             }
+
+
+
+
 
 
 
@@ -456,23 +766,31 @@ export default function InternshipDetails(){
 
 
 function Info({
+
     icon,
+
     label,
+
     value
+
 }){
 
 
 return (
 
 <div
+
 className="
 bg-gray-50
 rounded-xl
 p-4
 "
+
 >
 
+
 <div
+
 className="
 text-gray-500
 flex
@@ -480,25 +798,39 @@ gap-2
 items-center
 text-sm
 "
+
 >
+
 
 {icon}
 
+
 {label}
+
 
 </div>
 
 
+
+
+
 <p
+
 className="
 font-semibold
 mt-2
 "
+
 >
+
 
 {value}
 
+
 </p>
+
+
+
 
 
 </div>
@@ -517,14 +849,18 @@ mt-2
 
 
 function Section({
+
 title,
+
 children
+
 }){
 
 
 return (
 
 <div
+
 className="
 bg-white
 border
@@ -532,22 +868,30 @@ rounded-3xl
 shadow-sm
 p-8
 "
+
 >
 
+
 <h2
+
 className="
 text-xl
 font-bold
 mb-5
 "
+
 >
 
 {title}
 
+
 </h2>
 
 
+
 {children}
+
+
 
 
 </div>
@@ -567,21 +911,28 @@ mb-5
 
 
 function List({
+
 items=[]
+
 }){
 
 
 return (
 
 <div
+
 className="
 space-y-3
 "
+
 >
 
 
+
 {
+
 items.map(
+
 (item,index)=>(
 
 
@@ -598,26 +949,36 @@ text-gray-600
 
 >
 
+
 <CheckCircle
+
 size={18}
+
 className="text-green-600"
+
 />
 
 
+
 {item}
+
 
 
 </div>
 
 
 )
+
+
 )
 
 }
 
 
 
+
 </div>
+
 
 );
 
