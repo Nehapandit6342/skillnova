@@ -46,7 +46,7 @@ export default function FAQSection() {
       />
 
       <div className="mx-auto mt-12 max-w-4xl">
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion type="single" className="space-y-4">
           {faqs.map((faq, index) => (
             <AccordionItem
               key={index}
