@@ -58,12 +58,7 @@ function AdminNavbar() {
             </p>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="ml-4 px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition"
-          >
-            Logout
-          </button>
+          
         </div>
       </div>
     </header>
