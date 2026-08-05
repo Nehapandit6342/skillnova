@@ -1,790 +1,269 @@
+import { useMemo, useState } from "react";
 import {
-    useState
-} from "react";
-
-
-import {
-    Search,
-    MapPin,
-    Clock,
-    Briefcase,
-    Banknote,
-    Building2
+  AlertTriangle,
+  Briefcase,
+  Building2,
+  MapPin,
+  RefreshCw,
+  SearchX,
 } from "lucide-react";
 
+import InternshipCard from "../components/InternshipCard";
+import InternshipFilter from "../components/InternshipFilter";
+import useInternships from "../hooks/useInternships";
+import useInternshipFilters from "../hooks/useInternshipFilters";
 
-import {
-    useNavigate
+const SORT_OPTIONS = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest first" },
+  { value: "stipend", label: "Highest stipend" },
+];
+
+function stipendNumber(value) {
+  if (!value) return 0;
+  const parsed = parseInt(String(value).replace(/[^0-9]/g, ""), 10);
+  return Number.isNaN(parsed) ? 0 : parsed;
 }
-from "react-router-dom";
 
+export default function InternshipList() {
+  const { data, isLoading, isError, refetch } = useInternships();
 
-import useInternships
-from "../hooks/useInternships";
+  const internships = useMemo(
+    () =>
+      [...(data?.data || [])].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      ),
+    [data],
+  );
 
+  const {
+    search,
+    setSearch,
+    location,
+    setLocation,
+    type,
+    setType,
+    locations,
+    types,
+    filteredInternships: filtered,
+    hasFilters,
+    clearFilters,
+  } = useInternshipFilters(internships);
 
+  const [sortBy, setSortBy] = useState("newest");
 
-
-
-export default function InternshipList(){
-
-
-    const navigate = useNavigate();
-
-
-
-    const {
-        data,
-        isLoading
-    } = useInternships();
-
-
-
-
-    const internships =
-    data?.data || [];
-
-
-
-
-    const [search,setSearch]=useState("");
-
-    const [location,setLocation]=useState("");
-
-    const [type,setType]=useState("");
-
-
-
-
-
-
-
-    const filteredInternships =
-    internships.filter((internship)=>{
-
-
-        const searchText =
-        search.toLowerCase();
-
-
-
-        const title =
-        internship.title
-        ?.toLowerCase() || "";
-
-
-
-        const company =
-        internship.employer
-        ?.companyName
-        ?.toLowerCase() || "";
-
-
-
-        const skills =
-        internship.skills
-        ?.join(" ")
-        ?.toLowerCase() || "";
-
-
-
-        return (
-
-            title.includes(searchText)
-            ||
-            company.includes(searchText)
-            ||
-            skills.includes(searchText)
-
-        )
-
-        &&
-
-        (
-            location
-            ?
-            internship.location
-            ===
-            location
-            :
-            true
-        )
-
-
-        &&
-
-
-        (
-            type
-            ?
-            internship.type
-            ===
-            type
-            :
-            true
-        )
-
-
-
+  const filteredInternships = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      if (sortBy === "oldest") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      if (sortBy === "stipend") {
+        return stipendNumber(b.stipend) - stipendNumber(a.stipend);
+      }
+      return new Date(b.createdAt) - new Date(a.createdAt);
     });
+  }, [filtered, sortBy]);
 
+  const totalOpenings = useMemo(
+    () =>
+      internships.reduce(
+        (sum, internship) => sum + (Number(internship.openings) || 0),
+        0,
+      ),
+    [internships],
+  );
 
+  return (
+    <div className="min-h-screen bg-slate-50/50">
+      {/* Compact hero with integrated filter */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-28 left-1/3 h-64 w-64 rounded-full bg-indigo-400/20 blur-3xl" />
 
-
-
-
-
-    if(isLoading){
-
-        return (
-
-            <div className="
-            flex
-            justify-center
-            p-10
-            ">
-
-                Loading internships...
-
+        <div className="relative mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-blue-50 backdrop-blur">
+                <Briefcase className="h-3 w-3" />
+                Live opportunities
+              </span>
+              <h1 className="mt-2.5 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                Find Your Next Internship
+              </h1>
+              <p className="mt-1.5 text-sm text-blue-100">
+                Browse internships from real companies and kick-start your
+                career journey.
+              </p>
             </div>
 
-        );
-
-    }
-
-
-
-
-
-
-
-
-return (
-
-
-<div
-
-className="
-max-w-7xl
-mx-auto
-px-6
-py-10
-space-y-8
-"
-
->
-
-
-
-
-
-{/* HEADER */}
-
-
-<div>
-
-
-<h1
-
-className="
-text-4xl
-font-bold
-text-gray-900
-"
-
->
-
-Available Internships
-
-</h1>
-
-
-
-<p
-
-className="
-text-gray-500
-mt-2
-"
-
->
-
-Find the best internship opportunities
-and start your career journey.
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-{/* FILTER BAR */}
-
-
-<div
-
-className="
-bg-white
-border
-rounded-2xl
-p-5
-shadow-sm
-grid
-md:grid-cols-3
-gap-4
-"
-
->
-
-
-
-
-
-<div
-
-className="
-relative
-"
-
->
-
-
-<Search
-
-className="
-absolute
-left-3
-top-3
-text-gray-400
-"
-
-/>
-
-
-
-<input
-
-
-value={search}
-
-
-onChange={(e)=>
-setSearch(e.target.value)
+            {!isLoading && internships.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <Stat
+                  icon={<Briefcase className="h-3.5 w-3.5" />}
+                  value={internships.length}
+                  label="Live"
+                />
+                <Stat
+                  icon={<Building2 className="h-3.5 w-3.5" />}
+                  value={totalOpenings}
+                  label="Openings"
+                />
+                <Stat
+                  icon={<MapPin className="h-3.5 w-3.5" />}
+                  value={locations.length}
+                  label="Locations"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 pb-8">
+            <InternshipFilter
+              compact
+              hideSummary={isLoading}
+              search={search}
+              setSearch={setSearch}
+              location={location}
+              setLocation={setLocation}
+              type={type}
+              setType={setType}
+              locations={locations}
+              types={types}
+              resultCount={filteredInternships.length}
+              totalCount={internships.length}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="space-y-6 pt-6">
+          {isLoading ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-72 animate-pulse rounded-2xl border border-slate-200 bg-white p-6"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-slate-200" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-3/4 rounded bg-slate-200" />
+                      <div className="h-3 w-1/2 rounded bg-slate-100" />
+                    </div>
+                  </div>
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="h-4 rounded bg-slate-100" />
+                    <div className="h-4 rounded bg-slate-100" />
+                    <div className="h-4 rounded bg-slate-100" />
+                    <div className="h-4 rounded bg-slate-100" />
+                  </div>
+                  <div className="mt-6 flex gap-2">
+                    <div className="h-6 w-16 rounded-full bg-slate-100" />
+                    <div className="h-6 w-16 rounded-full bg-slate-100" />
+                    <div className="h-6 w-16 rounded-full bg-slate-100" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50">
+                <AlertTriangle className="h-7 w-7 text-red-400" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                Couldn't load internships
+              </h3>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+                Something went wrong while fetching the latest opportunities.
+                Please try again.
+              </p>
+              <button
+                type="button"
+                onClick={() => refetch()}
+                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Try again
+              </button>
+            </div>
+          ) : filteredInternships.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                <SearchX className="h-7 w-7 text-slate-400" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                No internships found
+              </h3>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+                {hasFilters
+                  ? "Try adjusting your search or clearing the active filters to see more opportunities."
+                  : "New internship opportunities will appear here as soon as employers post them."}
+              </p>
+              {hasFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-6 inline-flex items-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* Toolbar */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-slate-500">
+                  <span className="font-semibold text-slate-800">
+                    {filteredInternships.length}
+                  </span>{" "}
+                  internship{filteredInternships.length > 1 ? "s" : ""} found
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor="internship-sort"
+                    className="text-sm font-medium text-slate-500"
+                  >
+                    Sort by
+                  </label>
+                  <select
+                    id="internship-sort"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="h-9 cursor-pointer rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                  >
+                    {SORT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Cards */}
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {filteredInternships.map((internship) => (
+                  <InternshipCard key={internship.id} internship={internship} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-
-placeholder="
-Search internship, company, skill...
-"
-
-
-className="
-w-full
-border
-rounded-xl
-py-3
-pl-10
-pr-4
-outline-none
-focus:ring-2
-focus:ring-blue-500
-"
-
-
-/>
-
-
-
-</div>
-
-
-
-
-
-
-
-<select
-
-value={location}
-
-onChange={(e)=>
-setLocation(e.target.value)
-}
-
-
-className="
-border
-rounded-xl
-px-4
-py-3
-"
-
->
-
-
-<option value="">
-
-All Locations
-
-</option>
-
-
-<option>
-
-Kathmandu
-
-</option>
-
-
-<option>
-
-Remote
-
-</option>
-
-
-</select>
-
-
-
-
-
-
-
-
-
-<select
-
-value={type}
-
-onChange={(e)=>
-setType(e.target.value)
-}
-
-
-className="
-border
-rounded-xl
-px-4
-py-3
-"
-
->
-
-
-<option value="">
-
-All Types
-
-</option>
-
-
-<option>
-
-Full Time
-
-</option>
-
-
-<option>
-
-Part Time
-
-</option>
-
-
-
-</select>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* CARDS */}
-
-
-
-{
-
-filteredInternships.length===0
-
-?
-
-
-<div
-
-className="
-text-center
-py-20
-text-gray-500
-"
-
->
-
-No internship found.
-
-</div>
-
-
-:
-
-
-<div
-
-className="
-grid
-md:grid-cols-2
-lg:grid-cols-3
-gap-6
-"
-
->
-
-
-{
-
-filteredInternships.map((internship)=>(
-
-
-<div
-
-key={internship.id}
-
-className="
-bg-white
-border
-rounded-2xl
-p-6
-shadow-sm
-hover:shadow-xl
-transition
-hover:-translate-y-1
-"
-
->
-
-
-
-
-<div
-
-className="
-flex
-items-center
-gap-4
-"
-
->
-
-
-<div
-
-className="
-w-12
-h-12
-rounded-xl
-bg-blue-100
-flex
-items-center
-justify-center
-text-blue-600
-"
-
->
-
-<Building2/>
-
-</div>
-
-
-
-
-<div>
-
-
-<h2
-
-className="
-font-bold
-text-lg
-"
-
->
-
-{internship.title}
-
-</h2>
-
-
-
-<p
-
-className="
-text-gray-500
-text-sm
-"
-
->
-
-{
-internship.employer?.companyName
-||
-internship.employer?.user?.name
-||
-"Company"
-}
-
-</p>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div
-
-className="
-mt-5
-space-y-3
-text-gray-600
-text-sm
-"
-
->
-
-
-<Info
-
-icon={<MapPin size={18}/>}
-
-text={
-internship.location
-}
-
-/>
-
-
-<Info
-
-icon={<Briefcase size={18}/>}
-
-text={
-internship.type
-}
-
-/>
-
-
-<Info
-
-icon={<Clock size={18}/>}
-
-text={
-internship.duration
-}
-
-/>
-
-
-<Info
-
-icon={<Banknote size={18}/>}
-
-text={
-`NPR ${internship.stipend}`
-}
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* SKILLS */}
-
-
-<div
-
-className="
-flex
-flex-wrap
-gap-2
-mt-5
-"
-
->
-
-
-{
-internship.skills?.slice(0,3)
-.map((skill,index)=>(
-
-
-<span
-
-key={index}
-
-className="
-bg-blue-50
-text-blue-700
-px-3
-py-1
-rounded-full
-text-xs
-"
-
->
-
-{skill}
-
-</span>
-
-
-))
-}
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<button
-
-
-onClick={()=>navigate(
-`/internships/${internship.id}`
-)}
-
-
-className="
-mt-6
-w-full
-bg-blue-600
-text-white
-py-3
-rounded-xl
-font-semibold
-hover:bg-blue-700
-"
-
->
-
-View Details
-
-</button>
-
-
-
-
-
-
-
-
-</div>
-
-
-))
-
-
-}
-
-
-</div>
-
-
-}
-
-
-
-</div>
-
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-function Info({
-
-icon,
-
-text
-
-}){
-
-
-return (
-
-<div
-
-className="
-flex
-items-center
-gap-3
-"
-
->
-
-{icon}
-
-
-<span>
-
-{text || "Not specified"}
-
-</span>
-
-
-</div>
-
-
-);
-
-
+function Stat({ icon, value, label }) {
+  return (
+    <div className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 backdrop-blur">
+      <span className="text-blue-100">{icon}</span>
+      <span className="text-xs font-semibold text-white">
+        {value} <span className="font-normal text-blue-100">{label}</span>
+      </span>
+    </div>
+  );
 }

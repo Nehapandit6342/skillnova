@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/internships
+url: ""
+method: GET
+order: 4503448106876955
