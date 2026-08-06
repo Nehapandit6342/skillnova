@@ -4,6 +4,8 @@ import {
   GraduationCap,
   MessageSquare,
   HelpCircle,
+    Building2,
+
 } from "lucide-react";
 
 import {
@@ -43,11 +45,8 @@ function AdminSidebar() {
       icon: <FaBuilding />,
       path: "/admin/employers",
     },
-    {
-      name: "Testimonials",
-      icon: <MessageSquare size={20} />,
-      path: "/admin/testimonials",
-    },
+    
+    
     {
       name: "FAQ",
       icon: <HelpCircle size={20} />,

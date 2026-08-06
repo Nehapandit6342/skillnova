@@ -8,6 +8,7 @@ import {
     updateProfile,
 
     getEmployers,
+<<<<<<< HEAD
 
     getFeaturedCompanies,
 
@@ -17,6 +18,10 @@ import {
 
     getApplicationStatusChart
 
+=======
+        getFeaturedCompanies,
+      changeEmployerStatus
+>>>>>>> 0bde86d (Add admin settings and profile management)
 
 } from "../controllers/employer.controller.js";
 
@@ -73,6 +78,14 @@ router.get(
 
     getEmployers
 
+);
+// ================= UPDATE EMPLOYER STATUS =================
+
+router.patch(
+    "/:id/status",
+    authenticate,
+    authorize("ADMIN"),
+    changeEmployerStatus
 );
 
 

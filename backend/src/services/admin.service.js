@@ -1,7 +1,9 @@
 import prisma from "../config/prisma.js";
 import bcrypt from "bcryptjs";
 
-// ================= DASHBOARD =================
+// =================================================
+// DASHBOARD
+// =================================================
 
 export const dashboardService = async () => {
 
@@ -12,19 +14,19 @@ export const dashboardService = async () => {
     totalApplications,
     pendingApplications,
     acceptedApplications,
-    rejectedApplications
+    rejectedApplications,
   ] = await Promise.all([
 
     prisma.user.count({
       where: {
-        role: "STUDENT"
-      }
+        role: "STUDENT",
+      },
     }),
 
     prisma.user.count({
       where: {
-        role: "EMPLOYER"
-      }
+        role: "EMPLOYER",
+      },
     }),
 
     prisma.internship.count(),
@@ -33,55 +35,51 @@ export const dashboardService = async () => {
 
     prisma.application.count({
       where: {
-        status: "PENDING"
-      }
+        status: "PENDING",
+      },
     }),
 
     prisma.application.count({
       where: {
-        status: "APPROVED"
-      }
+        status: "APPROVED",
+      },
     }),
 
     prisma.application.count({
       where: {
-        status: "REJECTED"
-      }
-    })
+        status: "REJECTED",
+      },
+    }),
 
   ]);
-
-
 
   const recentStudents = await prisma.user.findMany({
 
     where: {
-      role: "STUDENT"
+      role: "STUDENT",
     },
 
     select: {
       id: true,
       name: true,
       email: true,
-      createdAt: true
+      createdAt: true,
     },
 
     orderBy: {
-      createdAt: "desc"
+      createdAt: "desc",
     },
 
-    take: 5
+    take: 5,
 
   });
-
-
 
   const recentInternships = await prisma.internship.findMany({
 
     take: 5,
 
     orderBy: {
-      createdAt: "desc"
+      createdAt: "desc",
     },
 
     include: {
@@ -89,36 +87,30 @@ export const dashboardService = async () => {
       employer: {
 
         select: {
-
           id: true,
-          companyName: true
-
-        }
+          companyName: true,
+        },
 
       },
 
       _count: {
 
         select: {
+          applications: true,
+        },
 
-          applications: true
+      },
 
-        }
-
-      }
-
-    }
+    },
 
   });
-
-
 
   const recentApplications = await prisma.application.findMany({
 
     take: 5,
 
     orderBy: {
-      appliedAt: "desc"
+      appliedAt: "desc",
     },
 
     include: {
@@ -130,15 +122,13 @@ export const dashboardService = async () => {
           user: {
 
             select: {
-
               name: true,
-              email: true
+              email: true,
+            },
 
-            }
+          },
 
-          }
-
-        }
+        },
 
       },
 
@@ -149,22 +139,18 @@ export const dashboardService = async () => {
           employer: {
 
             select: {
+              companyName: true,
+            },
 
-              companyName: true
+          },
 
-            }
+        },
 
-          }
+      },
 
-        }
-
-      }
-
-    }
+    },
 
   });
-
-
 
   return {
 
@@ -173,19 +159,20 @@ export const dashboardService = async () => {
     totalInternships,
 
     totalApplications,
-
     pendingApplications,
     acceptedApplications,
     rejectedApplications,
 
     recentStudents,
     recentInternships,
-    recentApplications
+    recentApplications,
 
   };
 
 };
-// ================= STUDENTS =================
+// =================================================
+// STUDENTS
+// =================================================
 
 // GET ALL STUDENTS
 
@@ -194,7 +181,7 @@ export const getAllStudentsService = async () => {
   return await prisma.user.findMany({
 
     where: {
-      role: "STUDENT"
+      role: "STUDENT",
     },
 
     select: {
@@ -215,23 +202,21 @@ export const getAllStudentsService = async () => {
           semester: true,
           cgpa: true,
           skills: true,
-          careerGoal: true
+          careerGoal: true,
 
-        }
+        },
 
-      }
+      },
 
     },
 
     orderBy: {
-      createdAt: "desc"
-    }
+      createdAt: "desc",
+    },
 
   });
 
 };
-
-
 
 // GET STUDENT BY ID
 
@@ -240,20 +225,16 @@ export const getStudentByIdService = async (id) => {
   return await prisma.user.findUnique({
 
     where: {
-      id
+      id,
     },
 
     include: {
-
-      studentProfile: true
-
-    }
+      studentProfile: true,
+    },
 
   });
 
 };
-
-
 
 // CREATE STUDENT
 
@@ -264,11 +245,8 @@ export const createStudentService = async (data) => {
     data: {
 
       name: data.name,
-
       email: data.email,
-
       password: data.password,
-
       role: "STUDENT",
 
       studentProfile: {
@@ -276,38 +254,27 @@ export const createStudentService = async (data) => {
         create: {
 
           profileImage: data.profileImage || null,
-
           college: data.college,
-
           degree: data.degree,
-
           semester: data.semester,
-
           cgpa: data.cgpa,
-
           bio: data.bio,
-
           careerGoal: data.careerGoal,
+          skills: data.skills || [],
 
-          skills: data.skills || []
+        },
 
-        }
-
-      }
+      },
 
     },
 
     include: {
-
-      studentProfile: true
-
-    }
+      studentProfile: true,
+    },
 
   });
 
 };
-
-
 
 // UPDATE STUDENT
 
@@ -316,15 +283,13 @@ export const updateStudentService = async (id, data) => {
   return await prisma.user.update({
 
     where: {
-      id
+      id,
     },
 
     data: {
 
       name: data.name,
-
       email: data.email,
-
       isActive: data.isActive,
 
       studentProfile: {
@@ -332,38 +297,27 @@ export const updateStudentService = async (id, data) => {
         update: {
 
           profileImage: data.profileImage,
-
           college: data.college,
-
           degree: data.degree,
-
           semester: data.semester,
-
           cgpa: data.cgpa,
-
           bio: data.bio,
-
           careerGoal: data.careerGoal,
+          skills: data.skills || [],
 
-          skills: data.skills || []
+        },
 
-        }
-
-      }
+      },
 
     },
 
     include: {
-
-      studentProfile: true
-
-    }
+      studentProfile: true,
+    },
 
   });
 
 };
-
-
 
 // DELETE STUDENT
 
@@ -372,15 +326,17 @@ export const deleteStudentService = async (id) => {
   await prisma.user.delete({
 
     where: {
-      id
-    }
+      id,
+    },
 
   });
 
   return true;
 
 };
-// ================= EMPLOYERS =================
+// =================================================
+// EMPLOYERS
+// =================================================
 
 // GET ALL EMPLOYERS
 
@@ -393,40 +349,32 @@ export const getAllEmployersService = async () => {
       user: {
 
         select: {
-
           id: true,
           name: true,
           email: true,
           isActive: true,
-          createdAt: true
-
-        }
+          createdAt: true,
+        },
 
       },
 
       _count: {
 
         select: {
+          internships: true,
+        },
 
-          internships: true
-
-        }
-
-      }
+      },
 
     },
 
     orderBy: {
-
-      createdAt: "desc"
-
-    }
+      createdAt: "desc",
+    },
 
   });
 
 };
-
-
 
 // GET EMPLOYER BY ID
 
@@ -435,9 +383,7 @@ export const getEmployerByIdService = async (id) => {
   return await prisma.employerProfile.findUnique({
 
     where: {
-
-      id
-
+      id,
     },
 
     include: {
@@ -445,14 +391,12 @@ export const getEmployerByIdService = async (id) => {
       user: {
 
         select: {
-
           id: true,
           name: true,
           email: true,
           isActive: true,
-          createdAt: true
-
-        }
+          createdAt: true,
+        },
 
       },
 
@@ -463,30 +407,24 @@ export const getEmployerByIdService = async (id) => {
           _count: {
 
             select: {
+              applications: true,
+            },
 
-              applications: true
-
-            }
-
-          }
+          },
 
         },
 
         orderBy: {
+          createdAt: "desc",
+        },
 
-          createdAt: "desc"
+      },
 
-        }
-
-      }
-
-    }
+    },
 
   });
 
 };
-
-
 
 // UPDATE EMPLOYER
 
@@ -495,42 +433,29 @@ export const updateEmployerService = async (id, data) => {
   return await prisma.employerProfile.update({
 
     where: {
-
-      id
-
+      id,
     },
 
     data: {
 
       logo: data.logo,
-
       companyName: data.companyName,
-
       website: data.website,
-
       industry: data.industry,
-
       location: data.location,
-
       description: data.description,
-
       companySize: data.companySize,
-
-      foundedYear: data.foundedYear
+      foundedYear: data.foundedYear,
 
     },
 
     include: {
-
-      user: true
-
-    }
+      user: true,
+    },
 
   });
 
 };
-
-
 
 // DELETE EMPLOYER
 
@@ -539,17 +464,18 @@ export const deleteEmployerService = async (id) => {
   await prisma.employerProfile.delete({
 
     where: {
-
-      id
-
-    }
+      id,
+    },
 
   });
 
   return true;
 
 };
-// ================= INTERNSHIPS =================
+
+// =================================================
+// INTERNSHIPS
+// =================================================
 
 // GET ALL INTERNSHIPS
 
@@ -562,39 +488,31 @@ export const getAllInternshipsService = async () => {
       employer: {
 
         select: {
-
           id: true,
           companyName: true,
           industry: true,
-          location: true
-
-        }
+          location: true,
+        },
 
       },
 
       _count: {
 
         select: {
+          applications: true,
+        },
 
-          applications: true
-
-        }
-
-      }
+      },
 
     },
 
     orderBy: {
-
-      createdAt: "desc"
-
-    }
+      createdAt: "desc",
+    },
 
   });
 
 };
-
-
 
 // COUNT INTERNSHIPS
 
@@ -603,6 +521,7 @@ export const countInternshipsService = async () => {
   return await prisma.internship.count();
 
 };
+
 // GET INTERNSHIP BY ID
 
 export const getInternshipByIdService = async (id) => {
@@ -610,9 +529,7 @@ export const getInternshipByIdService = async (id) => {
   return await prisma.internship.findUnique({
 
     where: {
-
-      id
-
+      id,
     },
 
     include: {
@@ -620,15 +537,13 @@ export const getInternshipByIdService = async (id) => {
       employer: {
 
         select: {
-
           id: true,
           companyName: true,
           industry: true,
           location: true,
           website: true,
-          description: true
-
-        }
+          description: true,
+        },
 
       },
 
@@ -643,38 +558,30 @@ export const getInternshipByIdService = async (id) => {
               user: {
 
                 select: {
-
                   id: true,
                   name: true,
-                  email: true
+                  email: true,
+                },
 
-                }
+              },
 
-              }
+            },
 
-            }
-
-          }
+          },
 
         },
 
         orderBy: {
+          appliedAt: "desc",
+        },
 
-          appliedAt: "desc"
+      },
 
-        }
-
-      }
-
-    }
+    },
 
   });
 
 };
-
-
-
-
 
 // UPDATE INTERNSHIP
 
@@ -683,43 +590,33 @@ export const updateInternshipService = async (id, data) => {
   return await prisma.internship.update({
 
     where: {
-
-      id
-
+      id,
     },
 
     data: {
 
       title: data.title,
-
       description: data.description,
-
       location: data.location,
-
       type: data.type,
-
       stipend: data.stipend,
-
       deadline: data.deadline
         ? new Date(data.deadline)
         : null,
-
       employerId: data.employerId,
-
-      isActive: data.isActive
+      isActive: data.isActive,
 
     },
 
     include: {
-
-      employer: true
-
-    }
+      employer: true,
+    },
 
   });
 
 };
-// ================= CREATE INTERNSHIP =================
+
+// CREATE INTERNSHIP
 
 export const createInternshipService = async (data) => {
 
@@ -728,36 +625,25 @@ export const createInternshipService = async (data) => {
     data: {
 
       title: data.title,
-
       description: data.description,
-
       location: data.location,
-
       type: data.type,
-
       stipend: data.stipend,
-
       deadline: data.deadline
         ? new Date(data.deadline)
         : null,
-
       employerId: data.employerId,
-
-      isActive: true
+      isActive: true,
 
     },
 
     include: {
-
-      employer: true
-
-    }
+      employer: true,
+    },
 
   });
 
 };
-
-
 
 // DELETE INTERNSHIP
 
@@ -766,18 +652,17 @@ export const deleteInternshipService = async (id) => {
   await prisma.internship.delete({
 
     where: {
-
-      id
-
-    }
+      id,
+    },
 
   });
 
   return true;
 
 };
-// ================= APPLICATIONS =================
-
+// =================================================
+// APPLICATIONS
+// =================================================
 
 // GET ALL APPLICATIONS
 
@@ -794,16 +679,14 @@ export const getAllApplicationsService = async () => {
           user: {
 
             select: {
-
               id: true,
               name: true,
-              email: true
+              email: true,
+            },
 
-            }
+          },
 
-          }
-
-        }
+        },
 
       },
 
@@ -814,34 +697,27 @@ export const getAllApplicationsService = async () => {
           employer: {
 
             select: {
-
               id: true,
               companyName: true,
               industry: true,
-              location: true
+              location: true,
+            },
 
-            }
+          },
 
-          }
+        },
 
-        }
-
-      }
+      },
 
     },
 
     orderBy: {
-
-      appliedAt: "desc"
-
-    }
+      appliedAt: "desc",
+    },
 
   });
 
 };
-
-
-
 
 // GET APPLICATION BY ID
 
@@ -850,41 +726,28 @@ export const getApplicationByIdService = async (id) => {
   return await prisma.application.findUnique({
 
     where: {
-
-      id
-
+      id,
     },
 
     include: {
 
       student: {
-
         include: {
-
-          user: true
-
-        }
-
+          user: true,
+        },
       },
 
       internship: {
-
         include: {
+          employer: true,
+        },
+      },
 
-          employer: true
-
-        }
-
-      }
-
-    }
+    },
 
   });
 
 };
-
-
-
 
 // UPDATE APPLICATION STATUS
 
@@ -893,47 +756,32 @@ export const updateApplicationService = async (id, data) => {
   return await prisma.application.update({
 
     where: {
-
-      id
-
+      id,
     },
 
     data: {
-
-      status: data.status
-
+      status: data.status,
     },
 
     include: {
 
       student: {
-
         include: {
-
-          user: true
-
-        }
-
+          user: true,
+        },
       },
 
       internship: {
-
         include: {
+          employer: true,
+        },
+      },
 
-          employer: true
-
-        }
-
-      }
-
-    }
+    },
 
   });
 
 };
-
-
-
 
 // DELETE APPLICATION
 
@@ -942,17 +790,18 @@ export const deleteApplicationService = async (id) => {
   await prisma.application.delete({
 
     where: {
-
-      id
-
-    }
+      id,
+    },
 
   });
 
   return true;
 
 };
-// ================= ADMIN SETTINGS =================
+
+// =================================================
+// ADMIN SETTINGS
+// =================================================
 
 // GET ADMIN SETTINGS
 
@@ -961,7 +810,7 @@ export const getAdminSettingsService = async (id) => {
   return await prisma.user.findUnique({
 
     where: {
-      id
+      id,
     },
 
     select: {
@@ -971,15 +820,14 @@ export const getAdminSettingsService = async (id) => {
       role: true,
       isActive: true,
       createdAt: true,
-      updatedAt: true
-    }
+      updatedAt: true,
+    },
 
   });
 
 };
 
-
-
+// UPDATE ADMIN SETTINGS
 
 export const updateAdminSettingsService = async (id, data) => {
 
@@ -993,10 +841,13 @@ export const updateAdminSettingsService = async (id, data) => {
   }
 
   return await prisma.user.update({
+
     where: {
       id,
     },
+
     data: updateData,
+
     select: {
       id: true,
       name: true,
@@ -1006,93 +857,146 @@ export const updateAdminSettingsService = async (id, data) => {
       createdAt: true,
       updatedAt: true,
     },
+
   });
+
 };
+
 // =================================================
 // TESTIMONIALS
 // =================================================
 
 export const getTestimonialsService = async () => {
+
   return await prisma.testimonial.findMany({
+
     orderBy: {
       createdAt: "desc",
     },
+
   });
+
 };
 
 export const createTestimonialService = async (data) => {
+
   return await prisma.testimonial.create({
+
     data,
+
   });
+
 };
 
 export const updateTestimonialService = async (id, data) => {
+
   return await prisma.testimonial.update({
+
     where: {
       id,
     },
+
     data,
+
   });
+
 };
 
 export const deleteTestimonialService = async (id) => {
+
   return await prisma.testimonial.delete({
+
     where: {
       id,
     },
+
   });
+
 };
 
 export const toggleTestimonialService = async (id) => {
+
   const testimonial = await prisma.testimonial.findUnique({
+
     where: {
       id,
     },
+
   });
 
   return await prisma.testimonial.update({
+
     where: {
       id,
     },
+
     data: {
       isActive: !testimonial.isActive,
     },
+
   });
+
 };
 // =================================================
 // COMPANIES
 // =================================================
 
 export const getCompaniesService = async () => {
+
   return await prisma.company.findMany({
+
     orderBy: {
       createdAt: "desc",
     },
+
   });
+
 };
 
 export const createCompanyService = async (data) => {
+
   return await prisma.company.create({
+
     data,
+
   });
+
 };
 
 export const updateCompanyService = async (id, data) => {
+
   return await prisma.company.update({
-    where: { id },
+
+    where: {
+      id,
+    },
+
     data,
+
   });
+
 };
 
 export const deleteCompanyService = async (id) => {
+
   return await prisma.company.delete({
-    where: { id },
+
+    where: {
+      id,
+    },
+
   });
+
 };
 
 export const toggleCompanyService = async (id) => {
+
   const company = await prisma.company.findUnique({
-    where: { id },
+
+    where: {
+      id,
+    },
+
   });
 
   if (!company) {
@@ -1100,46 +1004,79 @@ export const toggleCompanyService = async (id) => {
   }
 
   return await prisma.company.update({
-    where: { id },
+
+    where: {
+      id,
+    },
+
     data: {
       isActive: !company.isActive,
     },
+
   });
+
 };
+
 // =================================================
 // FAQ
 // =================================================
 
 export const getFAQsService = async () => {
+
   return await prisma.fAQ.findMany({
+
     orderBy: {
       createdAt: "desc",
     },
+
   });
+
 };
 
 export const createFAQService = async (data) => {
+
   return await prisma.fAQ.create({
+
     data,
+
   });
+
 };
 
 export const updateFAQService = async (id, data) => {
+
   return await prisma.fAQ.update({
-    where: { id },
+
+    where: {
+      id,
+    },
+
     data,
+
   });
+
 };
 
 export const deleteFAQService = async (id) => {
+
   return await prisma.fAQ.delete({
-    where: { id },
+
+    where: {
+      id,
+    },
+
   });
+
 };
 
 export const toggleFAQService = async (id) => {
+
   const faq = await prisma.fAQ.findUnique({
-    where: { id },
+
+    where: {
+      id,
+    },
+
   });
 
   if (!faq) {
@@ -1147,9 +1084,114 @@ export const toggleFAQService = async (id) => {
   }
 
   return await prisma.fAQ.update({
-    where: { id },
+
+    where: {
+      id,
+    },
+
     data: {
       isActive: !faq.isActive,
     },
+
   });
+
+};
+
+// =================================================
+// ADMIN PROFILE
+// =================================================
+
+export const getAdminProfileService = async (id) => {
+
+  return await prisma.user.findUnique({
+
+    where: {
+      id,
+    },
+
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+
+      adminProfile: {
+
+        select: {
+          phone: true,
+          avatar: true,
+        },
+
+      },
+
+    },
+
+  });
+
+};
+
+export const updateAdminProfileService = async (id, data) => {
+
+  const updateData = {
+    name: data.name,
+    email: data.email,
+  };
+
+  if (data.password && data.password.trim() !== "") {
+    updateData.password = await bcrypt.hash(data.password, 10);
+  }
+
+  return await prisma.user.update({
+
+    where: {
+      id,
+    },
+
+    data: {
+
+      ...updateData,
+
+      adminProfile: {
+
+        upsert: {
+
+          create: {
+            phone: data.phone || null,
+            avatar: data.avatar || null,
+          },
+
+          update: {
+            phone: data.phone,
+            avatar: data.avatar,
+          },
+
+        },
+
+      },
+
+    },
+
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+
+      adminProfile: {
+
+        select: {
+          phone: true,
+          avatar: true,
+        },
+
+      },
+
+    },
+
+  });
+
 };

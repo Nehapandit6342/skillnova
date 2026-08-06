@@ -104,73 +104,46 @@ export const registerUser = async (data) => {
 
 
 
-            // Create Student Profile
+           // Create Student Profile
 
-            if(role === "STUDENT"){
+if (role === "STUDENT") {
 
+    await tx.studentProfile.create({
 
-                await tx.studentProfile.create({
+        data: {
 
-                    data:{
+            userId: newUser.id,
 
+            college: college || null,
 
-                        userId:newUser.id,
+            degree: degree || null,
 
+            careerGoal: careerGoal || null,
 
-                        college: college || null,
+        }
 
+    });
 
-                        degree: degree || null,
+    await tx.notification.create({
 
+        data: {
 
-                        careerGoal: careerGoal || null
+            title: "New Student Registered",
 
+            message: `${name} joined SkillNova`,
 
-                    }
+            type: "STUDENT",
 
-                });
+        }
 
+    });
 
-            }
-
-
-
-
-
-
-
-
-            // Create Employer Profile
-
-            if(role === "EMPLOYER"){
-
-
-                await tx.employerProfile.create({
-
-                    data:{
-
-
-                        userId:newUser.id,
-
-
-                        companyName,
-
-
-                        industry: industry || null,
-
-
-                        website: website || null
-
-
-                    }
-
-                });
-
-
-            }
+}
 
 
 
+
+            
 
 
 
