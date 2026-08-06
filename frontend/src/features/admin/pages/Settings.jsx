@@ -1,200 +1,345 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 
+import ProfileCard from "../components/ProfileCard";
+import SecurityCard from "../components/SecurityCard";
+import ActiveSessions from "../components/ActiveSessions";
+import DangerZone from "../components/DangerZone";
+
 export default function Settings() {
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     role: "",
+    phone: "",
+    profileImage: "",
+    currentPassword: "",
     password: "",
     confirmPassword: "",
   });
 
+
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+
 
   useEffect(() => {
     fetchSettings();
   }, []);
 
+
+
+  // ================= FETCH SETTINGS =================
+
   const fetchSettings = async () => {
-    try {
-      const response = await api.get("/admin/settings");
-
-      if (response.data.success) {
-        setForm({
-          name: response.data.data.name || "",
-          email: response.data.data.email || "",
-          role: response.data.data.role || "",
-          password: "",
-          confirmPassword: "",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (
-      form.password &&
-      form.password !== form.confirmPassword
-    ) {
-      return alert("Passwords do not match");
-    }
 
     try {
-      setSaving(true);
 
-      const payload = {
-        name: form.name,
-        email: form.email,
-      };
-
-      if (form.password.trim() !== "") {
-        payload.password = form.password;
-      }
-
-      const response = await api.put(
-        "/admin/settings",
-        payload
+      const response = await api.get(
+        "/admin/settings"
       );
 
+
       if (response.data.success) {
-        alert("Settings updated successfully");
+
+        const data = response.data.data;
+
 
         setForm({
-          ...form,
+
+          name: data.name || "",
+
+          email: data.email || "",
+
+          role: data.role || "",
+
+          phone: data.phone || "",
+
+          profileImage: data.profileImage || "",
+
+          currentPassword: "",
+
           password: "",
+
           confirmPassword: "",
+
         });
+
       }
+
+
     } catch (error) {
-      console.log(error);
-      alert("Failed to update settings");
+
+      console.log(
+        "Settings Fetch Error:",
+        error
+      );
+
     } finally {
-      setSaving(false);
+
+      setLoading(false);
+
     }
+
   };
 
+
+
+
+  // ================= INPUT CHANGE =================
+
+  const handleChange = (e) => {
+
+    setForm((prev) => ({
+
+      ...prev,
+
+      [e.target.name]: e.target.value,
+
+    }));
+
+  };
+
+
+
+
+  // ================= UPDATE SETTINGS =================
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+
+    try {
+
+
+      // Password match check
+
+      if (
+        form.password &&
+        form.password !== form.confirmPassword
+      ) {
+
+        return alert(
+          "Passwords do not match"
+        );
+
+      }
+
+
+
+
+      // Update profile
+
+      const profileResponse = await api.put(
+
+        "/admin/settings",
+
+        {
+
+          name: form.name,
+
+          email: form.email,
+
+        }
+
+      );
+
+
+
+
+
+      // Change password
+
+      if (form.password.trim()) {
+
+
+        if (!form.currentPassword) {
+
+          return alert(
+            "Current password is required"
+          );
+
+        }
+
+
+
+        await api.post(
+
+          "/auth/change-password",
+
+          {
+
+            currentPassword:
+              form.currentPassword,
+
+
+            newPassword:
+              form.password,
+
+          }
+
+        );
+
+      }
+
+
+
+
+
+      if (profileResponse.data.success) {
+
+
+        alert(
+          "Settings Updated Successfully"
+        );
+
+
+
+        setForm((prev) => ({
+
+          ...prev,
+
+          currentPassword: "",
+
+          password: "",
+
+          confirmPassword: "",
+
+        }));
+
+
+      }
+
+
+
+    } catch (error) {
+
+
+      console.log(
+        "Update Settings Error:",
+        error
+      );
+
+
+
+      alert(
+
+        error.response?.data?.message ||
+
+        "Failed to update settings"
+
+      );
+
+
+    }
+
+  };
+
+
+
+
+  // ================= LOADING =================
+
   if (loading) {
+
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+
+      <div className="flex min-h-screen items-center justify-center text-lg font-medium">
+
         Loading Settings...
+
       </div>
+
     );
+
   }
 
+
+
+
+
   return (
+
     <div className="min-h-screen bg-gray-50 p-8">
+
+
       {/* Header */}
+
       <div className="mb-8">
+
+
         <h1 className="text-4xl font-bold text-gray-900">
+
           Admin Settings
+
         </h1>
 
-        <p className="text-gray-500 mt-2">
-          Update your account information and password.
+
+
+        <p className="mt-2 text-gray-500">
+
+          Manage your profile, security and preferences.
+
         </p>
+
+
       </div>
 
-      <div className="max-w-3xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-        >
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Name
-            </label>
 
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-            />
-          </div>
 
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Email
-            </label>
 
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-            />
-          </div>
 
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Role
-            </label>
+      <form
 
-            <input
-              type="text"
-              value={form.role}
-              disabled
-              className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-gray-500"
-            />
-          </div>
+        onSubmit={handleSubmit}
 
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              New Password
-            </label>
+        className="mx-auto max-w-6xl space-y-8"
 
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Leave empty if you don't want to change"
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-            />
-          </div>
+      >
 
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Confirm Password
-            </label>
 
-            <input
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-            />
-          </div>
 
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white transition hover:bg-blue-700 disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-          </div>
-        </form>
-      </div>
+        <ProfileCard
+
+          form={form}
+
+          handleChange={handleChange}
+
+        />
+
+
+
+
+
+        <SecurityCard
+
+          form={form}
+
+          handleChange={handleChange}
+
+        />
+
+
+
+
+
+        <ActiveSessions />
+
+
+
+
+
+        <DangerZone />
+
+
+
+      </form>
+
+
+
     </div>
+
   );
+
 }

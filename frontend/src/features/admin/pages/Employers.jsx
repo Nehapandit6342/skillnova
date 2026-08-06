@@ -88,10 +88,11 @@ export default function Employers() {
         />
       </div>
 
-      {/* Table */}
+        {/* Table */}
       <EmployerTable
         employers={filteredEmployers}
         onDelete={handleDelete}
+        refetch={refetch}
       />
     </div>
   );

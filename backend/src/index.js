@@ -20,8 +20,6 @@ import careerRoutes from "./routes/career.routes.js";
 import studentDashboardRoutes from "./routes/studentDashboard.routes.js";
 import publicRoutes from "./routes/public.routes.js";
 import testimonialRoutes from "./routes/testimonial.routes.js";
-dotenv.config();
-
 
 const app = express();
 
@@ -75,7 +73,10 @@ app.use("/api/student-dashboard", studentDashboardRoutes);
 app.use("/api/ai", aiRoutes);
 
 app.use("/api/public", publicRoutes);
-
+app.use(
+  "/api/notifications",
+  notificationRoutes
+);
 
 app.use(
 "/api/employer/settings",

@@ -4,7 +4,7 @@ import { registerUser } from "../services/auth.service.js";
 import prisma from "../config/prisma.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import { UAParser } from "ua-parser-js";
 import {
     sendPasswordResetOtp,
     sendWelcomeEmail
@@ -203,6 +203,23 @@ export const login = async (req, res) => {
         expiresIn: "7d",
       }
     );
+    const parser = new UAParser(req.headers["user-agent"]);
+const result = parser.getResult();
+
+await prisma.session.create({
+  data: {
+    userId: user.id,
+    token,
+    device: result.device.model || result.os.name || "Unknown Device",
+    browser: result.browser.name || "Unknown Browser",
+    ipAddress:
+      req.headers["x-forwarded-for"] ||
+      req.socket.remoteAddress ||
+      null,
+    location: "Unknown",
+    lastActive: new Date(),
+  },
+});
 
     console.log("LOGIN SUCCESS:", {
       id: user.id,
@@ -962,3 +979,60 @@ export const resetPassword = async(req,res)=>{
 
 
 };
+
+// ================= LOGOUT ALL DEVICES =================
+
+export const logoutAllDevices = async (req, res) => {
+  try {
+    await prisma.session.updateMany({
+      where: {
+        userId: req.user.id,
+        isActive: true,
+      },
+      data: {
+        isActive: false,
+      },
+    });
+
+    return res.json({
+      success: true,
+      message: "Logged out from all devices",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+// ================= ACTIVE SESSIONS =================
+
+export const getSessions = async (req, res) => {
+  try {
+    const sessions = await prisma.session.findMany({
+      where: {
+        userId: req.user.id,
+        isActive: true,
+      },
+      orderBy: {
+        lastActive: "desc",
+      },
+    });
+
+    return res.json({
+      success: true,
+      data: sessions,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+

@@ -7,7 +7,9 @@ import {
     verifyResetOtp,
     resetPassword,
     changePassword,
-    deleteAccount
+    deleteAccount,
+    getSessions,
+    logoutAllDevices
 } from "../controllers/auth.controller.js";
 
 import { authenticate } from "../middleware/auth.middleware.js";
@@ -93,6 +95,20 @@ router.get(
     }
 );
 
+// ================= ACTIVE SESSIONS =================
 
+router.get(
+    "/sessions",
+    authenticate,
+    getSessions
+);
+
+// ================= LOGOUT ALL DEVICES =================
+
+router.post(
+    "/logout-all",
+    authenticate,
+    logoutAllDevices
+);
 
 export default router;

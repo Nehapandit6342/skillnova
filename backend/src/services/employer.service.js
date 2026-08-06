@@ -222,9 +222,28 @@ async(userId,data)=>{
 
 
 
+<<<<<<< HEAD
 
 // ================= GET ALL EMPLOYERS ADMIN =================
+=======
+  return await prisma.employerProfile.findMany({
 
+    select: {
+
+      id: true,
+
+      companyName: true,
+
+      website: true,
+
+      industry: true,
+
+      description: true,
+
+      createdAt: true,
+>>>>>>> 0bde86d (Add admin settings and profile management)
+
+      status: true,
 
 export const getAllEmployers =
 async()=>{
@@ -275,8 +294,12 @@ async()=>{
 
         orderBy:{
 
+<<<<<<< HEAD
 
             createdAt:"desc"
+=======
+    orderBy: {
+>>>>>>> 0bde86d (Add admin settings and profile management)
 
 
         }
@@ -284,16 +307,18 @@ async()=>{
 
     });
 
-
 };
 
 
+<<<<<<< HEAD
 
 
 
 
 
 
+=======
+>>>>>>> 0bde86d (Add admin settings and profile management)
 // ================= GET EMPLOYER BY ID =================
 
 
@@ -843,5 +868,29 @@ async()=>{
 
     });
 
+
+};
+// ================= UPDATE EMPLOYER STATUS =================
+
+export const updateEmployerStatus = async (
+  employerId,
+  status
+) => {
+
+  return await prisma.employerProfile.update({
+
+    where: {
+
+      id: employerId,
+
+    },
+
+    data: {
+
+      status,
+
+    },
+
+  });
 
 };
