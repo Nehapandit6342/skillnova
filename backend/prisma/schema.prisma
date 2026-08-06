@@ -6,262 +6,210 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id                  String               @id @default(uuid()) @db.Uuid
+  name                String
+  email               String               @unique
+  password            String
+  role                Role                 @default(STUDENT)
+  isActive            Boolean              @default(true)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  employerProfile     EmployerProfile?
+  passwordResetTokens PasswordResetToken[]
+  studentProfile      StudentProfile?
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id                   String          @id @default(uuid()) @db.Uuid
+  userId               String          @unique @db.Uuid
+  profileImage         String?
+  phone                String?
+  location             String?
+  dateOfBirth          DateTime?
+  bio                  String?
+  college              String?
+  degree               String?
+  semester             Int?
+  cgpa                 Float?
+  careerGoal           String?
+  github               String?
+  linkedin             String?
+  portfolio            String?
+  skills               String[]        @default([])
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  resumeText           String?
+  resumeUploadedAt     DateTime?
+  resumeUrl            String?
+  preferredCompanySize String?
+  preferredInternship  String?
+  preferredLocation    String?
+  workMode             String?
+  resumeFileName       String?
+  applications         Application[]
+  resumeAnalysis       ResumeAnalysis?
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+model ResumeAnalysis {
+  id                     String         @id @default(uuid()) @db.Uuid
+  studentId              String         @unique @db.Uuid
+  atsScore               Int
+  summary                String
+  strengths              Json
+  weaknesses             Json
+  missingSkills          Json
+  recommendedProjects    Json
+  recommendedInternships Json
+  careerRoadmap          Json
+  aiModel                String?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  improvementSuggestions Json           @default("[]")
+  learningPlan           Json?
+  student                StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("resume_analysis")
+}
+
+model EmployerProfile {
+  id          String        @id @default(uuid()) @db.Uuid
+  userId      String        @unique @db.Uuid
+  logo        String?
+  companyName String
+  website     String?
+  industry    String?
+  location    String?
+  description String?
+  companySize String?
+  foundedYear Int?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  isFeatured  Boolean       @default(false)
+  status      CompanyStatus @default(PENDING)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  internships Internship[]
+
+  @@map("employer_profiles")
+}
+
+model Testimonial {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  designation String
+  company     String
+  image       String?
+  message     String
+  rating      Int      @default(5)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model Internship {
+  id               String           @id @default(uuid()) @db.Uuid
+  title            String
+  description      String
+  location         String?
+  type             String?
+  stipend          String?
+  deadline         DateTime?
+  isActive         Boolean          @default(true)
+  employerId       String           @db.Uuid
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  requiredSkills   String[]         @default([])
+  category         String?
+  benefits         String[]         @default([])
+  duration         String?
+  openings         Int?
+  qualifications   String[]         @default([])
+  responsibilities String[]         @default([])
+  selectionProcess String[]         @default([])
+  skills           String[]         @default([])
+  workMode         String?
+  applicationEmail String?
+  applicationLink  String?
+  companyOverview  String?
+  educationLevel   String?
+  experienceLevel  String?
+  salaryType       String?
+  status           InternshipStatus @default(OPEN)
+  applications     Application[]
+  employer         EmployerProfile  @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  @@map("internships")
+}
+
+model Application {
+  id           String            @id @default(uuid()) @db.Uuid
+  studentId    String            @db.Uuid
+  internshipId String            @db.Uuid
+  status       ApplicationStatus @default(PENDING)
+  availability String?
+  coverLetter  String?
+  createdAt    DateTime          @default(now())
+  phone        String?
+  resume       String?
+  updatedAt    DateTime          @updatedAt
+  internship   Internship        @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  student      StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, internshipId])
+  @@map("applications")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  otpHash   String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model companies {
+  id          String   @id @db.Uuid
+  name        String
+  logo        String?
+  website     String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model faqs {
+  id        String   @id @default(uuid()) @db.Uuid
+  question  String
+  answer    String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum Role {
   STUDENT
   EMPLOYER
   ADMIN
 }
 
-model User {
-  id String @id @default(uuid()) @db.Uuid
-
-  name String
-
-  email String @unique
-
-  password String
-
-  role Role @default(STUDENT)
-
-  isActive Boolean @default(true)
-
-  studentProfile StudentProfile?
-
-  employerProfile EmployerProfile?
-
-  passwordResetTokens PasswordResetToken[]
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  @@map("users")
-}
-
-model StudentProfile {
-  id String @id @default(uuid()) @db.Uuid
-
-  userId String @unique @db.Uuid
-
-  profileImage     String?
-  resumeUrl        String?
-  resumeFileName   String?
-  resumeText       String?
-  resumeUploadedAt DateTime?
-
-  phone String?
-
-  location    String?
-  dateOfBirth DateTime?
-
-  bio String?
-
-  college String?
-
-  degree String?
-
-  semester Int?
-
-  cgpa Float?
-
-  github String?
-
-  linkedin String?
-
-  portfolio  String?
-  careerGoal String?
-
-  preferredInternship String?
-
-  workMode String?
-
-  preferredLocation String?
-
-  preferredCompanySize String?
-  skills               String[] @default([])
-
-  applications Application[]
-
-
-  user User @relation(
-    fields: [userId],
-    references: [id],
-    onDelete: Cascade
-  )
-
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  @@map("student_profiles")
-}
-
-model ResumeAnalysis {
-  id String @id @default(uuid()) @db.Uuid
-
-  studentId String @unique @db.Uuid
-
-  atsScore Int
-
-  summary String
-
-  strengths Json
-
-  weaknesses Json
-
-  missingSkills Json
-
-  recommendedProjects Json
-
-  recommendedInternships Json
-
-  careerRoadmap Json
-
-  improvementSuggestions Json    @default("[]")
-  learningPlan           Json?
-  aiModel                String?
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("resume_analysis")
-}
-
-model EmployerProfile {
-  id String @id @default(uuid()) @db.Uuid
-
-  userId String @unique @db.Uuid
-
-  logo String?
-
-  companyName String
-
-  website String?
-
-  industry String?
-
-  location String?
-
-  description String?
-
-  companySize String?
-
-  foundedYear Int?
-
-
-
-internships Internship[]
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  @@map("employer_profiles")
-}
-
-
-
-
-
-model Internship {
-  id String @id @default(uuid()) @db.Uuid
-
-  title String
-
-  description     String
-  category        String?
-  companyOverview String?
-
-  experienceLevel String?
-
-  educationLevel String?
-
-  salaryType String?
-
-  applicationEmail String?
-
-  requiredSkills String[] @default([])
-
-  location String?
-
-  type String?
-
-
-  stipend         String?
-  openings        Int?
-  applicationLink String?
-
-  deadline         DateTime?
-  responsibilities String[]  @default([])
-
-  skills String[] @default([])
-
-  qualifications String[] @default([])
-
-  benefits String[] @default([])
-
-  selectionProcess String[] @default([])
-
-  isActive Boolean          @default(true)
-  status   InternshipStatus @default(OPEN)
-
-  employerId String @db.Uuid
-
-  employer EmployerProfile @relation(fields: [employerId], references: [id], onDelete: Cascade)
-
-  applications Application[]
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  @@map("internships")
-}
-
-model Application {
-  id String @id @default(uuid()) @db.Uuid
-
-  studentId String @db.Uuid
-
-  internshipId String @db.Uuid
-
-
-
-  status String @default("PENDING")
-
-
-
-  appliedAt DateTime @default(now())
-
-
-
-  student StudentProfile @relation(
-    fields: [studentId],
-    references: [id],
-    onDelete: Cascade
-  )
-
-
-  internship Internship @relation(
-    fields: [internshipId],
-    references: [id],
-    onDelete: Cascade
-  )
-
-
-
-  @@map("applications")
-}
-
-
-
-
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  ACCEPTED
   REJECTED
 }
 
@@ -271,22 +219,9 @@ enum InternshipStatus {
   CLOSED
 }
 
-model PasswordResetToken {
-  id String @id @default(uuid()) @db.Uuid
-
-  userId String @db.Uuid
-
-  otpHash String
-
-  expiresAt DateTime
-
-  used Boolean @default(false)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([expiresAt])
-  @@map("password_reset_tokens")
+enum CompanyStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
 }
