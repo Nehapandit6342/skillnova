@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
  * Shared internship filtering state + logic used by the list page and the
  * homepage section so the matching rules stay in one place.
  */
-export default function useInternshipFilters(internships) {
-  const [search, setSearch] = useState("");
+export default function useInternshipFilters(internships, initialSearch = "") {
+  const [search, setSearch] = useState(initialSearch);
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
 
@@ -24,6 +24,7 @@ export default function useInternshipFilters(internships) {
     return internships.filter((internship) => {
       const title = internship.title?.toLowerCase() || "";
       const company = internship.employer?.companyName?.toLowerCase() || "";
+      const internLocation = internship.location?.toLowerCase() || "";
       const skills = [
         ...(internship.requiredSkills || []),
         ...(internship.skills || []),
@@ -35,6 +36,7 @@ export default function useInternshipFilters(internships) {
         !searchText ||
         title.includes(searchText) ||
         company.includes(searchText) ||
+        internLocation.includes(searchText) ||
         skills.includes(searchText);
 
       const matchesLocation = !location || internship.location === location;

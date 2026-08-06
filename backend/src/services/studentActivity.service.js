@@ -14,7 +14,7 @@ export const getRecentActivities = async (userId) => {
           },
         },
         orderBy: {
-          appliedAt: "desc",
+          createdAt: "desc",
         },
       },
     },
@@ -48,7 +48,7 @@ export const getRecentActivities = async (userId) => {
     activities.push({
       type: "application",
       title: `Applied for ${application.internship.title}`,
-      time: application.appliedAt,
+      time: application.createdAt,
     });
   });
 

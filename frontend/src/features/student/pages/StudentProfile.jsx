@@ -4,7 +4,6 @@ import EducationCard from "../components/profile/EducationCard";
 import SkillsCard from "../components/profile/SkillsCard";
 import CareerCard from "../components/profile/CareerCard";
 import SocialLinksCard from "../components/profile/SocialLinksCard";
-import ResumeCard from "../components/profile/ResumeCard";
 
 import { useStudentProfile } from "../hooks/useStudentProfile";
 
@@ -44,7 +43,6 @@ export default function StudentProfile() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <SocialLinksCard profile={profile} />
-        <ResumeCard profile={profile} />
       </div>
     </div>
   );

@@ -18,11 +18,10 @@ export const createApplication = async (req, res) => {
 
     console.log("USER:", req.user);
 
-    const application = await createApplicationService(
-      req.user.id,
-
-      req.body,
-    );
+    const application = await createApplicationService(req.user.id, {
+      ...req.body,
+      resume: req.file?.path || null,
+    });
 
     return res.status(201).json({
       success: true,

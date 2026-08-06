@@ -4,6 +4,7 @@ import {
   getProfile,
   updateProfile,
   getUpcomingDeadlines,
+  getCareerRoadmap,
 } from "../controllers/student.controller.js";
 import { getRecentActivitiesController } from "../controllers/studentActivity.controller.js";
 
@@ -17,8 +18,14 @@ router.get("/recent-activity", authenticate, getRecentActivitiesController);
 router.get(
   "/upcoming-deadlines",
   authenticate,
-  authorize("student"),
+  authorize("STUDENT"),
   getUpcomingDeadlines,
+);
+router.get(
+  "/career-roadmap",
+  authenticate,
+  authorize("STUDENT"),
+  getCareerRoadmap,
 );
 
 router.put(

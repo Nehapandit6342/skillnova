@@ -42,7 +42,7 @@ export const reAnalyzeResume = async (formData) => {
 };
 // Recommended Internships
 export const getRecommendedInternships = async () => {
-  const response = await api.get("/recommended-internships");
+  const response = await api.get("/recommendation/recommended-internships");
   return response.data;
 };
 // Upload & Analyze Resume

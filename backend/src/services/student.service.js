@@ -15,7 +15,12 @@ export const getProfile = async (userId) => {
       role: true,
 
       isActive: true,
-      studentProfile: true,
+      studentProfile: {
+        include: {
+          resumeAnalysis: true,
+          applications: true,
+        },
+      },
     },
   });
 
@@ -43,6 +48,10 @@ export const updateProfile = async (userId, data) => {
     semester,
     cgpa,
     careerGoal,
+    preferredInternship,
+    workMode,
+    preferredLocation,
+    preferredCompanySize,
     github,
     linkedin,
     portfolio,
@@ -76,6 +85,11 @@ export const updateProfile = async (userId, data) => {
       semester !== undefined && semester !== "" ? Number(semester) : undefined,
     cgpa: cgpa !== undefined && cgpa !== "" ? Number(cgpa) : undefined,
     careerGoal,
+    preferredInternship,
+    workMode,
+    preferredLocation,
+    preferredCompanySize,
+
     github,
     linkedin,
     portfolio,
@@ -125,7 +139,7 @@ export const getUpcomingDeadlinesService = async (userId) => {
       },
     },
     orderBy: {
-      appliedAt: "desc",
+      createdAt: "desc",
     },
   });
 
@@ -146,4 +160,24 @@ export const getUpcomingDeadlinesService = async (userId) => {
       location: application.internship.location,
       type: application.internship.type,
     }));
+};
+export const getCareerRoadmapService = async (userId) => {
+  const student = await prisma.studentProfile.findUnique({
+    where: {
+      userId,
+    },
+    include: {
+      resumeAnalysis: true,
+    },
+  });
+
+  if (!student) {
+    throw new Error("Student profile not found.");
+  }
+
+  if (!student.resumeAnalysis) {
+    return [];
+  }
+
+  return student.resumeAnalysis.careerRoadmap || [];
 };
