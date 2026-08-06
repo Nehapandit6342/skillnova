@@ -2,7 +2,7 @@ import {
     BriefcaseBusiness,
     ClipboardList,
     Users,
-    Eye,
+    Eye
 } from "lucide-react";
 
 
@@ -10,8 +10,18 @@ import useEmployerDashboardStats
 from "../hooks/useEmployerDashboardStats";
 
 
+import ApplicationTrendChart 
+from "../components/dashboard/ApplicationTrendChart";
 
-export default function EmployerDashboard() {
+
+import ApplicationStatusChart 
+from "../components/dashboard/ApplicationStatusChart";
+
+
+
+
+
+export default function EmployerDashboard(){
 
 
 
@@ -37,8 +47,6 @@ export default function EmployerDashboard() {
         );
 
     }
-
-
 
 
 
@@ -70,7 +78,7 @@ export default function EmployerDashboard() {
 
 
         {
-            title:"Candidates",
+            title:"Candidates Selected",
 
             value:
             data?.data?.candidates || 0,
@@ -88,7 +96,7 @@ export default function EmployerDashboard() {
 
             icon:Eye
 
-        },
+        }
 
 
     ];
@@ -102,21 +110,41 @@ export default function EmployerDashboard() {
 
     return (
 
-        <div className="space-y-8">
+        <div className="
+        space-y-8
+        ">
 
 
-            <section>
 
-                <h2 className="text-2xl font-bold text-slate-900">
+            {/* HEADER */}
 
-                    Welcome to your Employer Dashboard
+            <section className="
+            bg-white
+            border
+            rounded-2xl
+            p-8
+            shadow-sm
+            ">
 
-                </h2>
+
+                <h1 className="
+                text-3xl
+                font-bold
+                text-slate-900
+                ">
+
+                    Welcome back, Employer 👋
+
+                </h1>
 
 
-                <p className="mt-2 text-slate-600">
 
-                    Manage your company profile, internships, and student applications.
+                <p className="
+                mt-2
+                text-slate-600
+                ">
+
+                    Track your internship hiring performance and manage your recruitment activities.
 
                 </p>
 
@@ -129,94 +157,104 @@ export default function EmployerDashboard() {
 
 
 
+
+
+            {/* KPI CARDS */}
+
             <section className="
-            grid 
-            gap-6 
-            sm:grid-cols-2 
+            grid
+            gap-6
+            sm:grid-cols-2
             xl:grid-cols-4
             ">
 
 
                 {
-                    stats.map((stat)=>{
+                    stats.map((item)=>(
 
 
-                        const Icon = stat.icon;
+                        <div
+
+                        key={item.title}
+
+                        className="
+                        bg-white
+                        border
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                        ">
 
 
-                        return (
-
-                            <div
-
-                            key={stat.title}
-
-                            className="
-                            rounded-2xl
-                            border
-                            border-slate-200
-                            bg-white
-                            p-6
-                            shadow-sm
-                            "
-
-                            >
-
-
-                                <div className="flex items-center justify-between">
-
-
-                                    <div>
-
-
-                                        <p className="text-sm text-slate-500">
-
-                                            {stat.title}
-
-                                        </p>
+                            <div className="
+                            flex
+                            justify-between
+                            items-center
+                            ">
 
 
 
-                                        <p className="
-                                        mt-2 
-                                        text-3xl 
-                                        font-bold 
-                                        text-slate-900
-                                        ">
-
-                                            {stat.value}
-
-                                        </p>
+                                <div>
 
 
-                                    </div>
-
-
-
-
-
-                                    <div className="
-                                    rounded-xl
-                                    bg-blue-50
-                                    p-3
-                                    text-blue-600
+                                    <p className="
+                                    text-sm
+                                    text-slate-500
                                     ">
 
+                                        {item.title}
 
-                                        <Icon className="h-6 w-6"/>
+                                    </p>
 
 
-                                    </div>
+
+                                    <h2 className="
+                                    mt-3
+                                    text-3xl
+                                    font-bold
+                                    text-slate-900
+                                    ">
+
+                                        {item.value}
+
+                                    </h2>
 
 
                                 </div>
 
 
+
+
+                                <div className="
+                                bg-blue-50
+                                p-3
+                                rounded-xl
+                                ">
+
+
+                                    <item.icon
+
+                                    className="
+                                    w-6
+                                    h-6
+                                    text-blue-600
+                                    "
+
+                                    />
+
+
+                                </div>
+
+
+
+
                             </div>
 
-                        );
+
+                        </div>
 
 
-                    })
+                    ))
                 }
 
 
@@ -225,7 +263,36 @@ export default function EmployerDashboard() {
 
 
 
+
+
+
+
+
+
+            {/* CHART SECTION */}
+
+            <section className="
+            grid
+            gap-6
+            xl:grid-cols-2
+            ">
+
+
+                <ApplicationTrendChart />
+
+
+
+                <ApplicationStatusChart />
+
+
+            </section>
+
+
+
+
+
         </div>
+
 
     );
 

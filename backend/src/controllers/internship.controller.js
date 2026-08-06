@@ -1,98 +1,19 @@
-import prisma from "../config/prisma.js";
-
 import {
-    createInternshipService,
     getAllInternshipsService,
     getInternshipByIdService,
     updateInternshipService,
     deleteInternshipService,
     createEmployerInternshipService,
     getEmployerInternshipsService,
-        getLatestInternshipsService
+    getLatestInternshipsService
 
 } from "../services/internship.service.js";
 
 
 
-// ==================================================
-// CREATE INTERNSHIP
-// ==================================================
-
-export const createInternship = async (req, res) => {
-
-    try {
-
-
-        const employer =
-        await prisma.employerProfile.findUnique({
-
-            where:{
-                userId:req.user.id
-            }
-
-        });
-
-
-
-        if(!employer){
-
-            return res.status(404).json({
-
-                success:false,
-
-                message:"Employer profile not found"
-
-            });
-
-        }
-
-
-
-        const internship =
-        await createInternshipService({
-
-            ...req.body,
-
-            employerId: employer.id
-
-        });
-
-
-
-        res.status(201).json({
-
-            success:true,
-
-            message:"Internship created successfully",
-
-            data:internship
-
-        });
-
-
-
-    } catch(error){
-
-
-        res.status(500).json({
-
-            success:false,
-
-            message:error.message
-
-        });
-
-
-    }
-
-};
-
-
-
-
 
 // ==================================================
-// EMPLOYER CREATE INTERNSHIP
+// CREATE EMPLOYER INTERNSHIP
 // ==================================================
 
 export const createEmployerInternship = async(req,res)=>{
@@ -112,13 +33,19 @@ export const createEmployerInternship = async(req,res)=>{
 
 
 
-        res.status(201).json({
+        return res.status(201).json({
+
 
             success:true,
 
-            message:"Internship posted successfully",
+
+            message:
+            "Internship posted successfully",
+
 
             data:internship
+
+
 
         });
 
@@ -127,13 +54,25 @@ export const createEmployerInternship = async(req,res)=>{
     }catch(error){
 
 
-        res.status(500).json({
+        console.error(
+            "CREATE INTERNSHIP ERROR:",
+            error
+        );
+
+
+
+        return res.status(400).json({
+
 
             success:false,
 
+
             message:error.message
 
+
+
         });
+
 
 
     }
@@ -147,47 +86,40 @@ export const createEmployerInternship = async(req,res)=>{
 
 
 
-
-
 // ==================================================
-// GET MY INTERNSHIPS
+// GET EMPLOYER INTERNSHIPS
 // ==================================================
 
-// ==================================================
-// GET MY INTERNSHIPS
-// ==================================================
-
-export const getMyInternships = async (req, res) => {
-
-    try {
+export const getMyInternships = async(req,res)=>{
 
 
-        console.log(
-            "Employer User ID:",
-            req.user.id
-        );
+    try{
 
 
         const internships =
         await getEmployerInternshipsService(
+
             req.user.id
+
         );
 
 
 
-        res.status(200).json({
+        return res.status(200).json({
+
 
             success:true,
-            success:true,
 
-            data:internships
-            data:internships
+
+            data:internships || []
+
+
 
         });
 
 
 
-    } catch(error){
+    }catch(error){
 
 
         console.error(
@@ -196,15 +128,19 @@ export const getMyInternships = async (req, res) => {
         );
 
 
-        return res.status(500).json({
+
+        return res.status(404).json({
+
 
             success:false,
-            success:false,
+
 
             message:error.message
-            message:error.message
+
+
 
         });
+
 
 
     }
@@ -217,8 +153,10 @@ export const getMyInternships = async (req, res) => {
 
 
 
+
+
 // ==================================================
-// GET ALL INTERNSHIPS
+// GET ALL PUBLIC INTERNSHIPS
 // ==================================================
 
 export const getAllInternships = async(req,res)=>{
@@ -232,11 +170,15 @@ export const getAllInternships = async(req,res)=>{
 
 
 
-        res.status(200).json({
+        return res.status(200).json({
+
 
             success:true,
 
+
             data:internships
+
+
 
         });
 
@@ -245,11 +187,15 @@ export const getAllInternships = async(req,res)=>{
     }catch(error){
 
 
-        res.status(500).json({
+        return res.status(500).json({
+
 
             success:false,
 
+
             message:error.message
+
+
 
         });
 
@@ -264,8 +210,11 @@ export const getAllInternships = async(req,res)=>{
 
 
 
+
+
+
 // ==================================================
-// GET INTERNSHIP BY ID
+// GET SINGLE INTERNSHIP
 // ==================================================
 
 export const getInternshipById = async(req,res)=>{
@@ -288,9 +237,14 @@ export const getInternshipById = async(req,res)=>{
 
             return res.status(404).json({
 
+
                 success:false,
 
-                message:"Internship not found"
+
+                message:
+                "Internship not found"
+
+
 
             });
 
@@ -299,11 +253,16 @@ export const getInternshipById = async(req,res)=>{
 
 
 
-        res.status(200).json({
+
+        return res.status(200).json({
+
 
             success:true,
 
+
             data:internship
+
+
 
         });
 
@@ -312,11 +271,15 @@ export const getInternshipById = async(req,res)=>{
     }catch(error){
 
 
-        res.status(500).json({
+        return res.status(400).json({
+
 
             success:false,
 
+
             message:error.message
+
+
 
         });
 
@@ -325,6 +288,8 @@ export const getInternshipById = async(req,res)=>{
 
 
 };
+
+
 
 
 
@@ -345,27 +310,29 @@ export const updateInternship = async(req,res)=>{
         const internship =
         await updateInternshipService(
 
-
             req.user.id,
-
 
             req.params.id,
 
-
             req.body
-
 
         );
 
 
 
-        res.status(200).json({
+        return res.status(200).json({
+
 
             success:true,
 
-            message:"Internship updated successfully",
+
+            message:
+            "Internship updated successfully",
+
 
             data:internship
+
+
 
         });
 
@@ -374,19 +341,26 @@ export const updateInternship = async(req,res)=>{
     }catch(error){
 
 
-        res.status(500).json({
+        return res.status(400).json({
+
 
             success:false,
 
+
             message:error.message
 
+
+
         });
+
 
 
     }
 
 
 };
+
+
 
 
 
@@ -406,22 +380,24 @@ export const deleteInternship = async(req,res)=>{
 
         await deleteInternshipService(
 
-
             req.user.id,
 
-
             req.params.id
-
 
         );
 
 
 
-        res.status(200).json({
+        return res.status(200).json({
+
 
             success:true,
 
-            message:"Internship deleted successfully"
+
+            message:
+            "Internship deleted successfully"
+
+
 
         });
 
@@ -430,55 +406,80 @@ export const deleteInternship = async(req,res)=>{
     }catch(error){
 
 
-        res.status(500).json({
+        return res.status(400).json({
+
 
             success:false,
 
+
             message:error.message
 
+
+
         });
+
 
 
     }
 
 
 };
+
+
+
+
+
+
+
+
+
 // ==================================================
-// GET LATEST INTERNSHIPS (HOMEPAGE)
+// LATEST INTERNSHIPS
 // ==================================================
 
-export const getLatestInternships = async (req, res) => {
+export const getLatestInternships = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const internships =
-            await getLatestInternshipsService();
+        await getLatestInternshipsService();
 
 
 
         return res.status(200).json({
 
-            success: true,
 
-            data: internships
+            success:true,
+
+
+            data:internships
+
+
 
         });
 
 
 
-    } catch(error) {
+    }catch(error){
 
 
         return res.status(500).json({
 
+
             success:false,
 
+
             message:error.message
+
+
 
         });
 
 
+
     }
+
 
 };

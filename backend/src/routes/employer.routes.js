@@ -1,52 +1,84 @@
 import { Router } from "express";
 
+
 import {
+
     getProfile,
+
     updateProfile,
+
     getEmployers,
-        getFeaturedCompanies
+
+    getFeaturedCompanies,
+
+    getDashboardStats,
+
+    getApplicationTrendChart,
+
+    getApplicationStatusChart
+
 
 } from "../controllers/employer.controller.js";
-import {
-    getDashboardStats
-} from "../controllers/dashboard.controller.js";
+
+
 
 import {
     authenticate
 } from "../middleware/auth.middleware.js";
+
 
 import {
     authorize
 } from "../middleware/role.middleware.js";
 
 
+
 const router = Router();
+
+
+
 
 // =================================================
 // PUBLIC HOMEPAGE ROUTES
 // =================================================
 
 
-// Get featured companies for homepage
-
 router.get(
+
     "/featured",
+
     getFeaturedCompanies
+
 );
+
+
+
+
+
+
+
 
 // =================================================
 // ADMIN ROUTES
 // =================================================
 
 
-// Get all employers
-
 router.get(
+
     "/",
+
     authenticate,
+
     authorize("ADMIN"),
+
     getEmployers
+
 );
+
+
+
+
+
 
 
 
@@ -56,37 +88,108 @@ router.get(
 // =================================================
 
 
-// Get logged-in employer profile
+// Employer profile
 
 router.get(
+
     "/profile",
+
     authenticate,
+
     authorize("EMPLOYER"),
+
     getProfile
+
 );
 
 
 
 
-// Update logged-in employer profile
+
+
+// Update employer profile
 
 router.put(
+
     "/profile",
+
     authenticate,
+
     authorize("EMPLOYER"),
+
     updateProfile
+
 );
+
+
+
+
+
+
+
+
+
+
+// =================================================
+// EMPLOYER DASHBOARD
+// =================================================
+
+
+// Dashboard KPI Cards
+
 router.get(
 
-"/dashboard",
+    "/dashboard/stats",
 
-authenticate,
+    authenticate,
 
-authorize("EMPLOYER"),
+    authorize("EMPLOYER"),
 
-getDashboardStats
+    getDashboardStats
 
 );
+
+
+
+
+
+
+// Application Trend Line Chart
+
+router.get(
+
+    "/dashboard/application-trend",
+
+    authenticate,
+
+    authorize("EMPLOYER"),
+
+    getApplicationTrendChart
+
+);
+
+
+
+
+
+
+// Application Status Donut Chart
+
+router.get(
+
+    "/dashboard/application-status",
+
+    authenticate,
+
+    authorize("EMPLOYER"),
+
+    getApplicationStatusChart
+
+);
+
+
+
+
 
 
 export default router;

@@ -2,15 +2,14 @@ import api from "./axios";
 
 
 
-
 // =================================
 // CREATE APPLICATION (STUDENT)
 // =================================
 
-export const createApplication = async(data)=>{
+export const createApplication = async (data)=>{
 
-
-    const response = await api.post(
+    const response =
+    await api.post(
 
         "/applications",
 
@@ -21,8 +20,8 @@ export const createApplication = async(data)=>{
 
     return response.data;
 
-
 };
+
 
 
 
@@ -44,8 +43,9 @@ export const getMyApplications = async()=>{
 
     return response.data;
 
-
 };
+
+
 
 
 
@@ -67,8 +67,9 @@ export const getEmployerApplications = async()=>{
 
     return response.data;
 
-
 };
+
+
 
 
 
@@ -99,6 +100,5 @@ export const updateApplicationStatus = async({
 
 
     return response.data;
-
 
 };

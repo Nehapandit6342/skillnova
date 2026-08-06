@@ -1,217 +1,58 @@
-import {
-    LogOut,
-    User
-} from "lucide-react";
+import SettingsHeader from "../components/settings/SettingsHeader";
+import CompanySettingsCard from "../components/settings/CompanySettingsCard";
+import SecurityCard from "../components/settings/SecurityCard";
+import NotificationCard from "../components/settings/NotificationCard";
+import SessionCard from "../components/settings/SessionCard";
+import DangerZoneCard from "../components/settings/DangerZoneCard";
 
-import { useNavigate } from "react-router-dom";
+import useEmployerProfile from "../hooks/useEmployerProfile";
+import { Skeleton } from "@/components/ui/Skeleton";
 
+export default function EmployerSettings() {
+  const { data, isLoading, isError } = useEmployerProfile();
 
-export default function EmployerSettings(){
-
-
-    const navigate = useNavigate();
-
-
-
-    const user = JSON.parse(
-        localStorage.getItem("user")
-    );
-
-
-
-
-    const handleLogout = ()=>{
-
-
-        localStorage.removeItem("token");
-
-        localStorage.removeItem("user");
-
-
-        navigate("/login");
-
-
-    };
-
-
-
-
-
+  if (isLoading) {
     return (
-
-        <div className="space-y-6">
-
-
-            <h1 className="text-2xl font-bold">
-                Employer Settings
-            </h1>
-
-
-
-
-
-
-            {/* ACCOUNT INFORMATION */}
-
-
-            <div
-            className="
-            bg-white
-            border
-            rounded-xl
-            p-6
-            shadow-sm
-            "
-            >
-
-
-                <div className="flex items-center gap-3 mb-5">
-
-
-                    <User
-                    className="text-blue-600"
-                    size={22}
-                    />
-
-
-                    <h2 className="text-lg font-semibold">
-                        Account Information
-                    </h2>
-
-
-                </div>
-
-
-
-
-
-
-                <div className="space-y-3 text-sm">
-
-
-                    <p>
-
-                        <span className="font-medium">
-                            Name:
-                        </span>
-
-                        {" "}
-
-                        {user?.name || "Employer User"}
-
-                    </p>
-
-
-
-
-
-                    <p>
-
-                        <span className="font-medium">
-                            Email:
-                        </span>
-
-                        {" "}
-
-                        {user?.email || "Not available"}
-
-                    </p>
-
-
-
-
-
-                    <p>
-
-                        <span className="font-medium">
-                            Role:
-                        </span>
-
-                        {" "}
-
-                        Employer
-
-                    </p>
-
-
-
-                </div>
-
-
-
-            </div>
-
-
-
-
-
-
-
-
-
-            {/* LOGOUT SECTION */}
-
-
-            <div
-            className="
-            bg-white
-            border
-            rounded-xl
-            p-6
-            shadow-sm
-            "
-            >
-
-
-
-                <h2 className="text-lg font-semibold mb-4">
-
-                    Session
-
-                </h2>
-
-
-
-
-
-                <button
-
-                onClick={handleLogout}
-
-                className="
-                flex
-                items-center
-                gap-2
-                bg-red-600
-                text-white
-                px-5
-                py-2
-                rounded-lg
-                hover:bg-red-700
-                transition
-                "
-
-                >
-
-
-                    <LogOut size={18}/>
-
-
-                    Logout
-
-
-                </button>
-
-
-
-            </div>
-
-
-
-
-
+      <div className="mx-auto max-w-5xl space-y-6">
+        <Skeleton className="h-44 w-full rounded-2xl" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Skeleton className="h-64 w-full rounded-2xl" />
+          <Skeleton className="h-64 w-full rounded-2xl" />
         </div>
-
+        <Skeleton className="h-40 w-full rounded-2xl" />
+        <Skeleton className="h-56 w-full rounded-2xl" />
+      </div>
     );
+  }
 
+  if (isError) {
+    return (
+      <div className="mx-auto max-w-5xl">
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 p-6 text-sm text-destructive">
+          Failed to load your profile. Please refresh the page or try again
+          later.
+        </div>
+      </div>
+    );
+  }
+
+  const profile = data?.data;
+
+  return (
+    <div className="mx-auto max-w-5xl space-y-6 pb-10">
+      <SettingsHeader profile={profile} />
+
+      <CompanySettingsCard profile={profile} />
+
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <SecurityCard />
+        <NotificationCard />
+      </div>
+
+      <SessionCard />
+
+      <DangerZoneCard />
+    </div>
+  );
 }

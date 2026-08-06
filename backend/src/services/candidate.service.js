@@ -8,17 +8,17 @@ import { validate as isUUID } from "uuid";
 // GET EMPLOYER ACCEPTED CANDIDATES
 // =====================================
 
-export const getEmployerCandidatesService = async(userId)=>{
+export const getEmployerCandidatesService = async (userId) => {
 
 
     const employer =
-    await prisma.employerProfile.findUnique({
+        await prisma.employerProfile.findUnique({
 
-        where:{
-            userId
-        }
+            where:{
+                userId
+            }
 
-    });
+        });
 
 
 
@@ -34,73 +34,81 @@ export const getEmployerCandidatesService = async(userId)=>{
 
 
     const candidates =
-    await prisma.application.findMany({
+        await prisma.application.findMany({
 
 
-        where:{
+            where:{
 
 
-            internship:{
+                internship:{
 
 
-                employerId: employer.id
+                    employerId: employer.id
+
+
+                },
+
+
+                status:"ACCEPTED"
 
 
             },
 
 
-            status:"ACCEPTED"
 
-
-        },
+            include:{
 
 
 
-        include:{
+                student:{
 
 
-            student:{
+                    select:{
 
 
-                select:{
+                        id:true,
+
+                        college:true,
+
+                        degree:true,
+
+                        semester:true,
+
+                        cgpa:true,
+
+                        skills:true,
+
+                        github:true,
+
+                        linkedin:true,
+
+                        portfolio:true,
+
+                        bio:true,
+
+                        phone:true,
 
 
-                    id:true,
+                        // Student profile resume
 
-                    college:true,
+                        resumeUrl:true,
 
-                    degree:true,
-
-                    semester:true,
-
-                    cgpa:true,
-
-                    skills:true,
-
-                    github:true,
-
-                    linkedin:true,
-
-                    portfolio:true,
-
-                    bio:true,
-
-                    phone:true,
-
-                    resumeUrl:true,
-
-                    resumeFileName:true,
+                        resumeFileName:true,
 
 
-                    user:{
+
+                        user:{
 
 
-                        select:{
+                            select:{
 
 
-                            name:true,
+                                name:true,
 
-                            email:true
+                                email:true
+
+
+                            }
 
 
                         }
@@ -109,46 +117,44 @@ export const getEmployerCandidatesService = async(userId)=>{
                     }
 
 
+                },
+
+
+
+                internship:{
+
+
+                    select:{
+
+
+                        id:true,
+
+                        title:true
+
+
+                    }
+
+
                 }
+
 
 
             },
 
 
 
-            internship:{
+            orderBy:{
 
 
-                select:{
-
-
-                    id:true,
-
-                    title:true
-
-
-                }
+                createdAt:"desc"
 
 
             }
 
 
 
-        },
+        });
 
-
-
-        orderBy:{
-
-
-            createdAt:"desc"
-
-
-        }
-
-
-
-    });
 
 
 
@@ -169,7 +175,7 @@ export const getEmployerCandidatesService = async(userId)=>{
 // GET SINGLE CANDIDATE DETAILS
 // =====================================
 
-export const getCandidateDetailsService = async(
+export const getCandidateDetailsService = async (
     userId,
     applicationId
 )=>{
@@ -193,13 +199,13 @@ export const getCandidateDetailsService = async(
 
 
     const employer =
-    await prisma.employerProfile.findUnique({
+        await prisma.employerProfile.findUnique({
 
-        where:{
-            userId
-        }
+            where:{
+                userId
+            }
 
-    });
+        });
 
 
 
@@ -215,84 +221,27 @@ export const getCandidateDetailsService = async(
 
 
 
+
+
+
     const application =
-    await prisma.application.findFirst({
+        await prisma.application.findFirst({
 
 
-        where:{
+            where:{
 
 
-            id:applicationId,
+                id:applicationId,
 
 
-            status:"ACCEPTED",
-
-
-
-            internship:{
-
-
-                employerId:employer.id
-
-
-            }
-
-
-        },
+                status:"ACCEPTED",
 
 
 
-        include:{
+                internship:{
 
 
-            student:{
-
-
-                select:{
-
-
-                    id:true,
-
-                    college:true,
-
-                    degree:true,
-
-                    semester:true,
-
-                    cgpa:true,
-
-                    skills:true,
-
-                    github:true,
-
-                    linkedin:true,
-
-                    portfolio:true,
-
-                    bio:true,
-
-                    phone:true,
-
-                    resumeUrl:true,
-
-                    resumeFileName:true,
-
-
-                    user:{
-
-
-                        select:{
-
-
-                            name:true,
-
-                            email:true
-
-
-                        }
-
-
-                    }
+                    employerId:employer.id
 
 
                 }
@@ -302,33 +251,96 @@ export const getCandidateDetailsService = async(
 
 
 
+            include:{
 
 
-            internship:{
+
+                student:{
 
 
-                select:{
+                    select:{
 
 
-                    id:true,
+                        id:true,
 
-                    title:true,
+                        college:true,
 
-                    description:true
+                        degree:true,
+
+                        semester:true,
+
+                        cgpa:true,
+
+                        skills:true,
+
+                        github:true,
+
+                        linkedin:true,
+
+                        portfolio:true,
+
+                        bio:true,
+
+                        phone:true,
+
+
+                        resumeUrl:true,
+
+                        resumeFileName:true,
+
+
+
+                        user:{
+
+
+                            select:{
+
+
+                                name:true,
+
+                                email:true
+
+
+                            }
+
+
+                        }
+
+
+                    }
+
+
+                },
+
+
+
+
+
+                internship:{
+
+
+                    select:{
+
+
+                        id:true,
+
+                        title:true,
+
+                        description:true
+
+
+                    }
 
 
                 }
+
 
 
             }
 
 
 
-        }
-
-
-
-    });
+        });
 
 
 
@@ -345,6 +357,7 @@ export const getCandidateDetailsService = async(
 
 
     }
+
 
 
 

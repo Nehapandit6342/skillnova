@@ -3,36 +3,26 @@ import express from "express";
 import upload from "../middleware/upload.middleware.js";
 
 import {
-  createApplication,
-  getStudentApplications,
-  getEmployerApplications,
-  updateApplicationStatus,
-  getAllApplications,
+    createApplication,
+    getStudentApplications,
+    getEmployerApplications,
+    updateApplicationStatus,
+    getAllApplications,
 } from "../controllers/application.controller.js";
+
 
 import { authenticate } from "../middleware/auth.middleware.js";
 
-import {
-
-    authorize
-
-} from "../middleware/role.middleware.js";
-
-
-import upload from "../middleware/upload.middleware.js";
-
+import { authorize } from "../middleware/role.middleware.js";
 
 
 const router = express.Router();
 
 
 
-
-
 // ==================================================
 // STUDENT APPLICATION
 // ==================================================
-
 
 
 // Apply Internship
@@ -54,53 +44,57 @@ router.post(
 
 
 
-
-
 // Student Applications
 
 router.get(
-  "/my",
 
-  authenticate,
+    "/my",
 
-  authorize("STUDENT"),
+    authenticate,
 
-  getStudentApplications,
+    authorize("STUDENT"),
+
+    getStudentApplications
+
 );
+
+
+
 
 // ==================================================
 // EMPLOYER APPLICATION MANAGEMENT
 // ==================================================
 
 
-
 // View applicants
 
 router.get(
-  "/employer",
 
-  authenticate,
+    "/employer",
 
-  authorize("EMPLOYER"),
+    authenticate,
 
-  getEmployerApplications,
+    authorize("EMPLOYER"),
+
+    getEmployerApplications
+
 );
+
+
 
 // Update application status
 
 router.patch(
-  "/:id/status",
 
-  authenticate,
+    "/:id/status",
 
-  authorize("EMPLOYER"),
+    authenticate,
 
-  updateApplicationStatus,
+    authorize("EMPLOYER"),
+
+    updateApplicationStatus
+
 );
-
-
-
-
 
 
 
@@ -111,16 +105,16 @@ router.patch(
 
 
 router.get(
-  "/",
 
-  authenticate,
+    "/",
 
-  authorize("ADMIN"),
+    authenticate,
 
-  getAllApplications,
+    authorize("ADMIN"),
+
+    getAllApplications
+
 );
-
-
 
 
 

@@ -1,60 +1,80 @@
 import {
+
     getEmployerProfile,
+
     updateEmployerProfile,
+
     getAllEmployers,
-    getFeaturedEmployers
+
+    getFeaturedEmployers,
+
+    getEmployerDashboardStats,
+
+    getApplicationTrend,
+
+    getApplicationStatus
+
 
 } from "../services/employer.service.js";
 
-import {
-    getEmployerDashboardStats
-} from "../services/employer.service.js";
+
+
+
+
+
 
 // =================================================
 // GET LOGGED-IN EMPLOYER PROFILE
 // =================================================
 
-export const getProfile = async (req, res) => {
-
-    try {
+export const getProfile = async(req,res)=>{
 
 
-        const profile = await getEmployerProfile(
+    try{
+
+
+        const profile =
+        await getEmployerProfile(
             req.user.id
         );
 
 
+
         return res.status(200).json({
 
-            success: true,
+            success:true,
 
-            data: profile
+            data:profile
 
         });
 
 
-    } catch (error) {
 
-
-        console.log(error);
+    }
+    catch(error){
 
 
         return res.status(
             error.statusCode || 500
         ).json({
 
-            success: false,
+            success:false,
 
             message:
-                error.message ||
-                "Failed to fetch employer profile"
+            error.message ||
+            "Failed to fetch employer profile"
 
         });
 
 
     }
 
+
 };
+
+
+
+
 
 
 
@@ -64,58 +84,60 @@ export const getProfile = async (req, res) => {
 // UPDATE EMPLOYER PROFILE
 // =================================================
 
-export const updateProfile = async (req, res) => {
+export const updateProfile = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const updatedProfile =
-            await updateEmployerProfile(
+        await updateEmployerProfile(
 
-                req.user.id,
+            req.user.id,
 
-                req.body
+            req.body
 
-            );
+        );
 
 
 
         return res.status(200).json({
 
-            success: true,
+            success:true,
 
             message:
-                "Profile updated successfully",
+            "Profile updated successfully",
 
-            data: updatedProfile
+            data:updatedProfile
 
         });
 
 
 
-    } catch (error) {
-
-
-        console.log(error);
-
+    }
+    catch(error){
 
 
         return res.status(
             error.statusCode || 500
         ).json({
 
-            success: false,
+            success:false,
 
             message:
-                error.message ||
-                "Failed to update profile"
+            error.message ||
+            "Failed to update profile"
 
         });
 
 
     }
 
+
 };
+
+
+
 
 
 
@@ -126,31 +148,29 @@ export const updateProfile = async (req, res) => {
 // GET ALL EMPLOYERS (ADMIN)
 // =================================================
 
-export const getEmployers = async (req, res) => {
+export const getEmployers = async(req,res)=>{
 
-    try {
+
+    try{
 
 
         const employers =
-            await getAllEmployers();
+        await getAllEmployers();
 
 
 
         return res.status(200).json({
 
-            success: true,
+            success:true,
 
-            data: employers
+            data:employers
 
         });
 
 
 
-    } catch (error) {
-
-
-        console.log(error);
-
+    }
+    catch(error){
 
 
         return res.status(
@@ -160,27 +180,46 @@ export const getEmployers = async (req, res) => {
             success:false,
 
             message:
-                error.message ||
-                "Failed to fetch employers"
+            error.message ||
+            "Failed to fetch employers"
 
         });
 
 
+
     }
 
+
 };
+
+
+
+
+
+
+
+
+
+// =================================================
+// EMPLOYER DASHBOARD STATS
+// =================================================
+
 export const getDashboardStats = async(req,res)=>{
+
 
     try{
 
 
         const stats =
         await getEmployerDashboardStats(
+
             req.user.id
+
         );
 
 
-        res.json({
+
+        return res.status(200).json({
 
             success:true,
 
@@ -189,12 +228,72 @@ export const getDashboardStats = async(req,res)=>{
         });
 
 
+
     }
     catch(error){
 
 
-        res.status(error.statusCode || 500)
-        .json({
+        return res.status(
+            error.statusCode || 500
+        ).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+
+
+    }
+
+
+};
+
+
+
+
+
+
+
+
+
+// =================================================
+// APPLICATION TREND CHART
+// =================================================
+
+export const getApplicationTrendChart = async(req,res)=>{
+
+
+    try{
+
+
+        const data =
+        await getApplicationTrend(
+
+            req.user.id
+
+        );
+
+
+
+        return res.status(200).json({
+
+            success:true,
+
+            data
+
+        });
+
+
+
+    }
+    catch(error){
+
+
+        return res.status(
+            error.statusCode || 500
+        ).json({
 
             success:false,
 
@@ -205,43 +304,118 @@ export const getDashboardStats = async(req,res)=>{
 
     }
 
+
 };
+
+
+
+
+
+
+
+
+
 // =================================================
-// GET FEATURED EMPLOYERS (PUBLIC HOMEPAGE)
+// APPLICATION STATUS CHART
 // =================================================
 
-export const getFeaturedCompanies = async (req, res) => {
+export const getApplicationStatusChart = async(req,res)=>{
 
-    try {
 
-        const companies =
-            await getFeaturedEmployers();
+    try{
+
+
+        const data =
+        await getApplicationStatus(
+
+            req.user.id
+
+        );
+
 
 
         return res.status(200).json({
 
-            success: true,
+            success:true,
 
-            data: companies
+            data
 
         });
 
 
-    } catch (error) {
 
-        console.log(error);
+    }
+    catch(error){
+
+
+        return res.status(
+            error.statusCode || 500
+        ).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+
+    }
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+// =================================================
+// GET FEATURED EMPLOYERS (PUBLIC)
+// =================================================
+
+export const getFeaturedCompanies = async(req,res)=>{
+
+
+    try{
+
+
+        const companies =
+        await getFeaturedEmployers();
+
+
+
+        return res.status(200).json({
+
+            success:true,
+
+            data:companies
+
+        });
+
+
+
+    }
+    catch(error){
 
 
         return res.status(500).json({
 
-            success: false,
+            success:false,
 
             message:
-                error.message ||
-                "Failed to fetch featured companies"
+            error.message ||
+            "Failed to fetch featured companies"
 
         });
 
+
+
     }
+
 
 };

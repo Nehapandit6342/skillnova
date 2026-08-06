@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import useCandidates from "../hooks/useCandidates";
 
 
-
-export default function Candidates(){
+export default function Candidates() {
 
 
     const navigate = useNavigate();
-
 
 
     const {
@@ -18,10 +16,7 @@ export default function Candidates(){
 
 
 
-
-    const candidates =
-    data?.data || [];
-
+    const candidates = data?.data || [];
 
 
 
@@ -43,15 +38,9 @@ export default function Candidates(){
 
 
 
-
-
-
-
     return (
 
-
         <div className="space-y-6">
-
 
 
             <h1 className="text-2xl font-bold">
@@ -64,16 +53,9 @@ export default function Candidates(){
 
 
 
-
-
             {
-                candidates.length === 0
+                candidates.length === 0 ? (
 
-
-                ?
-
-
-                (
 
                     <div
 
@@ -92,6 +74,7 @@ export default function Candidates(){
                     </div>
 
 
+
                 )
 
 
@@ -105,19 +88,14 @@ export default function Candidates(){
                 <div className="grid gap-5">
 
 
-
-
-
                 {
-                    candidates.map((application)=>(
 
-
+                candidates.map((application)=>(
 
 
                     <div
 
                     key={application.id}
-
 
                     className="
                     bg-white
@@ -127,62 +105,48 @@ export default function Candidates(){
                     shadow-sm
                     "
 
-
                     >
 
 
 
 
-
-
-
-                    {/* Header */}
-
+                    {/* HEADER */}
 
                     <div
+
                     className="
                     flex
                     justify-between
                     items-start
                     "
-                    >
 
+                    >
 
 
                         <div>
 
 
-                            <h2
-                            className="
-                            text-xl
-                            font-bold
-                            "
-                            >
+                            <h2 className="text-xl font-bold">
 
-                                {
-                                    application.student?.user?.name
-                                    ||
-                                    "Unknown Candidate"
-                                }
-
+                            {
+                                application.student?.user?.name
+                                ||
+                                "Unknown Candidate"
+                            }
 
                             </h2>
 
 
 
-
                             <p className="text-gray-600">
 
-
-                                {
-                                    application.student?.user?.email
-                                    ||
-                                    "No email"
-                                }
-
+                            {
+                                application.student?.user?.email
+                                ||
+                                "No email"
+                            }
 
                             </p>
-
 
 
                         </div>
@@ -207,7 +171,6 @@ export default function Candidates(){
 
                             ACCEPTED
 
-
                         </span>
 
 
@@ -222,7 +185,7 @@ export default function Candidates(){
 
 
 
-                    {/* Details */}
+                    {/* STUDENT DETAILS */}
 
 
                     <div
@@ -237,170 +200,133 @@ export default function Candidates(){
 
 
 
+                    <p>
 
-                        <p>
+                        <b>Internship:</b>{" "}
 
-                            <b>
-                            Internship:
-                            </b>
-
-                            {" "}
-
-                            {
-                                application.internship?.title
-                                ||
-                                "N/A"
-                            }
-
-                        </p>
-
-
-
-
-
-
-                        <p>
-
-                            <b>
-                            College:
-                            </b>
-
-                            {" "}
-
-                            {
-                                application.student?.college
-                                ||
-                                "N/A"
-                            }
-
-
-                        </p>
-
-
-
-
-
-
-
-                        <p>
-
-                            <b>
-                            Degree:
-                            </b>
-
-                            {" "}
-
-                            {
-                                application.student?.degree
-                                ||
-                                "N/A"
-                            }
-
-
-                        </p>
-
-
-
-
-
-
-
-                        <p>
-
-                            <b>
-                            Semester:
-                            </b>
-
-                            {" "}
-
-                            {
-                                application.student?.semester
-                                ||
-                                "N/A"
-                            }
-
-
-                        </p>
-
-
-
-
-
-
-
-                        <p>
-
-                            <b>
-                            CGPA:
-                            </b>
-
-                            {" "}
-
-                            {
-                                application.student?.cgpa
-                                ||
-                                "N/A"
-                            }
-
-
-                        </p>
-
-
-
-
-
-
-
-                        <p>
-
-                            <b>
-                            Skills:
-                            </b>
-
-                            {" "}
-
-                            {
-
-                            application.student?.skills?.length
-
-                            ?
-
-                            application.student.skills.join(", ")
-
-                            :
-
+                        {
+                            application.internship?.title
+                            ||
                             "N/A"
+                        }
 
-                            }
-
-
-                        </p>
+                    </p>
 
 
 
 
+                    <p>
+
+                        <b>College:</b>{" "}
+
+                        {
+                            application.student?.college
+                            ||
+                            "N/A"
+                        }
+
+                    </p>
 
 
 
-                        <p>
-
-                            <b>
-                            Phone:
-                            </b>
-
-                            {" "}
-
-                            {
-                                application.phone
-                                ||
-                                application.student?.phone
-                                ||
-                                "N/A"
-                            }
 
 
-                        </p>
+                    <p>
 
+                        <b>Degree:</b>{" "}
+
+                        {
+                            application.student?.degree
+                            ||
+                            "N/A"
+                        }
+
+                    </p>
+
+
+
+
+
+                    <p>
+
+                        <b>Semester:</b>{" "}
+
+                        {
+                            application.student?.semester
+                            ||
+                            "N/A"
+                        }
+
+                    </p>
+
+
+
+
+
+                    <p>
+
+                        <b>CGPA:</b>{" "}
+
+                        {
+                            application.student?.cgpa
+                            ||
+                            "N/A"
+                        }
+
+                    </p>
+
+
+
+
+
+
+                    <p>
+
+                        <b>Skills:</b>{" "}
+
+
+                        {
+
+                        application.student?.skills?.length
+
+                        ?
+
+                        application.student.skills.join(", ")
+
+                        :
+
+                        "N/A"
+
+                        }
+
+
+                    </p>
+
+
+
+
+
+
+                    <p>
+
+                        <b>Phone:</b>{" "}
+
+
+                        {
+
+                        application.phone
+                        ||
+
+                        application.student?.phone
+
+                        ||
+
+                        "N/A"
+
+                        }
+
+
+                    </p>
 
 
 
@@ -415,7 +341,7 @@ export default function Candidates(){
 
 
 
-                    {/* Actions */}
+                    {/* ACTIONS */}
 
 
                     <div
@@ -432,53 +358,58 @@ export default function Candidates(){
 
 
 
-                        <button
+                    {/* PROFILE */}
+
+                    <button
 
 
-                        onClick={()=>{
+                    onClick={()=>{
 
+                        navigate(
+                            `/employer/candidates/${application.id}`
+                        );
 
-                            navigate(
-                                `/employer/candidates/${application.id}`
-                            )
-
-
-                        }}
-
-
-                        className="
-                        bg-blue-600
-                        hover:bg-blue-700
-                        text-white
-                        px-5
-                        py-2
-                        rounded-lg
-                        "
-
-                        >
-
-                            View Profile
-
-
-                        </button>
+                    }}
 
 
 
+                    className="
+                    bg-blue-600
+                    hover:bg-blue-700
+                    text-white
+                    px-5
+                    py-2
+                    rounded-lg
+                    "
 
+                    >
+
+                        View Profile
+
+
+                    </button>
 
 
 
 
-                        {
 
-                        application.student?.resumeUrl &&
+
+
+
+
+                    {/* CLOUDINARY RESUME */}
+
+
+
+                    {
+                        application.resume &&
 
                         (
 
                         <a
 
 
-                        href={application.student.resumeUrl}
+                        href={application.resume}
 
 
                         target="_blank"
@@ -487,8 +418,10 @@ export default function Candidates(){
                         rel="noopener noreferrer"
 
 
+
                         className="
                         bg-gray-800
+                        hover:bg-gray-900
                         text-white
                         px-5
                         py-2
@@ -496,6 +429,7 @@ export default function Candidates(){
                         "
 
                         >
+
 
                             View Resume
 
@@ -505,14 +439,7 @@ export default function Candidates(){
 
                         )
 
-                        }
-
-
-
-
-
-                    </div>
-
+                    }
 
 
 
@@ -524,12 +451,17 @@ export default function Candidates(){
 
 
 
-                    ))
+
+
+
+                    </div>
+
+
+
+                ))
+
 
                 }
-
-
-
 
 
 
@@ -539,8 +471,6 @@ export default function Candidates(){
                 )
 
             }
-
-
 
 
 

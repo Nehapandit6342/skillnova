@@ -6,6 +6,7 @@ import {
   getAllApplicationsService,
 } from "../services/application.service.js";
 
+import { uploadResumeToCloudinary } from "../services/upload.service.js";
 
 
 
@@ -15,10 +16,38 @@ import {
 // =================================
 
 export const createApplication = async (req, res) => {
-  try {
-    console.log("BODY:", req.body);
 
-    console.log("FILE:", req.file);
+    try {
+
+
+        console.log("BODY:", req.body);
+
+        console.log("FILE:", req.file);
+
+
+
+        let resumeUrl = null;
+
+
+
+        // ==========================
+        // UPLOAD RESUME CLOUDINARY
+        // ==========================
+
+        if(req.file){
+
+            const uploadedResume =
+                await uploadResumeToCloudinary(req.file);
+
+
+            resumeUrl = uploadedResume.url;
+
+        }
+
+
+
+
+
 
 
         const applicationData = {
@@ -27,18 +56,7 @@ export const createApplication = async (req, res) => {
             ...req.body,
 
 
-
-            resume:
-
-            req.file
-
-            ?
-
-            req.file.originalname
-
-            :
-
-            null
+            resume: resumeUrl
 
 
 
@@ -49,8 +67,12 @@ export const createApplication = async (req, res) => {
 
 
 
-    const application = await createApplicationService(
-      req.user.id,
+
+        const application =
+
+        await createApplicationService(
+
+            req.user.id,
 
             applicationData
 
@@ -62,15 +84,13 @@ export const createApplication = async (req, res) => {
 
 
 
+
         return res.status(201).json({
 
             success:true,
 
-
             message:
-
             "Application submitted successfully",
-
 
             data:application
 
@@ -85,25 +105,21 @@ export const createApplication = async (req, res) => {
     catch(error){
 
 
+        console.error(error);
+
 
         return res.status(400).json({
 
             success:false,
 
-
             message:error.message
-
 
         });
 
 
-
     }
 
-
 };
-
-
 
 
 
@@ -136,18 +152,13 @@ export const getStudentApplications = async(
 
 
 
-
-
         return res.status(200).json({
 
             success:true,
 
-
             data:applications
 
-
         });
-
 
 
 
@@ -159,9 +170,7 @@ export const getStudentApplications = async(
 
             success:false,
 
-
             message:error.message
-
 
         });
 
@@ -170,8 +179,6 @@ export const getStudentApplications = async(
 
 
 };
-
-
 
 
 
@@ -204,18 +211,13 @@ export const getEmployerApplications = async(
 
 
 
-
-
         return res.status(200).json({
 
             success:true,
 
-
             data:applications
 
-
         });
-
 
 
 
@@ -227,9 +229,7 @@ export const getEmployerApplications = async(
 
             success:false,
 
-
             message:error.message
-
 
         });
 
@@ -247,7 +247,9 @@ export const getEmployerApplications = async(
 
 
 
-
+// =================================
+// UPDATE APPLICATION STATUS
+// =================================
 
 // =================================
 // UPDATE APPLICATION STATUS
@@ -269,7 +271,6 @@ export const updateApplicationStatus = async(
 
 
 
-
         const allowedStatus = [
 
             "PENDING",
@@ -286,7 +287,6 @@ export const updateApplicationStatus = async(
 
 
 
-
         if(!allowedStatus.includes(status)){
 
 
@@ -294,11 +294,8 @@ export const updateApplicationStatus = async(
 
                 success:false,
 
-
                 message:
-
                 "Invalid application status"
-
 
             });
 
@@ -309,11 +306,11 @@ export const updateApplicationStatus = async(
 
 
 
-
-
         const application =
 
         await updateApplicationStatusService(
+
+            req.user.id,
 
             req.params.id,
 
@@ -326,16 +323,12 @@ export const updateApplicationStatus = async(
 
 
 
-
         return res.status(200).json({
 
             success:true,
 
-
             message:
-
             "Application status updated successfully",
-
 
             data:application
 
@@ -345,22 +338,17 @@ export const updateApplicationStatus = async(
 
 
 
-
     }
     catch(error){
-
 
 
         return res.status(500).json({
 
             success:false,
 
-
             message:error.message
 
-
         });
-
 
 
     }
@@ -399,19 +387,13 @@ export const getAllApplications = async(
 
 
 
-
-
         return res.status(200).json({
 
             success:true,
 
-
             data:applications
 
-
         });
-
-
 
 
 
@@ -419,17 +401,13 @@ export const getAllApplications = async(
     catch(error){
 
 
-
         return res.status(500).json({
 
             success:false,
 
-
             message:error.message
 
-
         });
-
 
 
     }
