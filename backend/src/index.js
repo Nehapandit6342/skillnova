@@ -20,8 +20,9 @@ import careerRoutes from "./routes/career.routes.js";
 import studentDashboardRoutes from "./routes/studentDashboard.routes.js";
 import publicRoutes from "./routes/public.routes.js";
 import testimonialRoutes from "./routes/testimonial.routes.js";
+import employerSettingsRoutes from "./routes/employerSettings.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 dotenv.config();
-
 
 const app = express();
 
@@ -31,22 +32,13 @@ app.use(cors());
 
 app.use(express.json());
 
-
-
 // ================= STATIC FILES =================
 
 // Resume, images, and uploaded files
 
-app.use(
-    "/uploads",
-    express.static("uploads")
-);
-
-
-
+app.use("/uploads", express.static("uploads"));
 
 // ================= ROUTES =================
-
 
 app.use("/api/test", testRoutes);
 
@@ -76,64 +68,33 @@ app.use("/api/ai", aiRoutes);
 
 app.use("/api/public", publicRoutes);
 
-
-app.use(
-"/api/employer/settings",
-employerSettingsRoutes
-);
-app.use(
-    "/api/notifications",
-    notificationRoutes
-);
-
+app.use("/api/employer/settings", employerSettingsRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // ================= HEALTH CHECK =================
 
-
 app.get("/", (req, res) => {
-
-    res.json({
-
-        message: "SkillNova API is running 🚀",
-
-    });
-
+  res.json({
+    message: "SkillNova API is running 🚀",
+  });
 });
-
-
-
-
 
 // ================= SERVER START =================
 
+async function startServer() {
+  try {
+    await prisma.$connect();
 
-async function startServer(){
+    console.log("Database connected successfully");
 
-    try{
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup error:", error);
 
-        await prisma.$connect();
-
-
-        console.log("Database connected successfully");
-
-
-        app.listen(PORT,()=>{
-
-            console.log(`Server running on port ${PORT}`);
-
-        });
-
-
-    }catch(error){
-
-        console.error("Server startup error:",error);
-
-        process.exit(1);
-
-    }
-
+    process.exit(1);
+  }
 }
-
-
 
 startServer();
