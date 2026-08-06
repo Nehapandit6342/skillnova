@@ -8,7 +8,7 @@ import {
     updateProfile,
 
     getEmployers,
-<<<<<<< HEAD
+
 
     getFeaturedCompanies,
 
@@ -16,12 +16,12 @@ import {
 
     getApplicationTrendChart,
 
-    getApplicationStatusChart
+    getApplicationStatusChart,
 
-=======
-        getFeaturedCompanies,
+
+        
       changeEmployerStatus
->>>>>>> 0bde86d (Add admin settings and profile management)
+
 
 } from "../controllers/employer.controller.js";
 

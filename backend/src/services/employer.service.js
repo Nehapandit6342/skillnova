@@ -222,103 +222,50 @@ async(userId,data)=>{
 
 
 
-<<<<<<< HEAD
 
 // ================= GET ALL EMPLOYERS ADMIN =================
-=======
-  return await prisma.employerProfile.findMany({
 
-    select: {
-
-      id: true,
-
-      companyName: true,
-
-      website: true,
-
-      industry: true,
-
-      description: true,
-
-      createdAt: true,
->>>>>>> 0bde86d (Add admin settings and profile management)
-
-      status: true,
-
-export const getAllEmployers =
-async()=>{
-
+export const getAllEmployers = async () => {
 
     return await prisma.employerProfile.findMany({
 
+        select: {
+            id: true,
+            companyName: true,
+            website: true,
+            industry: true,
+            description: true,
+            createdAt: true,
 
-        select:{
-
-
-            id:true,
-
-            companyName:true,
-
-            website:true,
-
-            industry:true,
-
-            description:true,
-
-            createdAt:true,
-
-
-            user:{
-
-
-                select:{
-
-
-                    id:true,
-
-                    name:true,
-
-                    email:true,
-
-                    isActive:true
-
-
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    isActive: true
                 }
-
-
             }
-
-
         },
 
-
-        orderBy:{
-
-<<<<<<< HEAD
-
-            createdAt:"desc"
-=======
-    orderBy: {
->>>>>>> 0bde86d (Add admin settings and profile management)
-
-
+        orderBy: {
+            createdAt: "desc"
         }
-
 
     });
 
 };
 
 
-<<<<<<< HEAD
 
 
 
 
 
 
-=======
->>>>>>> 0bde86d (Add admin settings and profile management)
+
+
+
+
 // ================= GET EMPLOYER BY ID =================
 
 
@@ -556,8 +503,8 @@ async(userId)=>{
 
     };
 
-
 };
+
 
 
 

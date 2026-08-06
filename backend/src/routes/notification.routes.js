@@ -1,5 +1,5 @@
 import express from "express";
-<<<<<<< HEAD
+
 
 
 import {
@@ -14,21 +14,20 @@ import {
 from "../middleware/auth.middleware.js";
 
 
-=======
+
 import prisma from "../config/prisma.js";
->>>>>>> 0bde86d (Add admin settings and profile management)
 
 const router = express.Router();
 
 
 
-<<<<<<< HEAD
+
 router.get(
     "/",
     authenticate,
     getNotificationsController
 );
-=======
+
 // ===============================
 // GET ALL NOTIFICATIONS
 // ===============================
@@ -194,8 +193,6 @@ router.patch("/read-all", async (req, res) => {
 
 });
 
-
->>>>>>> 0bde86d (Add admin settings and profile management)
 
 
 

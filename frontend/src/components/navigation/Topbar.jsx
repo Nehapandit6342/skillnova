@@ -283,6 +283,7 @@ export default function Topbar({
             <div className="hidden text-left lg:block">
               <p className="text-sm font-semibold">{user.name}</p>
 
+
               <p className="text-xs text-muted-foreground">{user.role}</p>
             </div>
           </button>
@@ -291,3 +292,13 @@ export default function Topbar({
     </header>
   );
 }
+
+
+
+
+
+
+
+
+
+

@@ -47,7 +47,7 @@ import Employers from "@/features/admin/pages/Employers";
 import EmployerDetails from "@/features/admin/pages/EmployerDetails";
 import EditEmployer from "@/features/admin/pages/EditEmployer";
 import Settings from "@/features/admin/pages/Settings";
-
+import FAQs from "@/features/admin/pages/FAQs";
 /* ---------- Employer ---------- */
 import EmployerDashboard from "@/features/employer/pages/EmployerDashboard";
 import CompanyProfile from "@/features/employer/pages/CompanyProfile";
@@ -120,12 +120,20 @@ function AppRoutes() {
           <Route path="dashboard" element={<Dashboard />} />
 
           <Route path="students" element={<Students />} />
+               <Route path="students/:id" element={<StudentDetails />} />
+              <Route path="students/edit/:id" element={<EditStudent />} />
+               <Route path="applications" element={<AdminApplications />} />
+               <Route path="internships" element={<AdminInternships />} />
 
           <Route path="internships/add" element={<AddInternship />} />
 
           <Route path="internships/:id" element={<AdminInternshipDetails />} />
+             <Route path="internships/edit/:id" element={<AdminEditInternship />} />
 
           <Route path="employers" element={<Employers />} />
+              <Route path="employers/:id" element={<EmployerDetails />} />
+              <Route path="employers/edit/:id" element={<EditEmployer />} />
+               <Route path="faqs" element={<FAQs />} />
 
           <Route path="settings" element={<Settings />} />
         </Route>

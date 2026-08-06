@@ -419,3 +419,50 @@ export const getFeaturedCompanies = async(req,res)=>{
 
 
 };
+// ================= CHANGE EMPLOYER STATUS =================
+
+export const changeEmployerStatus = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+        const { status } = req.body;
+
+
+        const employer = await prisma.employerProfile.update({
+
+            where: {
+                id
+            },
+
+            data: {
+                status
+            }
+
+        });
+
+
+        res.status(200).json({
+
+            success: true,
+            message: "Employer status updated successfully",
+            data: employer
+
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+
+        res.status(500).json({
+
+            success: false,
+            message: error.message
+
+        });
+
+    }
+
+};
