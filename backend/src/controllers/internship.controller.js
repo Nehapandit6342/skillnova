@@ -146,21 +146,31 @@ export const createEmployerInternship = async(req,res)=>{
 
 
 
+
+
+
 // ==================================================
 // GET MY INTERNSHIPS
 // ==================================================
 
-export const getMyInternships = async(req,res)=>{
+// ==================================================
+// GET MY INTERNSHIPS
+// ==================================================
+
+export const getMyInternships = async (req, res) => {
+
+    try {
 
 
-    try{
+        console.log(
+            "Employer User ID:",
+            req.user.id
+        );
 
 
         const internships =
         await getEmployerInternshipsService(
-
             req.user.id
-
         );
 
 
@@ -168,20 +178,30 @@ export const getMyInternships = async(req,res)=>{
         res.status(200).json({
 
             success:true,
+            success:true,
 
+            data:internships
             data:internships
 
         });
 
 
 
-    }catch(error){
+    } catch(error){
 
 
-        res.status(500).json({
+        console.error(
+            "GET MY INTERNSHIPS ERROR:",
+            error
+        );
+
+
+        return res.status(500).json({
 
             success:false,
+            success:false,
 
+            message:error.message
             message:error.message
 
         });

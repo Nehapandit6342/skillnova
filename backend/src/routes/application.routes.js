@@ -12,25 +12,51 @@ import {
 
 import { authenticate } from "../middleware/auth.middleware.js";
 
-import { authorize } from "../middleware/role.middleware.js";
+import {
+
+    authorize
+
+} from "../middleware/role.middleware.js";
+
+
+import upload from "../middleware/upload.middleware.js";
+
+
 
 const router = express.Router();
+
+
+
+
 
 // ==================================================
 // STUDENT APPLICATION
 // ==================================================
 
-// Apply for Internship
+
+
+// Apply Internship
 
 router.post(
-  "/",
-  authenticate,
-  authorize("STUDENT"),
-  upload.single("resume"),
-  createApplication,
+
+    "/",
+
+    authenticate,
+
+    authorize("STUDENT"),
+
+    upload.single("resume"),
+
+    createApplication
+
 );
 
-// Get My Applications
+
+
+
+
+
+// Student Applications
 
 router.get(
   "/my",
@@ -46,7 +72,9 @@ router.get(
 // EMPLOYER APPLICATION MANAGEMENT
 // ==================================================
 
-// View applicants for employer internships
+
+
+// View applicants
 
 router.get(
   "/employer",
@@ -59,7 +87,6 @@ router.get(
 );
 
 // Update application status
-// ACCEPTED / REJECTED / REVIEWING
 
 router.patch(
   "/:id/status",
@@ -71,11 +98,17 @@ router.patch(
   updateApplicationStatus,
 );
 
+
+
+
+
+
+
+
 // ==================================================
 // ADMIN
 // ==================================================
 
-// Get all applications
 
 router.get(
   "/",
@@ -86,5 +119,9 @@ router.get(
 
   getAllApplications,
 );
+
+
+
+
 
 export default router;

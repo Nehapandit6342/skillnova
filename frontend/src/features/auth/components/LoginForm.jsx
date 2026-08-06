@@ -1,5 +1,6 @@
-import {  Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,9 +12,10 @@ import useLogin from "../hooks/useLogin";
 export default function LoginForm() {
 
 
-
-
   const loginMutation = useLogin();
+
+
+  const [showPassword, setShowPassword] = useState(false);
 
 
 
@@ -23,6 +25,7 @@ export default function LoginForm() {
     password: "",
 
   });
+
 
 
 
@@ -43,13 +46,20 @@ export default function LoginForm() {
 
 
 
+
   const handleSubmit = (e) => {
-  e.preventDefault();
 
-  console.log("LOGIN DATA:", formData);
+    e.preventDefault();
 
-  loginMutation.mutate(formData);
-};
+    console.log("LOGIN DATA:", formData);
+
+    loginMutation.mutate(formData);
+
+  };
+
+
+
+
 
   return (
 
@@ -102,6 +112,7 @@ export default function LoginForm() {
 
 
 
+
       {/* Password */}
 
       <div className="space-y-2">
@@ -135,29 +146,68 @@ export default function LoginForm() {
 
 
 
-        <Input
+        <div className="relative">
 
-          id="password"
 
-          name="password"
+          <Input
 
-          type="password"
+            id="password"
 
-          value={formData.password}
+            name="password"
 
-          onChange={handleChange}
+            type={showPassword ? "text" : "password"}
 
-          placeholder="••••••••"
+            value={formData.password}
 
-          autoComplete="current-password"
+            onChange={handleChange}
 
-          required
+            placeholder="••••••••"
 
-        />
+            autoComplete="current-password"
+
+            className="pr-10"
+
+            required
+
+          />
+
+
+
+          <button
+
+            type="button"
+
+            onClick={() => setShowPassword(!showPassword)}
+
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+
+          >
+
+
+            {
+
+              showPassword
+
+              ?
+
+              <EyeOff size={18} />
+
+              :
+
+              <Eye size={18} />
+
+            }
+
+
+          </button>
+
+
+        </div>
 
 
 
       </div>
+
 
 
 
@@ -184,6 +234,7 @@ export default function LoginForm() {
 
         )
       }
+
 
 
 
@@ -220,6 +271,8 @@ export default function LoginForm() {
 
 
       </Button>
+
+
 
 
 

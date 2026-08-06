@@ -16,7 +16,11 @@ export const createApplication = async (req, res) => {
 
     console.log("FILE:", req.file);
 
-    console.log("USER:", req.user);
+    const applicationData = {
+      ...req.body,
+
+      resume: req.file ? req.file.originalname : null,
+    };
 
     const application = await createApplicationService(req.user.id, {
       ...req.body,

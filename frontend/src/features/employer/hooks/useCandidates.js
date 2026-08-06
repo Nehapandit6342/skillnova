@@ -1,4 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { 
+    useQuery 
+} from "@tanstack/react-query";
+
 
 import {
     getCandidates
@@ -8,12 +11,21 @@ import {
 
 export default function useCandidates() {
 
+
     return useQuery({
 
-        queryKey: ["candidates"],
+
+        queryKey: [
+            "employer-candidates"
+        ],
+
+
 
         queryFn: getCandidates
 
+
+
     });
+
 
 }

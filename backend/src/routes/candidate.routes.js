@@ -2,7 +2,8 @@ import express from "express";
 
 
 import {
-    getEmployerCandidates
+    getEmployerCandidates,
+    getCandidateDetails
 }
 from "../controllers/candidate.controller.js";
 
@@ -23,15 +24,39 @@ const router = express.Router();
 
 
 
+
+// =================================
+// GET ALL EMPLOYER CANDIDATES
+// =================================
+
 router.get(
 
-"/",
+    "/",
 
-authenticate,
+    authenticate,
 
-authorize("EMPLOYER"),
+    authorize("EMPLOYER"),
 
-getEmployerCandidates
+    getEmployerCandidates
+
+);
+
+
+
+
+// =================================
+// GET SINGLE CANDIDATE DETAILS
+// =================================
+
+router.get(
+
+    "/:id",
+
+    authenticate,
+
+    authorize("EMPLOYER"),
+
+    getCandidateDetails
 
 );
 

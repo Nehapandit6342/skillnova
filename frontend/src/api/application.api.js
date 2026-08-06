@@ -7,38 +7,22 @@ import api from "./axios";
 // CREATE APPLICATION (STUDENT)
 // =================================
 
-
-
 export const createApplication = async(data)=>{
 
 
-const response = await api.post(
+    const response = await api.post(
 
-"/applications",
+        "/applications",
 
-data,
+        data
 
-{
-
-headers:{
-
-"Content-Type":
-"multipart/form-data"
-
-}
-
-}
-
-);
+    );
 
 
-
-return response.data;
+    return response.data;
 
 
 };
-
-
 
 
 
@@ -66,8 +50,6 @@ export const getMyApplications = async()=>{
 
 
 
-
-
 // =================================
 // GET EMPLOYER APPLICATIONS
 // =================================
@@ -91,8 +73,6 @@ export const getEmployerApplications = async()=>{
 
 
 
-
-
 // =================================
 // UPDATE APPLICATION STATUS
 // =================================
@@ -109,14 +89,11 @@ export const updateApplicationStatus = async({
     const response =
     await api.patch(
 
-
         `/applications/${id}/status`,
-
 
         {
             status
         }
-
 
     );
 

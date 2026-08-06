@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import MainLayout from "@/layouts/MainLayout";
-/* ---------- Public ---------- */
+
+// ================= PUBLIC =================
+
 import HomePage from "@/features/landing/pages/HomePage";
 import FeaturesPage from "@/features/landing/pages/FeaturesPage";
 import AboutPage from "@/features/landing/pages/AboutPages";
@@ -75,20 +76,17 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* =================================================
-        PUBLIC INTERNSHIP FLOW
-================================================= */}
-      <Route element={<MainLayout />}>
-        <Route path="/internships" element={<InternshipList />} />
+      <Route path="/register" element={<RegisterPage />} />
 
-        <Route path="/internships/:id" element={<InternshipDetails />} />
+      {/* ================= PUBLIC INTERNSHIPS ================= */}
 
-        <Route path="/internships/:id/apply" element={<ApplyInternship />} />
-      </Route>
+      <Route path="/internships" element={<InternshipList />} />
 
-      {/* =================================================
-        STUDENT PORTAL
-================================================= */}
+      <Route path="/internships/:id" element={<InternshipDetails />} />
+
+      <Route path="/internships/:id/apply" element={<ApplyInternship />} />
+
+      {/* ================= STUDENT ================= */}
 
       <Route element={<ProtectedRoute roles={["STUDENT"]} />}>
         <Route path="/student" element={<StudentLayout />}>

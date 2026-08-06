@@ -1,160 +1,292 @@
-import { useMutation } from "@tanstack/react-query";
+import { 
+    useMutation 
+} from "@tanstack/react-query";
+
+
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
-import { loginUser } from "@/api/auth.api";
-import { useAuth } from "@/context/AuthContext";
 
+import {
+    useNavigate,
+    useLocation
+} from "react-router-dom";
 
-export default function useLogin() {
 
-  const navigate = useNavigate();
+import { 
+    loginUser 
+} from "@/api/auth.api";
 
-  const { login } = useAuth();
 
+import {
+    useAuth
+} from "@/context/AuthContext";
 
 
-  return useMutation({
 
-    mutationFn: loginUser,
 
 
-    onSuccess: (response) => {
 
+export default function useLogin(){
 
-      console.log("LOGIN RESPONSE:", response);
 
 
+const navigate =
+useNavigate();
 
-      const data = response.data;
 
 
+const location =
+useLocation();
 
-      const user = data.user;
 
-      const token = data.token;
 
+const {
+    login
+}=useAuth();
 
 
-      if (!user || !token) {
 
 
-        toast.error(
-          "Invalid login response"
-        );
 
 
-        console.log(
-          "Missing user/token",
-          data
-        );
 
 
-        return;
+return useMutation({
 
-      }
 
 
+mutationFn: loginUser,
 
 
-      login(
-        user,
-        token
-      );
 
 
 
-      toast.success(
-        "Login successful"
-      );
+onSuccess:(response)=>{
 
 
 
-      console.log(
-        "Logged User:",
-        user
-      );
+console.log(
+"LOGIN RESPONSE:",
+response
+);
 
 
 
-      if(user.role === "ADMIN") {
 
 
-        navigate(
-          "/admin/dashboard",
-          {
-            replace:true
-          }
-        );
+const {
+    user,
+    token
+}=response.data;
 
 
-      }
 
-      else if(user.role === "STUDENT") {
 
 
-        navigate(
-          "/student/dashboard",
-          {
-            replace:true
-          }
-        );
+if(!user || !token){
 
 
-      }
+toast.error(
+"Invalid login response"
+);
 
-      else if(user.role === "EMPLOYER") {
 
+return;
 
-        navigate(
-          "/employer/dashboard",
-          {
-            replace:true
-          }
-        );
 
+}
 
-      }
 
-      else {
 
 
-        navigate(
-          "/",
-          {
-            replace:true
-          }
-        );
 
 
-      }
 
+login(
+user,
+token
+);
 
-    },
 
 
-    onError:(error)=>{
 
 
-      console.log(
-        "LOGIN ERROR:",
-        error
-      );
 
+toast.success(
+"Login successful"
+);
 
-      toast.error(
 
-        error?.response?.data?.message
-        ||
-        "Login failed"
 
-      );
 
 
-    }
 
 
-  });
+
+
+// ===============================
+// RETURN TO PREVIOUS PAGE
+// ===============================
+
+
+const redirectPath =
+location.state?.from;
+
+
+
+
+
+if(redirectPath){
+
+
+navigate(
+
+redirectPath,
+
+{
+
+replace:true
+
+}
+
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// DEFAULT ROLE REDIRECT
+// ===============================
+
+
+
+switch(user.role){
+
+
+
+case "ADMIN":
+
+
+navigate(
+
+"/admin/dashboard",
+
+{
+replace:true
+}
+
+);
+
+
+break;
+
+
+
+
+
+case "STUDENT":
+
+
+navigate(
+
+"/student/dashboard",
+
+{
+replace:true
+}
+
+);
+
+
+break;
+
+
+
+
+
+case "EMPLOYER":
+
+
+navigate(
+
+"/employer/dashboard",
+
+{
+replace:true
+}
+
+);
+
+
+break;
+
+
+
+
+
+default:
+
+
+navigate(
+
+"/",
+
+{
+replace:true
+}
+
+);
+
+
+}
+
+
+
+},
+
+
+
+
+
+
+
+onError:(error)=>{
+
+
+console.log(
+"LOGIN ERROR:",
+error
+);
+
+
+
+
+toast.error(
+
+error?.response?.data?.message
+||
+"Login failed"
+
+);
+
+
+
+}
+
+
+
+});
 
 
 }
