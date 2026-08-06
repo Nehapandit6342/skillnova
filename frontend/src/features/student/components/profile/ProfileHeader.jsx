@@ -167,18 +167,6 @@ export default function ProfileHeader({ profile }) {
           {/* Right */}
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button
-              variant="outline"
-              className="rounded-xl"
-              disabled={!student?.resume}
-              onClick={() =>
-                window.open(student.resume, "_blank", "noopener,noreferrer")
-              }
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              View Resume
-            </Button>
-
-            <Button
               className="rounded-xl"
               onClick={() => setOpen(true)}
               disabled={isPending}
@@ -193,7 +181,11 @@ export default function ProfileHeader({ profile }) {
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
             <p className="text-sm text-slate-500">Resume Score</p>
-            <h3 className="mt-2 text-3xl font-bold text-blue-600">82%</h3>
+            <h3 className="mt-2 text-3xl font-bold text-blue-600">
+              {student?.resumeAnalysis
+                ? `${student.resumeAnalysis.atsScore}%`
+                : "N/A"}
+            </h3>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
@@ -205,7 +197,9 @@ export default function ProfileHeader({ profile }) {
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
             <p className="text-sm text-slate-500">Applications</p>
-            <h3 className="mt-2 text-3xl font-bold text-slate-900">12</h3>
+            <h3 className="mt-2 text-3xl font-bold text-slate-900">
+              {student?.applications?.length ?? 0}
+            </h3>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">

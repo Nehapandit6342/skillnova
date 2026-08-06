@@ -1,4 +1,5 @@
 import { UserCheck, CheckCircle2, Circle } from "lucide-react";
+import { calculateProfileCompletion } from "@/utils/profileCompletion";
 import { useNavigate } from "react-router-dom";
 import { useStudentProfile } from "../../hooks/useStudentProfile";
 
@@ -17,6 +18,7 @@ export default function ProfileCompletionCard() {
   }
 
   const profile = data?.data;
+  const student = profile?.studentProfile;
   if (!profile) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -41,52 +43,49 @@ export default function ProfileCompletionCard() {
       done:
         !!profile?.name &&
         !!profile?.email &&
-        !!profile?.phone &&
-        !!profile?.location &&
-        !!profile?.dateOfBirth &&
-        !!profile?.bio,
+        !!student?.phone &&
+        !!student?.location &&
+        !!student?.dateOfBirth,
     },
-
     {
       label: "Education",
       done:
-        !!profile?.college &&
-        !!profile?.degree &&
-        profile?.semester !== null &&
-        profile?.semester !== undefined &&
-        profile?.cgpa !== null &&
-        profile?.cgpa !== undefined,
+        !!student?.college &&
+        !!student?.degree &&
+        Number.isInteger(student?.semester) &&
+        student?.cgpa != null,
     },
 
     {
       label: "Skills",
-      done: profile?.skills?.length > 0,
+      done: student?.skills?.length > 0,
     },
 
     {
       label: "Resume",
-      done: !!profile?.resumeUrl,
+      done: !!student?.resumeUrl,
     },
 
     {
       label: "Career Preferences",
       done:
-        !!profile?.careerGoal &&
-        !!profile?.preferredInternship &&
-        !!profile?.workMode &&
-        !!profile?.preferredLocation &&
-        !!profile?.preferredCompanySize,
+        !!student?.careerGoal &&
+        !!student?.preferredInternship &&
+        !!student?.preferredLocation &&
+        !!student?.workMode &&
+        !!student?.preferredCompanySize,
     },
 
     {
       label: "Social Links",
-      done: !!profile?.github && !!profile?.linkedin && !!profile?.portfolio,
+      done: !!student?.github || !!student?.linkedin || !!student?.portfolio,
     },
   ];
-
+  console.log(student);
+  console.log(checklist);
+  const percentage = calculateProfileCompletion(profile);
   const completed = checklist.filter((item) => item.done).length;
   const total = checklist.length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
   const nextIncomplete = checklist.find((item) => !item.done);
 
   const buttonText = nextIncomplete
@@ -118,15 +117,21 @@ export default function ProfileCompletionCard() {
       </div>
 
       <div className="mt-8">
-        <div className="flex justify-between">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-slate-700">
+            {percentage}% Complete
+          </span>
+
+          <span className="text-sm text-slate-500">
+            {completed}/{total} sections
+          </span>
+        </div>
+
+        <div className="mt-3 h-3 overflow-hidden rounded-full bg-slate-200">
           <div
             className={`h-full rounded-full transition-all duration-700 ${progressColor}`}
             style={{ width: `${percentage}%` }}
           />
-
-          <span className="text-sm text-slate-500">
-            {completed} of {total} profile sections completed
-          </span>
         </div>
 
         <div className="mt-3 h-3 overflow-hidden rounded-full bg-slate-200">

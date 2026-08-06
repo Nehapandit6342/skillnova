@@ -1,9 +1,12 @@
-import InternshipCard from "./InternshipCard";
+import InternshipCard from "@/features/internship/components/InternshipCard";
 import { useRecommendedInternships } from "../../hooks/useRecommendedInternships";
 
 export default function RecommendedInternships() {
-  const { data, isLoading } = useRecommendedInternships();
+  const { data, isLoading, error, isError } = useRecommendedInternships();
 
+  console.log(data);
+  console.log(error);
+  console.log(isError);
   if (isLoading) {
     return (
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -32,9 +35,16 @@ export default function RecommendedInternships() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {internships.map((internship) => (
-            <InternshipCard key={internship.id} internship={internship} />
-          ))}
+          {internships.map((internship) => {
+            console.log(
+              "Recommended internship JSON:",
+              JSON.stringify(internship, null, 2),
+            );
+
+            return (
+              <InternshipCard key={internship.id} internship={internship} />
+            );
+          })}
         </div>
       )}
     </section>

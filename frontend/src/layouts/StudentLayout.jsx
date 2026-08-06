@@ -5,22 +5,22 @@ import StudentSidebar from "@/features/student/components/dashboard/StudentSideb
 import { useAuth } from "@/context/AuthContext";
 
 export default function StudentLayout() {
-
   const { user } = useAuth();
 
   const currentUser = {
     name: user?.name || "Student",
     role: user?.role || "Student",
-    profileImage: user?.profileImage || "",
+    profileImage: user?.studentProfile?.profileImage || "",
   };
-
+  console.log("Auth User:", user);
+  console.log("Student Profile:", user?.studentProfile);
+  console.log("Profile Image:", user?.studentProfile?.profileImage);
+  console.log("Current User:", currentUser);
   return (
     <div className="flex min-h-screen bg-background">
-
       <StudentSidebar />
 
       <div className="flex flex-1 flex-col overflow-hidden">
-
         <Topbar
           title="Student Dashboard"
           subtitle="Track your progress, internships, and career roadmap."
@@ -30,9 +30,7 @@ export default function StudentLayout() {
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
-
       </div>
-
     </div>
   );
 }

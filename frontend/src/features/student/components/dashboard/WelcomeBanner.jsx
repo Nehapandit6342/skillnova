@@ -97,14 +97,15 @@ export default function WelcomeBanner() {
                 Explore Internships
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-
               <Button
                 variant="outline"
                 className="border-white bg-transparent text-white hover:bg-white/10"
                 onClick={() => inputRef.current?.click()}
                 disabled={isPending}
               >
-                {isPending ? "Analyzing..." : "Analyze Resume"}
+                {isPending
+                  ? "Uploading & Analyzing..."
+                  : "Upload & Analyze Resume"}
               </Button>
             </div>
           </div>
@@ -153,7 +154,7 @@ export default function WelcomeBanner() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Re-analyze Resume?</AlertDialogTitle>
+            <AlertDialogTitle>Upload & Analyze Resume</AlertDialogTitle>
 
             <AlertDialogDescription>
               {selectedFile && (

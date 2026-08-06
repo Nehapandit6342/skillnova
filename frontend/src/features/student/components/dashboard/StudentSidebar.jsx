@@ -3,14 +3,16 @@ import {
   User,
   FileText,
   ScanSearch,
-  BarChart3,
-  Map,
   Briefcase,
   ClipboardList,
   Settings,
+  Route,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 import Sidebar from "@/components/navigation/Sidebar";
+import { useAuth } from "@/context/AuthContext";
 
 const studentSidebarItems = [
   {
@@ -33,6 +35,11 @@ const studentSidebarItems = [
     path: "/student/resume-analysis",
     icon: ScanSearch,
   },
+  {
+    title: "Career Roadmap",
+    path: "/student/career-roadmap",
+    icon: Route,
+  },
 
   {
     title: "Internships",
@@ -52,5 +59,19 @@ const studentSidebarItems = [
 ];
 
 export default function StudentSidebar() {
-  return <Sidebar title="Student Portal" items={studentSidebarItems} />;
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  return (
+    <Sidebar
+      title="Student Portal"
+      items={studentSidebarItems}
+      onLogout={handleLogout}
+    />
+  );
 }

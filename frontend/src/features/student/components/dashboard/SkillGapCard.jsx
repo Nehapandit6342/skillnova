@@ -1,15 +1,20 @@
 import { Brain, ArrowRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSkillGap } from "../../hooks/useSkillGap";
-
+import { useNavigate } from "react-router-dom";
 export default function SkillGapCard() {
   const { data, isLoading } = useSkillGap();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <div className="rounded-3xl border bg-white p-6">Loading...</div>;
   }
 
   const analysis = data?.skillGap;
+  const visibleSkills = analysis?.missingSkills?.slice(0, 3) || [];
+
+  const remainingSkills =
+    (analysis?.missingSkills?.length || 0) - visibleSkills.length;
 
   if (!analysis) {
     return (
@@ -36,12 +41,14 @@ export default function SkillGapCard() {
       </div>
 
       <div className="mt-8 space-y-6">
-        {analysis.missingSkills?.map((skill) => (
+        {visibleSkills.map((skill) => (
           <div key={skill}>
             <div className="mb-2 flex justify-between">
               <span className="font-medium">{skill}</span>
 
-              <span className="text-sm text-slate-500">Missing</span>
+              <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
+                Missing
+              </span>
             </div>
 
             <div className="h-3 overflow-hidden rounded-full bg-slate-200">
@@ -52,6 +59,15 @@ export default function SkillGapCard() {
             </div>
           </div>
         ))}
+        {remainingSkills > 0 && (
+          <button
+            type="button"
+            onClick={() => navigate("/student/skill-gap")}
+            className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700"
+          >
+            + {remainingSkills} more skill{remainingSkills > 1 ? "s" : ""} →
+          </button>
+        )}
       </div>
 
       <div className="mt-8 rounded-2xl bg-blue-50 p-5">
@@ -69,8 +85,11 @@ export default function SkillGapCard() {
         </div>
       </div>
 
-      <Button className="mt-8 w-full">
-        View Learning Roadmap
+      <Button
+        className="mt-8 w-full"
+        onClick={() => navigate("/student/skill-gap")}
+      >
+        View Full Analysis
         <ArrowRight className="ml-2 h-4 w-4" />
       </Button>
     </div>
