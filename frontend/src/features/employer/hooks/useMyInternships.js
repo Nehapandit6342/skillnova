@@ -1,4 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+    useQuery
+} from "@tanstack/react-query";
+
 
 import {
     getMyInternships
@@ -6,10 +9,13 @@ import {
 
 
 
+
 export default function useMyInternships(){
 
 
+
     return useQuery({
+
 
 
         queryKey:[
@@ -18,11 +24,20 @@ export default function useMyInternships(){
 
 
 
+
         queryFn:getMyInternships,
 
 
 
-        staleTime:1000 * 60 * 5
+
+        staleTime:
+        1000 * 30,
+
+
+
+
+        retry:1
+
 
 
     });

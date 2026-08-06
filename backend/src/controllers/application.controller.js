@@ -11,8 +11,11 @@ import {
 // =================================
 
 export const createApplication = async (req, res) => {
-  try {
-    console.log("BODY:", req.body);
+
+    try {
+
+
+        console.log("BODY:", req.body);
 
     console.log("FILE:", req.file);
 

@@ -56,6 +56,7 @@ import PostInternship from "@/features/employer/pages/PostInternship";
 import EmployerEditInternship from "@/features/employer/pages/EditInternship";
 import EmployerApplications from "@/features/employer/pages/Applications";
 import Candidates from "@/features/employer/pages/Candidates";
+import CandidateDetails from "@/features/employer/pages/CandidateDetails";
 import EmployerSettings from "@/features/employer/pages/EmployerSettings";
 
 function AppRoutes() {

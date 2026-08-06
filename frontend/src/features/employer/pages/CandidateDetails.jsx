@@ -1,15 +1,32 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import useCandidateDetails from "../hooks/useCandidateDetails";
 
 
+// Convert Cloudinary attachment URL to inline preview URL
+const getPreviewUrl = (url) => {
 
-export default function CandidateDetails(){
+    if (!url) return "";
+
+    return url.replace(
+        "/upload/",
+        "/upload/fl_inline/"
+    );
+
+};
+
+
+
+export default function CandidateDetails() {
 
 
     const { id } = useParams();
 
     const navigate = useNavigate();
+
+
+    const [resumePreview, setResumePreview] = useState(null);
 
 
 
@@ -21,27 +38,19 @@ export default function CandidateDetails(){
 
 
 
-
     const candidate = data?.data;
-
-
 
 
 
     if(isLoading){
 
         return (
-
             <div className="p-6">
-
                 Loading candidate details...
-
             </div>
-
         );
 
     }
-
 
 
 
@@ -49,13 +58,9 @@ export default function CandidateDetails(){
     if(isError || !candidate){
 
         return (
-
             <div className="p-6 text-red-500">
-
                 Candidate not found.
-
             </div>
-
         );
 
     }
@@ -63,8 +68,7 @@ export default function CandidateDetails(){
 
 
 
-
-    const student = candidate.student;
+    const student = candidate.student || {};
 
 
 
@@ -80,7 +84,7 @@ export default function CandidateDetails(){
 
             <button
 
-                onClick={()=>navigate(-1)}
+                onClick={() => navigate(-1)}
 
                 className="
                 bg-gray-200
@@ -103,16 +107,16 @@ export default function CandidateDetails(){
 
             {/* Header */}
 
-            <div
-            className="
-            bg-white
-            border
-            rounded-xl
-            p-6
-            shadow-sm
-            "
-            >
 
+            <div
+                className="
+                bg-white
+                border
+                rounded-xl
+                p-6
+                shadow-sm
+                "
+            >
 
                 <div className="flex justify-between">
 
@@ -120,15 +124,11 @@ export default function CandidateDetails(){
                     <div>
 
 
-                        <h1
-                        className="
-                        text-2xl
-                        font-bold
-                        "
-                        >
+                        <h1 className="text-2xl font-bold">
 
                             {
-                                student?.user?.name
+                                student.user?.name ||
+                                "Unknown Student"
                             }
 
                         </h1>
@@ -138,7 +138,8 @@ export default function CandidateDetails(){
                         <p className="text-gray-600">
 
                             {
-                                student?.user?.email
+                                student.user?.email ||
+                                "No email"
                             }
 
                         </p>
@@ -150,25 +151,22 @@ export default function CandidateDetails(){
 
 
                     <span
-                    className="
-                    bg-green-100
-                    text-green-700
-                    px-4
-                    py-2
-                    rounded-full
-                    font-semibold
-                    "
+                        className="
+                        bg-green-100
+                        text-green-700
+                        px-4
+                        py-2
+                        rounded-full
+                        font-semibold
+                        "
                     >
 
-                        {
-                            candidate.status
-                        }
+                        {candidate.status}
 
                     </span>
 
 
                 </div>
-
 
 
             </div>
@@ -181,30 +179,20 @@ export default function CandidateDetails(){
 
 
 
-
-            {/* Student Profile */}
+            {/* Student Information */}
 
 
             <div
-            className="
-            bg-white
-            border
-            rounded-xl
-            p-6
-            "
+                className="
+                bg-white
+                border
+                rounded-xl
+                p-6
+                "
             >
 
-
-                <h2
-                className="
-                text-xl
-                font-bold
-                mb-4
-                "
-                >
-
+                <h2 className="text-xl font-bold mb-4">
                     Student Information
-
                 </h2>
 
 
@@ -214,114 +202,69 @@ export default function CandidateDetails(){
 
 
                     <p>
-
-                    <b>
-                    Phone:
-                    </b>
-
-                    {" "}
-
-                    {
-                        candidate.phone ||
-                        student.phone ||
-                        "N/A"
-                    }
-
+                        <b>Phone:</b>{" "}
+                        {
+                            candidate.phone ||
+                            student.phone ||
+                            "N/A"
+                        }
                     </p>
 
+
+
+                    <p>
+                        <b>College:</b>{" "}
+                        {
+                            student.college ||
+                            "N/A"
+                        }
+                    </p>
+
+
+
+                    <p>
+                        <b>Degree:</b>{" "}
+                        {
+                            student.degree ||
+                            "N/A"
+                        }
+                    </p>
+
+
+
+                    <p>
+                        <b>Semester:</b>{" "}
+                        {
+                            student.semester ||
+                            "N/A"
+                        }
+                    </p>
+
+
+
+                    <p>
+                        <b>CGPA:</b>{" "}
+                        {
+                            student.cgpa ||
+                            "N/A"
+                        }
+                    </p>
 
 
 
                     <p>
 
-                    <b>
-                    College:
-                    </b>
+                        <b>Skills:</b>{" "}
 
-                    {" "}
-
-                    {
-                        student.college ||
-                        "N/A"
-                    }
-
-                    </p>
-
-
-
-
-                    <p>
-
-                    <b>
-                    Degree:
-                    </b>
-
-                    {" "}
-
-                    {
-                        student.degree ||
-                        "N/A"
-                    }
+                        {
+                            student.skills?.length
+                            ?
+                            student.skills.join(", ")
+                            :
+                            "N/A"
+                        }
 
                     </p>
-
-
-
-
-                    <p>
-
-                    <b>
-                    Semester:
-                    </b>
-
-                    {" "}
-
-                    {
-                        student.semester ||
-                        "N/A"
-                    }
-
-                    </p>
-
-
-
-
-                    <p>
-
-                    <b>
-                    CGPA:
-                    </b>
-
-                    {" "}
-
-                    {
-                        student.cgpa ||
-                        "N/A"
-                    }
-
-                    </p>
-
-
-
-
-                    <p>
-
-                    <b>
-                    Skills:
-                    </b>
-
-                    {" "}
-
-                    {
-                        student.skills?.length
-                        ?
-                        student.skills.join(", ")
-                        :
-                        "N/A"
-                    }
-
-                    </p>
-
 
 
                 </div>
@@ -341,25 +284,16 @@ export default function CandidateDetails(){
 
 
             <div
-            className="
-            bg-white
-            border
-            rounded-xl
-            p-6
-            "
+                className="
+                bg-white
+                border
+                rounded-xl
+                p-6
+                "
             >
 
-
-                <h2
-                className="
-                text-xl
-                font-bold
-                mb-4
-                "
-                >
-
+                <h2 className="text-xl font-bold mb-4">
                     Application Details
-
                 </h2>
 
 
@@ -369,15 +303,12 @@ export default function CandidateDetails(){
 
                     <p>
 
-                    <b>
-                    Internship:
-                    </b>
+                        <b>Internship:</b>{" "}
 
-                    {" "}
-
-                    {
-                        candidate.internship?.title
-                    }
+                        {
+                            candidate.internship?.title ||
+                            "N/A"
+                        }
 
                     </p>
 
@@ -385,16 +316,12 @@ export default function CandidateDetails(){
 
                     <p>
 
-                    <b>
-                    Availability:
-                    </b>
+                        <b>Availability:</b>{" "}
 
-                    {" "}
-
-                    {
-                        candidate.availability ||
-                        "N/A"
-                    }
+                        {
+                            candidate.availability ||
+                            "N/A"
+                        }
 
                     </p>
 
@@ -402,12 +329,9 @@ export default function CandidateDetails(){
 
 
                     <p>
-
-                    <b>
-                    Cover Letter:
-                    </b>
-
+                        <b>Cover Letter:</b>
                     </p>
+
 
 
                     <p className="text-gray-600">
@@ -433,35 +357,31 @@ export default function CandidateDetails(){
 
 
 
-            {/* Links */}
+            {/* Portfolio & Resume */}
 
 
             <div
-            className="
-            bg-white
-            border
-            rounded-xl
-            p-6
-            "
+                className="
+                bg-white
+                border
+                rounded-xl
+                p-6
+                "
             >
 
 
-                <h2
-                className="
-                text-xl
-                font-bold
-                mb-4
-                "
-                >
-
+                <h2 className="text-xl font-bold mb-4">
                     Portfolio & Resume
-
                 </h2>
 
 
 
 
-                <div className="space-y-3">
+                <div className="space-y-4">
+
+
+
+
 
 
                     {
@@ -469,14 +389,13 @@ export default function CandidateDetails(){
 
                         <p>
 
-                            GitHub:
-
-                            {" "}
+                            <b>GitHub:</b>{" "}
 
                             <a
-                            href={student.github}
-                            target="_blank"
-                            className="text-blue-600"
+                                href={student.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
                             >
 
                                 View
@@ -484,7 +403,10 @@ export default function CandidateDetails(){
                             </a>
 
                         </p>
+
                     }
+
+
 
 
 
@@ -495,14 +417,13 @@ export default function CandidateDetails(){
 
                         <p>
 
-                            LinkedIn:
-
-                            {" "}
+                            <b>LinkedIn:</b>{" "}
 
                             <a
-                            href={student.linkedin}
-                            target="_blank"
-                            className="text-blue-600"
+                                href={student.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
                             >
 
                                 View
@@ -510,7 +431,9 @@ export default function CandidateDetails(){
                             </a>
 
                         </p>
+
                     }
+
 
 
 
@@ -522,14 +445,13 @@ export default function CandidateDetails(){
 
                         <p>
 
-                            Portfolio:
-
-                            {" "}
+                            <b>Portfolio:</b>{" "}
 
                             <a
-                            href={student.portfolio}
-                            target="_blank"
-                            className="text-blue-600"
+                                href={student.portfolio}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
                             >
 
                                 View
@@ -537,32 +459,62 @@ export default function CandidateDetails(){
                             </a>
 
                         </p>
+
                     }
 
 
 
 
 
+
+
+
+                    {/* Resume */}
+
                     {
                         candidate.resume &&
 
-                        <p>
+                        <div>
 
-                            Resume:
 
-                            {" "}
+                            <p className="mb-3">
 
-                            <a
-                            href={candidate.resume}
-                            target="_blank"
-                            className="text-blue-600"
+                                <b>Resume</b>
+
+                            </p>
+
+
+
+
+                            <button
+
+                                onClick={() =>
+                                    setResumePreview(
+                                        getPreviewUrl(
+                                            candidate.resume
+                                        )
+                                    )
+                                }
+
+
+                                className="
+                                bg-blue-600
+                                text-white
+                                px-4
+                                py-2
+                                rounded-lg
+                                hover:bg-blue-700
+                                "
+
                             >
 
-                                Open Resume
+                                👁 View Resume
 
-                            </a>
+                            </button>
 
-                        </p>
+
+
+                        </div>
 
                     }
 
@@ -573,6 +525,127 @@ export default function CandidateDetails(){
 
 
             </div>
+
+
+
+
+
+
+
+
+
+            {/* Resume Preview Modal */}
+
+
+
+            {
+                resumePreview &&
+
+
+                <div
+
+                    className="
+                    fixed
+                    inset-0
+                    bg-black/60
+                    flex
+                    items-center
+                    justify-center
+                    z-50
+                    "
+
+                >
+
+
+
+                    <div
+
+                        className="
+                        bg-white
+                        w-[90%]
+                        h-[90%]
+                        rounded-xl
+                        overflow-hidden
+                        flex
+                        flex-col
+                        "
+
+                    >
+
+
+
+
+                        <div
+
+                            className="
+                            flex
+                            justify-between
+                            items-center
+                            px-6
+                            py-4
+                            border-b
+                            "
+
+                        >
+
+
+                            <h2 className="font-bold text-lg">
+
+                                Resume Preview
+
+                            </h2>
+
+
+
+                            <button
+
+                                onClick={() =>
+                                    setResumePreview(null)
+                                }
+
+                                className="
+                                text-red-600
+                                font-semibold
+                                "
+
+                            >
+
+                                Close
+
+                            </button>
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <iframe
+
+                            src={`${resumePreview}#toolbar=1`}
+
+                            className="
+                            flex-1
+                            w-full
+                            "
+
+                            title="Resume Preview"
+
+                        />
+
+
+
+
+                    </div>
+
+
+                </div>
+
+            }
 
 
 

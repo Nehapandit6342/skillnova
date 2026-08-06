@@ -13,24 +13,33 @@ import toast from "react-hot-toast";
 
 
 
+
 export default function useCreateInternship(){
 
-    const queryClient =
-    useQueryClient();
+
+    const queryClient = useQueryClient();
+
 
 
     return useMutation({
 
+
+
         mutationFn:createInternship,
 
 
-        onSuccess:()=>{
+
+        onSuccess:(response)=>{
 
 
             toast.success(
+                response?.message ||
                 "Internship posted successfully"
             );
 
+
+
+            // Refresh employer internship list
 
             queryClient.invalidateQueries({
 
@@ -41,6 +50,10 @@ export default function useCreateInternship(){
             });
 
 
+
+
+            // Refresh dashboard numbers
+
             queryClient.invalidateQueries({
 
                 queryKey:[
@@ -50,7 +63,23 @@ export default function useCreateInternship(){
             });
 
 
+
+
+            // Refresh public internship list
+
+            queryClient.invalidateQueries({
+
+                queryKey:[
+                    "internships"
+                ]
+
+            });
+
+
+
         },
+
+
 
 
         onError:(error)=>{
@@ -59,11 +88,14 @@ export default function useCreateInternship(){
             toast.error(
 
                 error?.response?.data?.message ||
+
                 "Failed to create internship"
 
             );
 
+
         }
+
 
 
     });

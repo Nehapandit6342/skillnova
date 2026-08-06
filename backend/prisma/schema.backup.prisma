@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  EMPLOYER
+  ADMIN
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  email String @unique
+
+  password String
+
+  role Role @default(STUDENT)
+
+  isActive Boolean @default(true)
+
+  studentProfile StudentProfile?
+
+  employerProfile EmployerProfile?
+
+  passwordResetTokens PasswordResetToken[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @unique @db.Uuid
+
+  profileImage     String?
+  resumeUrl        String?
+  resumeFileName   String?
+  resumeFileName   String?
+  resumeText       String?
+  resumeUploadedAt DateTime?
+
+  phone String?
+
+  location    String?
+  dateOfBirth DateTime?
+
+  bio String?
+
+  college String?
+
+  degree String?
+
+  semester Int?
+
+  cgpa Float?
+
+  github String?
+
+  linkedin String?
+
+  portfolio  String?
+  careerGoal String?
+  portfolio  String?
+  careerGoal String?
+
+  preferredInternship String?
+  preferredInternship String?
+
+  workMode String?
+  workMode String?
+
+  preferredLocation String?
+  preferredLocation String?
+
+  preferredCompanySize String?
+  skills               String[] @default([])
+  preferredCompanySize String?
+  skills               String[] @default([])
+
+  applications Application[]
+
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("student_profiles")
+}
+
+model ResumeAnalysis {
+  id String @id @default(uuid()) @db.Uuid
+
+  studentId String @unique @db.Uuid
+
+  atsScore Int
+
+  summary String
+
+  strengths Json
+
+  weaknesses Json
+
+  missingSkills Json
+
+  recommendedProjects Json
+
+  recommendedInternships Json
+
+  careerRoadmap Json
+
+  improvementSuggestions Json    @default("[]")
+  learningPlan           Json?
+  aiModel                String?
+  improvementSuggestions Json    @default("[]")
+  learningPlan           Json?
+  aiModel                String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("resume_analysis")
+}
+
+model EmployerProfile {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @unique @db.Uuid
+
+  logo String?
+
+  companyName String
+
+  website String?
+
+  industry String?
+
+  location String?
+
+  description String?
+
+  companySize String?
+
+  foundedYear Int?
+
+
+
+internships Internship[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("employer_profiles")
+}
+
+
+
+
+
+model Internship {
+  id String @id @default(uuid()) @db.Uuid
+
+  title String
+
+  description     String
+  category        String?
+  companyOverview String?
+
+  experienceLevel String?
+
+  educationLevel String?
+
+  salaryType String?
+
+  applicationEmail String?
+
+  requiredSkills String[] @default([])
+
+  location String?
+
+  type String?
+
+
+  stipend         String?
+  openings        Int?
+  applicationLink String?
+  stipend  String?
+  openings Int?
+
+  deadline         DateTime?
+  responsibilities String[]  @default([])
+  deadline         DateTime?
+  responsibilities String[]  @default([])
+
+  skills String[] @default([])
+
+  qualifications String[] @default([])
+
+  benefits String[] @default([])
+
+  selectionProcess String[] @default([])
+
+  isActive Boolean          @default(true)
+  status   InternshipStatus @default(OPEN)
+
+  employerId String @db.Uuid
+
+  employer EmployerProfile @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("internships")
+}
+
+model Application {
+  id String @id @default(uuid()) @db.Uuid
+
+  studentId String @db.Uuid
+
+  internshipId String @db.Uuid
+
+  // Applicant Snapshot
+
+  fullName String?
+
+  email String?
+
+  phone String?
+
+  location String?
+
+  college String?
+
+  degree String?
+
+  // Application Data
+
+  resume String?
+
+  coverLetter String?
+
+  whyHireMe String?
+
+  availability String?
+
+  expectedDuration String?
+
+  status ApplicationStatus @default(PENDING)
+
+  student StudentProfile @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
+  internship Internship @relation(
+    fields: [internshipId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+
+
+  @@map("applications")
+}
+
+
+
+
+  REJECTED
+}
+
+enum InternshipStatus {
+  OPEN
+  PAUSED
+  CLOSED
+}
+
+model PasswordResetToken {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+
+  otpHash String
+
+  expiresAt DateTime
+
+  used Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+}

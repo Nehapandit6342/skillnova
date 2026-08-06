@@ -2,21 +2,13 @@ import express from "express";
 
 
 import {
-
     createEmployerInternship,
-
     getAllInternships,
-
     getMyInternships,
-
     getInternshipById,
-
     updateInternship,
-
     deleteInternship,
-        getLatestInternships
-
-
+    getLatestInternships
 
 } from "../controllers/internship.controller.js";
 
@@ -25,6 +17,7 @@ import {
 import {
     authenticate
 } from "../middleware/auth.middleware.js";
+
 
 
 import {
@@ -38,57 +31,31 @@ const router = express.Router();
 
 
 
-
-// ==================================================
+// ==========================================
 // PUBLIC ROUTES
-// ==================================================
+// ==========================================
 
 
-// Get all internships
-
-router.get(
-    "/",
-    getAllInternships
-);
-
-// Latest internships for homepage
+// Homepage latest internships
 
 router.get(
+
     "/latest",
+
     getLatestInternships
+
 );
 
 
-// Get single internship details
+
+
+// All internships
 
 router.get(
-    "/:id",
-    getInternshipById
-);
-
-
-
-
-
-
-
-
-// ==================================================
-// EMPLOYER ROUTES
-// ==================================================
-
-
-// Create internship
-
-router.post(
 
     "/",
 
-    authenticate,
-
-    authorize("EMPLOYER"),
-
-    createEmployerInternship
+    getAllInternships
 
 );
 
@@ -98,7 +65,13 @@ router.post(
 
 
 
-// Get employer's internships
+// ==========================================
+// EMPLOYER ROUTES
+// ==========================================
+
+
+
+// Employer internships
 
 router.get(
 
@@ -115,6 +88,19 @@ router.get(
 
 
 
+// Create internship
+
+router.post(
+
+    "/",
+
+    authenticate,
+
+    authorize("EMPLOYER"),
+
+    createEmployerInternship
+
+);
 
 
 
@@ -136,10 +122,6 @@ router.put(
 
 
 
-
-
-
-
 // Delete internship
 
 router.delete(
@@ -156,6 +138,21 @@ router.delete(
 
 
 
+
+
+
+// ==========================================
+// PUBLIC DETAILS
+// ==========================================
+
+
+router.get(
+
+    "/:id",
+
+    getInternshipById
+
+);
 
 
 

@@ -1,23 +1,124 @@
+import { Readable } from "stream";
 import cloudinary from "../config/cloudinary.js";
-import streamifier from "streamifier";
 
-export const uploadImage = (file, folder = "skillnova") => {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      return resolve(null);
-    }
 
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder,
-      },
-      (error, result) => {
-        if (error) return reject(error);
+// =======================================
+// Upload Resume (PDF/DOCX) to Cloudinary
+// =======================================
 
-        resolve(result.secure_url);
-      },
-    );
+export const uploadResumeToCloudinary = (file) => {
 
-    streamifier.createReadStream(file.buffer).pipe(stream);
-  });
+    return new Promise((resolve, reject) => {
+
+
+        const stream = cloudinary.uploader.upload_stream(
+
+            {
+                folder: "skillnova/resumes",
+
+                resource_type: "raw",
+
+            },
+
+
+            (error, result) => {
+
+
+                if(error){
+
+                    return reject(error);
+
+                }
+
+
+                resolve({
+
+                    url: result.secure_url,
+
+                    publicId: result.public_id,
+
+                });
+
+
+            }
+
+        );
+
+
+
+        Readable
+            .from(file.buffer)
+            .pipe(stream);
+
+
+
+    });
+
+};
+
+
+
+
+
+
+
+
+// =======================================
+// Upload Image (Profile / Logo)
+// =======================================
+
+export const uploadImage = (file) => {
+
+
+    return new Promise((resolve, reject)=>{
+
+
+        const stream = cloudinary.uploader.upload_stream(
+
+
+            {
+
+                folder:"skillnova/images",
+
+                resource_type:"image",
+
+            },
+
+
+            (error,result)=>{
+
+
+                if(error){
+
+                    return reject(error);
+
+                }
+
+
+
+                resolve({
+
+                    url: result.secure_url,
+
+                    publicId: result.public_id,
+
+                });
+
+
+            }
+
+
+        );
+
+
+
+        Readable
+        .from(file.buffer)
+        .pipe(stream);
+
+
+
+    });
+
+
 };

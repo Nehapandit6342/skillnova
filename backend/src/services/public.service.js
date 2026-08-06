@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.js";
 
+
 export const getHomeDataService = async () => {
   const [totalStudents, totalEmployers, totalInternships, totalApplications] =
     await Promise.all([
@@ -98,14 +99,25 @@ export const getHomeDataService = async () => {
   ];
 
   return {
-    stats: {
+
+
+    stats:{
+
+
       totalStudents,
+
       totalEmployers,
+
       totalInternships,
-      totalApplications,
+
+      totalApplications
+
+
     },
 
+
     latestInternships,
+
 
     featuredCompanies,
 
@@ -115,4 +127,6 @@ export const getHomeDataService = async () => {
 
     technologies,
   };
+
+
 };
