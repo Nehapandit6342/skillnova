@@ -16,7 +16,4 @@ node_modules/.prisma/
 *.log
 
 # OS files
-.DS_Storeprisma/migrations_backup/
-prisma/migrations_old/
-prisma/schema.backup.prisma
-prisma/schema_old.prisma
+.DS_Store
