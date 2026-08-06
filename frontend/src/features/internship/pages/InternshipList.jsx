@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   Briefcase,
@@ -7,6 +7,7 @@ import {
   RefreshCw,
   SearchX,
 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 import InternshipCard from "../components/InternshipCard";
 import InternshipFilter from "../components/InternshipFilter";
@@ -28,6 +29,11 @@ function stipendNumber(value) {
 export default function InternshipList() {
   const { data, isLoading, isError, refetch } = useInternships();
 
+  // Read the ?search= query param (e.g. set by the dashboard Topbar search)
+  // so the list can be pre-filtered when navigating with a keyword.
+  const [searchParams] = useSearchParams();
+  const urlSearch = searchParams.get("search") || "";
+
   const internships = useMemo(
     () =>
       [...(data?.data || [])].sort(
@@ -48,7 +54,13 @@ export default function InternshipList() {
     filteredInternships: filtered,
     hasFilters,
     clearFilters,
-  } = useInternshipFilters(internships);
+  } = useInternshipFilters(internships, urlSearch);
+
+  // Keep the filter in sync when the ?search= query param changes while the
+  // page is already mounted (e.g. searching again from the Topbar).
+  useEffect(() => {
+    setSearch(urlSearch);
+  }, [urlSearch, setSearch]);
 
   const [sortBy, setSortBy] = useState("newest");
 

@@ -1,6 +1,10 @@
 import * as studentService from "../services/student.service.js";
+
 import { uploadImage } from "../services/upload.service.js";
-import { getUpcomingDeadlinesService } from "../services/student.service.js";
+import {
+  getUpcomingDeadlinesService,
+  getCareerRoadmapService,
+} from "../services/student.service.js";
 
 export const getProfile = async (req, res, next) => {
   try {
@@ -70,6 +74,23 @@ export const getUpcomingDeadlines = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch upcoming deadlines.",
+    });
+  }
+};
+export const getCareerRoadmap = async (req, res) => {
+  try {
+    const roadmap = await getCareerRoadmapService(req.user.id);
+
+    return res.status(200).json({
+      success: true,
+      careerRoadmap: roadmap,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to fetch career roadmap.",
     });
   }
 };

@@ -42,5 +42,10 @@ export const getRecentActivities = async () => {
 
 export const getUpcomingDeadlines = async () => {
   const response = await api.get("/students/upcoming-deadlines");
+  console.log("API Response:", response);
   return response.data;
+};
+export const getCareerRoadmap = async () => {
+  const { data } = await api.get("/student/career-roadmap");
+  return data;
 };

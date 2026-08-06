@@ -1,15 +1,17 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import MainLayout from "@/layouts/MainLayout";
 
-/* ---------- Public ---------- */
+// ================= PUBLIC =================
+
 import HomePage from "@/features/landing/pages/HomePage";
 import FeaturesPage from "@/features/landing/pages/FeaturesPage";
 import AboutPage from "@/features/landing/pages/AboutPages";
 import ContactPage from "@/features/landing/pages/ContactPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
+import PrivacyPolicy from "@/features/landing/pages/PrivacyPolicy";
+import TermsOfService from "@/features/landing/pages/TermsOfService";
 
 /* ---------- Layouts ---------- */
 import StudentLayout from "@/layouts/StudentLayout";
@@ -21,7 +23,10 @@ import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudentProfile from "@/features/student/pages/StudentProfile";
 import ResumeBuilder from "@/features/student/pages/ResumeBuilder";
 import ResumeReport from "@/features/student/pages/ResumeReport";
+import LearningRoadmap from "@/features/student/pages/LearningRoadmap";
+import CareerRoadmap from "@/features/student/pages/CareerRoadmap";
 import StudentSettings from "@/features/student/pages/Settings";
+import StudentApplications from "@/features/student/pages/Applications";
 
 /* ---------- Internship ---------- */
 import InternshipList from "@/features/internship/pages/InternshipList";
@@ -31,9 +36,16 @@ import ApplyInternship from "@/features/internship/pages/ApplyInternship";
 /* ---------- Admin ---------- */
 import Dashboard from "@/features/admin/pages/Dashboard";
 import Students from "@/features/admin/pages/Students";
+import StudentDetails from "@/features/admin/pages/StudentDetails";
+import EditStudent from "@/features/admin/pages/EditStudent";
+import AdminApplications from "@/features/admin/pages/Applications";
+import AdminInternships from "@/features/admin/pages/Internships";
 import AddInternship from "@/features/admin/pages/AddInternship";
+import AdminEditInternship from "@/features/admin/pages/EditInternship";
 import AdminInternshipDetails from "@/features/admin/pages/InternshipDetails";
 import Employers from "@/features/admin/pages/Employers";
+import EmployerDetails from "@/features/admin/pages/EmployerDetails";
+import EditEmployer from "@/features/admin/pages/EditEmployer";
 import Settings from "@/features/admin/pages/Settings";
 
 /* ---------- Employer ---------- */
@@ -50,25 +62,30 @@ import EmployerSettings from "@/features/employer/pages/EmployerSettings";
 function AppRoutes() {
   return (
     <Routes>
-      {/* ================= PUBLIC ================= */}
+      {/* ================= HOME ================= */}
 
       <Route path="/" element={<HomePage />} />
       <Route path="/features" element={<FeaturesPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
 
-      {/* ================= AUTH ================= */}
+      <Route path="/terms" element={<TermsOfService />} />
+
+      {/* ================= LOGIN ================= */}
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
+      <Route path="/register" element={<RegisterPage />} />
+
       {/* ================= PUBLIC INTERNSHIPS ================= */}
 
-      <Route element={<MainLayout />}>
-        <Route path="/internships" element={<InternshipList />} />
-        <Route path="/internships/:id" element={<InternshipDetails />} />
-        <Route path="/internships/:id/apply" element={<ApplyInternship />} />
-      </Route>
+      <Route path="/internships" element={<InternshipList />} />
+
+      <Route path="/internships/:id" element={<InternshipDetails />} />
+
+      <Route path="/internships/:id/apply" element={<ApplyInternship />} />
 
       {/* ================= STUDENT ================= */}
 
@@ -77,33 +94,42 @@ function AppRoutes() {
           <Route index element={<Navigate to="dashboard" replace />} />
 
           <Route path="dashboard" element={<StudentDashboard />} />
+
           <Route path="profile" element={<StudentProfile />} />
+
           <Route path="resume-builder" element={<ResumeBuilder />} />
+
           <Route path="resume-analysis" element={<ResumeReport />} />
+
+          <Route path="learning-roadmap" element={<LearningRoadmap />} />
+
+          <Route path="career-roadmap" element={<CareerRoadmap />} />
+
           <Route path="internships" element={<InternshipList />} />
+          <Route path="applications" element={<StudentApplications />} />
+
           <Route path="settings" element={<StudentSettings />} />
         </Route>
       </Route>
 
-      {/* ================= ADMIN ================= */}
-
+      {/* ================== ADMIN ================= */}
       <Route element={<ProtectedRoute roles={["ADMIN"]} />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
 
           <Route path="dashboard" element={<Dashboard />} />
+
           <Route path="students" element={<Students />} />
+
           <Route path="internships/add" element={<AddInternship />} />
-          <Route
-            path="internships/:id"
-            element={<AdminInternshipDetails />}
-          />
+
+          <Route path="internships/:id" element={<AdminInternshipDetails />} />
+
           <Route path="employers" element={<Employers />} />
+
           <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
-
-      {/* ================= EMPLOYER ================= */}
 
       <Route element={<ProtectedRoute roles={["EMPLOYER"]} />}>
         <Route path="/employer" element={<EmployerLayout />}>
@@ -122,44 +148,13 @@ function AppRoutes() {
             element={<EmployerEditInternship />}
           />
 
-          <Route
-            path="applications"
-            element={<EmployerApplications />}
-          />
+          <Route path="applications" element={<EmployerApplications />} />
 
-          <Route
-            path="candidates"
-            element={<Candidates />}
-          />
+          <Route path="candidates" element={<Candidates />} />
 
-          {/* Candidate Details */}
-          <Route
-            path="candidates/:id"
-            element={<CandidateDetails />}
-          />
-
-          <Route
-            path="settings"
-            element={<EmployerSettings />}
-          />
+          <Route path="settings" element={<EmployerSettings />} />
         </Route>
       </Route>
-
-      {/* ================= UNAUTHORIZED ================= */}
-
-      <Route
-        path="/unauthorized"
-        element={
-          <div className="flex min-h-screen items-center justify-center bg-slate-50">
-            <div className="text-center">
-              <h1 className="text-5xl font-bold text-red-600">403</h1>
-              <p className="mt-3 text-gray-600">
-                You are not authorized to access this page.
-              </p>
-            </div>
-          </div>
-        }
-      />
 
       {/* ================= 404 ================= */}
 
@@ -169,9 +164,7 @@ function AppRoutes() {
           <div className="flex min-h-screen items-center justify-center bg-slate-50">
             <div className="text-center">
               <h1 className="text-5xl font-bold text-slate-900">404</h1>
-              <p className="mt-2 text-slate-500">
-                Page not found.
-              </p>
+              <p className="mt-2 text-slate-500">Page not found.</p>
             </div>
           </div>
         }
@@ -179,5 +172,4 @@ function AppRoutes() {
     </Routes>
   );
 }
-
 export default AppRoutes;

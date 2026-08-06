@@ -1,25 +1,83 @@
-import { useState } from "react";
-import {
-  Bell,
-  Menu,
-  Search
-} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bell, Menu, Search } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-import {
-  Button
-} from "@/components/ui/button";
+const NOTIFICATIONS_STORAGE_KEY = "skillnova-notifications";
 
+const DEFAULT_NOTIFICATIONS = [
+  {
+    id: "resume-analysis",
+    title: "Resume analysis completed",
+    message: "Your resume was analyzed. Check your ATS score and suggestions.",
+    time: "2 hours ago",
+    read: false,
+  },
+  {
+    id: "new-match",
+    title: "New internship matches your skills",
+    message: "A new internship matching your profile was just posted.",
+    time: "5 hours ago",
+    read: false,
+  },
+  {
+    id: "profile-completion",
+    title: "Profile completion reached 90%",
+    message: "Great job! Add a few more details to reach 100%.",
+    time: "Yesterday",
+    read: false,
+  },
+  {
+    id: "application-submitted",
+    title: "Application submitted successfully",
+    message: "Your application was submitted. Keep an eye on your inbox.",
+    time: "2 days ago",
+    read: true,
+  },
+];
 
-import {
-  Input
-} from "@/components/ui/input";
+function useNotifications() {
+  const [notifications, setNotifications] = useState(() => {
+    try {
+      const stored = localStorage.getItem(NOTIFICATIONS_STORAGE_KEY);
 
+      if (!stored) return DEFAULT_NOTIFICATIONS;
 
-import useNotifications
-from "@/features/employer/hooks/useNotifications";
+      const parsed = JSON.parse(stored);
 
+      return Array.isArray(parsed) ? parsed : DEFAULT_NOTIFICATIONS;
+    } catch {
+      return DEFAULT_NOTIFICATIONS;
+    }
+  });
+  // Persist read/unread state so it survives a browser refresh.
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        NOTIFICATIONS_STORAGE_KEY,
+        JSON.stringify(notifications),
+      );
+    } catch {
+      // Ignore storage write failures (e.g. private browsing mode).
+    }
+  }, [notifications]);
 
+  const unreadCount = Array.isArray(notifications)
+    ? notifications.filter((n) => !n.read).length
+    : 0;
+
+  const markAsRead = (id) =>
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+    );
+
+  const markAllAsRead = () =>
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+
+  return { notifications, unreadCount, markAsRead, markAllAsRead };
+}
 
 export default function Topbar({
 
@@ -40,31 +98,49 @@ export default function Topbar({
   onMenuClick,
 
 }) {
+  const [query, setQuery] = useState("");
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const notificationsRef = useRef(null);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } =
+    useNotifications();
 
+  // Close the notification dropdown on outside click or Escape.
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target)
+      ) {
+        setNotificationsOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setNotificationsOpen(false);
+    };
 
-  const [openNotification, setOpenNotification] =
-  useState(false);
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleKeyDown);
 
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
-
-  const {
-    data,
-    isLoading
-  } = useNotifications();
-
-
-
-  const notifications =
-  data?.data || [];
-
-
-
-  const unreadCount =
-  notifications.filter(
-    (item)=>!item.isRead
-  ).length;
-
-
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const keyword = query.trim();
+    // Students search inside their dashboard; everyone else uses the public page.
+    const basePath = pathname.startsWith("/student")
+      ? "/student/internships"
+      : "/internships";
+    navigate(
+      keyword ? `${basePath}?search=${encodeURIComponent(keyword)}` : basePath,
+    );
+    setQuery("");
+  };
 
   return (
 
@@ -107,119 +183,111 @@ onClick={onMenuClick}
 
 </h1>
 
+            <p className="hidden text-sm text-muted-foreground md:block">
+              {subtitle}
+            </p>
+          </div>
+        </div>
 
-<p className="hidden text-sm text-muted-foreground md:block">
+        {/* Right */}
+        <div className="flex items-center gap-3">
+          {/* Search */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative hidden lg:block"
+            role="search"
+          >
+            <button
+              type="submit"
+              aria-label="Search internships"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-blue-600"
+            >
+              <Search className="h-4 w-4" />
+            </button>
 
-{subtitle}
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search..."
+              className="w-72 pl-10"
+            />
+          </form>
 
-</p>
+          {/* Notifications */}
+          <div className="relative" ref={notificationsRef}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative rounded-xl"
+              onClick={() => setNotificationsOpen((open) => !open)}
+              aria-label={`Notifications (${unreadCount} unread)`}
+              aria-haspopup="true"
+              aria-expanded={notificationsOpen}
+            >
+              <Bell className="h-5 w-5" />
 
+              {unreadCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Button>
 
-</div>
+            {notificationsOpen && (
+              <div className="absolute right-0 top-12 z-50 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+                  <p className="text-sm font-semibold text-foreground">
+                    Notifications
+                  </p>
 
+                  {unreadCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={markAllAsRead}
+                      className="text-xs font-medium text-blue-600 transition-colors hover:text-blue-700"
+                    >
+                      Mark all as read
+                    </button>
+                  )}
+                </div>
 
-</div>
+                <div className="max-h-80 overflow-y-auto">
+                  {(Array.isArray(notifications) ? notifications : []).map(
+                    (notification) => (
+                      <button
+                        key={notification.id}
+                        type="button"
+                        onClick={() => markAsRead(notification.id)}
+                        className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted ${
+                          notification.read ? "" : "bg-blue-50/60"
+                        }`}
+                      >
+                        <span
+                          className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                            notification.read ? "bg-slate-300" : "bg-blue-600"
+                          }`}
+                        />
 
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-semibold text-foreground">
+                            {notification.title}
+                          </span>
 
+                          <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">
+                            {notification.message}
+                          </span>
 
-
-
-{/* RIGHT */}
-
-
-<div className="flex items-center gap-3">
-
-
-
-{/* SEARCH */}
-
-
-<div className="relative hidden lg:block">
-
-
-<Search
-className="
-absolute
-left-3
-top-1/2
-h-4
-w-4
--translate-y-1/2
-text-slate-400
-"
-/>
-
-
-<Input
-
-placeholder="Search..."
-
-className="w-72 pl-10"
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-{/* NOTIFICATION */}
-
-
-<div className="relative">
-
-
-<Button
-
-variant="ghost"
-
-size="icon"
-
-className="relative rounded-xl"
-
-onClick={()=>setOpenNotification(!openNotification)}
-
->
-
-
-<Bell className="h-5 w-5"/>
-
-
-
-{
-unreadCount > 0 &&
-
-<span
-className="
-absolute
-right-0
-top-0
-flex
-h-5
-w-5
-items-center
-justify-center
-rounded-full
-bg-red-500
-text-[10px]
-font-bold
-text-white
-"
->
-
-{unreadCount}
-
-</span>
-
-}
-
-
-
-</Button>
+                          <span className="mt-1 block text-[11px] text-slate-400">
+                            {notification.time}
+                          </span>
+                        </span>
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
 
 

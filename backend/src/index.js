@@ -6,10 +6,12 @@ import prisma from "./config/prisma.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import studentRoutes from "./routes/student.routes.js";
+import aiRoutes from "./routes/ai.routes.js";
 import testRoutes from "./routes/test.routes.js";
 import employerRoutes from "./routes/employer.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import internshipRoutes from "./routes/internship.routes.js";
+
 import applicationRoutes from "./routes/application.routes.js";
 import candidateRoutes from "./routes/candidate.routes.js";
 import recommendationRoutes from "./routes/recommendation.routes.js";
@@ -18,20 +20,12 @@ import careerRoutes from "./routes/career.routes.js";
 import studentDashboardRoutes from "./routes/studentDashboard.routes.js";
 import publicRoutes from "./routes/public.routes.js";
 import testimonialRoutes from "./routes/testimonial.routes.js";
-import employerSettingsRoutes 
-from "./routes/employerSettings.routes.js";
-import notificationRoutes from "./routes/notification.routes.js";
 dotenv.config();
 
 
 const app = express();
 
-
 const PORT = process.env.PORT || 5000;
-
-
-
-// ================= MIDDLEWARE =================
 
 app.use(cors());
 
@@ -77,8 +71,8 @@ app.use("/api/recommendation", recommendationRoutes);
 app.use("/api/match", matchRoutes);
 
 app.use("/api/career", careerRoutes);
-
 app.use("/api/student-dashboard", studentDashboardRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use("/api/public", publicRoutes);
 

@@ -36,7 +36,7 @@ function AccordionTrigger({ className, children, ...props }) {
         data-slot="accordion-trigger"
         className={cn(
           "group flex w-full items-center justify-between py-4 text-left font-medium transition hover:text-blue-600",
-          className
+          className,
         )}
         {...props}
       >
@@ -63,9 +63,4 @@ function AccordionContent({ className, children, ...props }) {
   );
 }
 
-export {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-};
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };

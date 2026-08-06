@@ -1,10 +1,11 @@
 import { BookOpen, Clock3, ArrowRight, Circle } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLearningPlan } from "../../hooks/useLearningPlan";
 
 export default function LearningRoadmapCard() {
   const { data, isLoading } = useLearningPlan();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -15,6 +16,9 @@ export default function LearningRoadmapCard() {
   }
 
   const roadmap = data?.learningPlan || [];
+  const visibleSteps = roadmap.slice(0, 2);
+
+  const remainingSteps = roadmap.length - visibleSteps.length;
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -37,7 +41,7 @@ export default function LearningRoadmapCard() {
 
       {/* Timeline */}
       <div className="mt-8 space-y-5">
-        {roadmap.map((step, index) => (
+        {visibleSteps.map((step, index) => (
           <div
             key={index}
             className="flex gap-4 rounded-2xl border border-slate-100 p-4 transition hover:bg-slate-50"
@@ -49,7 +53,9 @@ export default function LearningRoadmapCard() {
                 Step {index + 1}: {step.title}
               </h3>
 
-              <p className="mt-2 text-sm text-slate-500">{step.description}</p>
+              <p className="mt-2 line-clamp-2 text-sm text-slate-500">
+                {step.description}
+              </p>
 
               <div className="mt-3 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-slate-500">
@@ -58,14 +64,13 @@ export default function LearningRoadmapCard() {
                 </div>
 
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-semibold
-                    ${
-                      step.priority === "High"
-                        ? "bg-red-100 text-red-600"
-                        : step.priority === "Medium"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-green-100 text-green-600"
-                    }`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    step.priority === "High"
+                      ? "bg-red-100 text-red-600"
+                      : step.priority === "Medium"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-600"
+                  }`}
                 >
                   {step.priority}
                 </span>
@@ -73,6 +78,16 @@ export default function LearningRoadmapCard() {
             </div>
           </div>
         ))}
+        {remainingSteps > 0 && (
+          <button
+            type="button"
+            onClick={() => navigate("/student/learning-roadmap")}
+            className="mt-4 text-sm font-medium text-emerald-600 transition-colors hover:text-emerald-700"
+          >
+            View {remainingSteps} more step
+            {remainingSteps > 1 ? "s" : ""} →
+          </button>
+        )}
       </div>
 
       {/* Progress */}
@@ -93,7 +108,10 @@ export default function LearningRoadmapCard() {
         </div>
       </div>
 
-      <Button className="mt-8 w-full">
+      <Button
+        className="mt-8 w-full"
+        onClick={() => navigate("/student/learning-roadmap")}
+      >
         Continue Learning
         <ArrowRight className="ml-2 h-4 w-4" />
       </Button>

@@ -18,7 +18,11 @@ export default function InternshipDetails() {
 
   const navigate = useNavigate();
 
-  const { data, isLoading } = useInternshipById(id);
+  const { data, isLoading, error } = useInternshipById(id);
+
+  console.log("DETAIL ID:", id);
+  console.log("DETAIL RESPONSE:", data);
+  console.log("DETAIL ERROR:", error);
 
   const internship = data?.data;
 

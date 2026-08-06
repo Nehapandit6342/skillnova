@@ -20,13 +20,9 @@ export default function FAQSection() {
       try {
         const response = await api.get("/public/home");
 
-        // Prevent undefined
-        setFaqs(response.data?.data?.faqs ?? []);
+        setFaqs(response.data?.data?.faqs || []);
       } catch (error) {
         console.log("FAQ fetch error:", error);
-
-        // Prevent page crash
-        setFaqs([]);
       }
     };
 
@@ -42,32 +38,22 @@ export default function FAQSection() {
       />
 
       <div className="mx-auto mt-12 max-w-4xl">
-        <Accordion
-          type="single"
-          collapsible
-          className="space-y-4"
-        >
-          {(faqs ?? []).length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-slate-500">
-              FAQs will be available soon.
-            </div>
-          ) : (
-            (faqs ?? []).map((faq, index) => (
-              <AccordionItem
-                key={faq.id || index}
-                value={`item-${index}`}
-                className="rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
-              >
-                <AccordionTrigger className="text-left text-lg font-semibold">
-                  {faq.question}
-                </AccordionTrigger>
+        <Accordion type="single" className="space-y-4">
+          {(faqs || []).map((faq, index) => (
+            <AccordionItem
+              key={faq.id}
+              value={`item-${index}`}
+              className="rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
+            >
+              <AccordionTrigger className="text-left text-lg font-semibold">
+                {faq.question}
+              </AccordionTrigger>
 
-                <AccordionContent className="leading-7 text-slate-600">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))
-          )}
+              <AccordionContent className="text-slate-600 leading-7">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </div>
     </SectionContainer>

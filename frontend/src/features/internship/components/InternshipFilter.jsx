@@ -37,7 +37,7 @@ export default function InternshipFilter({
     setType("");
   };
 
-  const inputHeight = compact ? "h-10" : "h-11";
+  const inputHeight = compact ? "h-9" : "h-11";
   const selectWidth = compact ? "lg:w-48" : "lg:w-56";
 
   return (
@@ -49,7 +49,7 @@ export default function InternshipFilter({
       {/* Controls */}
       <div
         className={`flex flex-col gap-3 lg:flex-row lg:items-center ${
-          compact ? "p-3" : "p-4 sm:p-5"
+          compact ? "p-2" : "p-4 sm:p-5"
         }`}
       >
         {!compact && (

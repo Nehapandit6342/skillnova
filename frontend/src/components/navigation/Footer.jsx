@@ -60,11 +60,12 @@ export default function Footer() {
               <li>
                 <Link to="/internships">Internships</Link>
               </li>
+
               <li>
-                <Link to="/resume">Resume Builder</Link>
+                <Link to="/student/resume-builder">Resume Builder</Link>
               </li>
               <li>
-                <Link to="/roadmap">Career Roadmap</Link>
+                <Link to="/student/resume-analysis">Career Roadmap</Link>
               </li>
             </ul>
           </div>

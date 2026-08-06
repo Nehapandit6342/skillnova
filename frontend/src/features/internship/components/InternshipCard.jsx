@@ -42,7 +42,7 @@ function deadlineInfo(deadline) {
   };
 }
 
-export default function InternshipCard({ internship }) {
+export default function InternshipCard({ internship, compact = false }) {
   const navigate = useNavigate();
 
   const companyName =
@@ -57,19 +57,29 @@ export default function InternshipCard({ internship }) {
   const deadline = deadlineInfo(internship.deadline);
 
   return (
-    <div className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl">
+    <div
+      className={`group flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl ${
+        compact ? "p-3.5" : "p-6"
+      }`}
+    >
       {/* Header */}
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3">
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradientFor(
+          className={`flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradientFor(
             companyName,
-          )} text-base font-bold text-white shadow-md`}
+          )} font-bold text-white shadow-md ${
+            compact ? "h-10 w-10 text-sm" : "h-12 w-12 text-base"
+          }`}
         >
           {companyName.charAt(0).toUpperCase()}
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-lg font-bold text-slate-900 transition-colors group-hover:text-blue-700">
+          <h3
+            className={`truncate font-bold text-slate-900 transition-colors group-hover:text-blue-700 ${
+              compact ? "text-base" : "text-lg"
+            }`}
+          >
             {internship.title}
           </h3>
           <div className="mt-1 flex items-center gap-2">
@@ -84,8 +94,15 @@ export default function InternshipCard({ internship }) {
       </div>
 
       {/* Meta */}
-      <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-slate-600">
-        <Meta icon={<MapPin className="h-4 w-4" />} text={internship.location} />
+      <div
+        className={`grid min-w-0 grid-cols-2 gap-x-2 text-slate-600 sm:gap-x-4 ${
+          compact ? "mt-3 gap-y-1 text-[13px]" : "mt-5 gap-y-2.5 text-sm"
+        }`}
+      >
+        <Meta
+          icon={<MapPin className="h-4 w-4" />}
+          text={internship.location}
+        />
         <Meta
           icon={<Briefcase className="h-4 w-4" />}
           text={internship.workMode || internship.type}
@@ -98,7 +115,7 @@ export default function InternshipCard({ internship }) {
       </div>
 
       {/* Skills */}
-      {skills?.length > 0 && (
+      {!compact && skills?.length > 0 && (
         <div className="mt-5 flex flex-wrap gap-2">
           {skills.slice(0, 3).map((skill, index) => (
             <span
@@ -115,21 +132,37 @@ export default function InternshipCard({ internship }) {
           )}
         </div>
       )}
+      {internship.matchScore && (
+        <div className="mt-4 rounded-xl bg-green-50 px-3 py-2">
+          <p className="text-sm font-semibold text-green-700">
+            AI Match Score: {internship.matchScore}%
+          </p>
 
+          {internship.matchedSkills?.length > 0 && (
+            <p className="mt-1 text-xs text-green-600">
+              Matched: {internship.matchedSkills.join(", ")}
+            </p>
+          )}
+        </div>
+      )}
       {/* Footer */}
-      <div className="mt-auto pt-6">
-        <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-          <div className="flex items-center gap-3 text-xs">
+      <div className={`mt-auto ${compact ? "pt-2" : "pt-6"}`}>
+        <div
+          className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 border-t border-slate-100 ${
+            compact ? "pt-2" : "pt-4"
+          }`}
+        >
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
             {deadline && (
               <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium ${deadline.tone}`}
+                className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 font-medium ${deadline.tone}`}
               >
                 <CalendarDays className="h-3.5 w-3.5" />
                 {deadline.text}
               </span>
             )}
             {internship.openings > 0 && (
-              <span className="inline-flex items-center gap-1 text-slate-400">
+              <span className="inline-flex shrink-0 items-center gap-1 text-slate-400">
                 <Users className="h-3.5 w-3.5" />
                 {internship.openings} openings
               </span>
@@ -139,7 +172,9 @@ export default function InternshipCard({ internship }) {
           <button
             type="button"
             onClick={() => navigate(`/internships/${internship.id}`)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-blue-600/25 active:scale-95"
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 font-semibold text-white shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-blue-600/25 active:scale-95 ${
+              compact ? "px-3 py-1 text-xs" : "px-4 py-2 text-sm"
+            }`}
           >
             View Details
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />

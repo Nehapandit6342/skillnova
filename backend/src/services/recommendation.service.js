@@ -64,15 +64,10 @@ export const getRecommendedInternships = async (userId) => {
           : Math.round((matchedSkills.length / requiredSkills.length) * 100);
 
       return {
-        id: internship.id,
-        title: internship.title,
-        company: internship.employer.companyName,
-        industry: internship.employer.industry,
-        location: internship.location,
-        type: internship.type,
-        stipend: internship.stipend,
-        deadline: internship.deadline,
-        requiredSkills: internship.requiredSkills,
+        ...internship,
+
+        employer: internship.employer,
+
         matchedSkills,
         matchScore,
       };

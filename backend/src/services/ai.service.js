@@ -25,9 +25,17 @@ Return EXACTLY this structure:
     "description": "",
     "technologies": []
   }
-]
+],
   "recommendedInternships": [],
-  "careerRoadmap": [],
+  "careerRoadmap": [
+  {
+    "step": 1,
+    "title": "",
+    "description": "",
+    "estimatedDuration": "",
+    "goal": ""
+  }
+],
   "improvementSuggestions": [],
    "learningPlan": []
 }
@@ -59,10 +67,31 @@ Rules:
 - Recommended internships: maximum 5.
 - Recommend internship roles that directly match the student's skills, career goal, and missing skills.
 - Prefer realistic job roles (e.g., Frontend Developer Intern, Full Stack Developer Intern, AI/ML Intern, Backend Developer Intern, UI/UX Intern, DevOps Intern).
-- Career roadmap: maximum 6 ordered steps.
-- Return ONLY valid JSON.
-- No markdown.
-- No explanation.
+-Career Roadmap:
+- Return EXACTLY 6 ordered career milestones.
+- Return them in chronological order from beginner to job-ready.
+- Personalize the roadmap using:
+  • current skills
+  • missing skills
+  • career goal
+  • education level
+  • ATS score
+  • resume strengths and weaknesses
+- The roadmap should take the student from their current level to becoming job-ready.
+- Order the milestones from beginner to advanced.
+- Each milestone should be practical and achievable.
+- Avoid repeating tasks from the Learning Plan.
+- Focus on career progression rather than individual learning tasks.
+
+Each roadmap item must contain:
+
+{
+  "step": 1,
+  "title": "",
+  "description": "",
+  "estimatedDuration": "",
+  "goal": ""
+}
 - Improvement suggestions: maximum 5.
 - Suggestions should be practical and specific.
 - Focus on improving ATS score.

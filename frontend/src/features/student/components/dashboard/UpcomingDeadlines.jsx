@@ -9,6 +9,7 @@ export default function UpcomingDeadlines() {
   const navigate = useNavigate();
 
   const { data, isLoading } = useUpcomingDeadlines();
+  console.log(data);
 
   if (isLoading) {
     return (

@@ -14,7 +14,7 @@ export default function CareerCard({ profile }) {
     preferredInternship: "",
     workMode: "",
     preferredLocation: "",
-    companySize: "",
+    preferredCompanySize: "",
   });
   const handleChange = (e) => {
     setFormData({
@@ -45,7 +45,7 @@ export default function CareerCard({ profile }) {
         preferredInternship: student.preferredInternship || "",
         workMode: student.workMode || "",
         preferredLocation: student.preferredLocation || "",
-        companySize: student.companySize || "",
+        preferredCompanySize: student.preferredCompanySize || "",
       });
     }
   }, [student]);
@@ -139,7 +139,7 @@ export default function CareerCard({ profile }) {
             <p className="text-sm text-slate-500">Preferred Company Size</p>
 
             <h3 className="font-semibold text-slate-900">
-              {student?.companySize || "Not added"}
+              {student?.preferredCompanySize || "Not added"}
             </h3>
           </div>
         </div>
@@ -201,8 +201,8 @@ export default function CareerCard({ profile }) {
           <div>
             <Label>Company Size</Label>
             <Input
-              name="companySize"
-              value={formData.companySize}
+              name="preferredCompanySize"
+              value={formData.preferredCompanySize}
               onChange={handleChange}
             />
           </div>
